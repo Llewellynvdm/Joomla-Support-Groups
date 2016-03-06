@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<access component="com_supportgroups">
+	<section name="component">
+		<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />
+		<action name="core.options" title="JACTION_OPTIONS" description="JACTION_OPTIONS_COMPONENT_DESC" />
+		<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />
+		<action name="core.export" title="COM_SUPPORTGROUPS_EXPORT_DATA" description="COM_SUPPORTGROUPS_EXPORT_DATA_DESC" />
+		<action name="core.import" title="COM_SUPPORTGROUPS_IMPORT_DATA" description="COM_SUPPORTGROUPS_IMPORT_DATA_DESC" />
+		<action name="core.batch" title="COM_SUPPORTGROUPS_USE_BATCH" description="COM_SUPPORTGROUPS_USE_BATCH_DESC" />
+		<action name="core.version" title="COM_SUPPORTGROUPS_EDIT_VERSIONS" description="COM_SUPPORTGROUPS_EDIT_VERSIONS_DESC" />
+		<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />
+		<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />
+		<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />
+		<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_ACCESS_EDITSTATE_DESC" />
+		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
+		<action name="core.edit.created_by" title="COM_SUPPORTGROUPS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_EDIT_CREATED_BY_DESC" />
+		<action name="core.edit.created" title="COM_SUPPORTGROUPS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_EDIT_CREATED_DATE_DESC" />
+		<action name="country.access" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_DESC" />
+		<action name="country.batch" title="COM_SUPPORTGROUPS_COUNTRIES_BATCH_USE" description="COM_SUPPORTGROUPS_COUNTRIES_BATCH_USE_DESC" />
+		<action name="country.create" title="COM_SUPPORTGROUPS_COUNTRIES_CREATE" description="COM_SUPPORTGROUPS_COUNTRIES_CREATE_DESC" />
+		<action name="country.dashboard_list" title="COM_SUPPORTGROUPS_COUNTRIES_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_COUNTRIES_DASHBOARD_LIST_DESC" />
+		<action name="country.delete" title="COM_SUPPORTGROUPS_COUNTRIES_DELETE" description="COM_SUPPORTGROUPS_COUNTRIES_DELETE_DESC" />
+		<action name="country.edit" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_DESC" />
+		<action name="country.edit.own" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN_DESC" />
+		<action name="country.edit.state" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE_DESC" />
+		<action name="country.version" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION_DESC" />
+		<action name="country.export" title="COM_SUPPORTGROUPS_COUNTRIES_EXPORT" description="COM_SUPPORTGROUPS_COUNTRIES_EXPORT_DESC" />
+		<action name="country.import" title="COM_SUPPORTGROUPS_COUNTRIES_IMPORT" description="COM_SUPPORTGROUPS_COUNTRIES_IMPORT_DESC" />
+		<action name="country.submenu" title="COM_SUPPORTGROUPS_COUNTRIES_SUBMENU" description="COM_SUPPORTGROUPS_COUNTRIES_SUBMENU_DESC" />
+		<action name="currency.access" title="COM_SUPPORTGROUPS_CURRENCIES_ACCESS" description="COM_SUPPORTGROUPS_CURRENCIES_ACCESS_DESC" />
+		<action name="currency.batch" title="COM_SUPPORTGROUPS_CURRENCIES_BATCH_USE" description="COM_SUPPORTGROUPS_CURRENCIES_BATCH_USE_DESC" />
+		<action name="currency.create" title="COM_SUPPORTGROUPS_CURRENCIES_CREATE" description="COM_SUPPORTGROUPS_CURRENCIES_CREATE_DESC" />
+		<action name="currency.dashboard_list" title="COM_SUPPORTGROUPS_CURRENCIES_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_CURRENCIES_DASHBOARD_LIST_DESC" />
+		<action name="currency.delete" title="COM_SUPPORTGROUPS_CURRENCIES_DELETE" description="COM_SUPPORTGROUPS_CURRENCIES_DELETE_DESC" />
+		<action name="currency.edit" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_DESC" />
+		<action name="currency.edit.own" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT_OWN" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_OWN_DESC" />
+		<action name="currency.edit.state" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT_STATE" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_STATE_DESC" />
+		<action name="currency.version" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_VERSION_DESC" />
+		<action name="currency.export" title="COM_SUPPORTGROUPS_CURRENCIES_EXPORT" description="COM_SUPPORTGROUPS_CURRENCIES_EXPORT_DESC" />
+		<action name="currency.import" title="COM_SUPPORTGROUPS_CURRENCIES_IMPORT" description="COM_SUPPORTGROUPS_CURRENCIES_IMPORT_DESC" />
+		<action name="currency.submenu" title="COM_SUPPORTGROUPS_CURRENCIES_SUBMENU" description="COM_SUPPORTGROUPS_CURRENCIES_SUBMENU_DESC" />
+		<action name="location.batch" title="COM_SUPPORTGROUPS_LOCATIONS_BATCH_USE" description="COM_SUPPORTGROUPS_LOCATIONS_BATCH_USE_DESC" />
+		<action name="location.dashboard_add" title="COM_SUPPORTGROUPS_LOCATIONS_DASHBOARD_ADD" description="COM_SUPPORTGROUPS_LOCATIONS_DASHBOARD_ADD_DESC" />
+		<action name="location.dashboard_list" title="COM_SUPPORTGROUPS_LOCATIONS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_LOCATIONS_DASHBOARD_LIST_DESC" />
+		<action name="location.edit.name" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_NAME_DESC" />
+		<action name="location.edit.region" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_REGION" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_REGION_DESC" />
+		<action name="location.version" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_VERSION_DESC" />
+		<action name="location.export" title="COM_SUPPORTGROUPS_LOCATIONS_EXPORT" description="COM_SUPPORTGROUPS_LOCATIONS_EXPORT_DESC" />
+		<action name="location.import" title="COM_SUPPORTGROUPS_LOCATIONS_IMPORT" description="COM_SUPPORTGROUPS_LOCATIONS_IMPORT_DESC" />
+		<action name="location.submenu" title="COM_SUPPORTGROUPS_LOCATIONS_SUBMENU" description="COM_SUPPORTGROUPS_LOCATIONS_SUBMENU_DESC" />
+		<action name="region.batch" title="COM_SUPPORTGROUPS_REGIONS_BATCH_USE" description="COM_SUPPORTGROUPS_REGIONS_BATCH_USE_DESC" />
+		<action name="region.dashboard_add" title="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_ADD" description="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_ADD_DESC" />
+		<action name="region.dashboard_list" title="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_LIST_DESC" />
+		<action name="region.edit.country" title="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY_DESC" />
+		<action name="region.edit.name" title="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME_DESC" />
+		<action name="region.version" title="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION_DESC" />
+		<action name="region.export" title="COM_SUPPORTGROUPS_REGIONS_EXPORT" description="COM_SUPPORTGROUPS_REGIONS_EXPORT_DESC" />
+		<action name="region.import" title="COM_SUPPORTGROUPS_REGIONS_IMPORT" description="COM_SUPPORTGROUPS_REGIONS_IMPORT_DESC" />
+		<action name="region.submenu" title="COM_SUPPORTGROUPS_REGIONS_SUBMENU" description="COM_SUPPORTGROUPS_REGIONS_SUBMENU_DESC" />
+		<action name="support_group.batch" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_BATCH_USE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_BATCH_USE_DESC" />
+		<action name="support_group.dashboard_add" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DASHBOARD_ADD" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DASHBOARD_ADD_DESC" />
+		<action name="support_group.dashboard_list" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DASHBOARD_LIST_DESC" />
+		<action name="support_group.edit.name" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_NAME" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_NAME_DESC" />
+		<action name="support_group.version" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_VERSION" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_VERSION_DESC" />
+		<action name="support_group.export" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EXPORT" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EXPORT_DESC" />
+		<action name="support_group.import" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_IMPORT" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_IMPORT_DESC" />
+		<action name="support_group.submenu" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_SUBMENU" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_SUBMENU_DESC" />
+	</section>
+	<section name="support_group">
+		<action name="support_group.edit.name" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_NAME" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_NAME_DESC" />
+		<action name="support_group.version" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_VERSION" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="location">
+		<action name="location.edit.name" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_NAME_DESC" />
+		<action name="location.edit.region" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_REGION" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_REGION_DESC" />
+		<action name="location.version" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="region">
+		<action name="region.edit.name" title="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME_DESC" />
+		<action name="region.edit.country" title="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY_DESC" />
+		<action name="region.version" title="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="currency">
+		<action name="currency.edit" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_DESC" />
+		<action name="currency.edit.own" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT_OWN" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_OWN_DESC" />
+		<action name="currency.edit.state" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT_STATE" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_STATE_DESC" />
+		<action name="currency.create" title="COM_SUPPORTGROUPS_CURRENCIES_CREATE" description="COM_SUPPORTGROUPS_CURRENCIES_CREATE_DESC" />
+		<action name="currency.delete" title="COM_SUPPORTGROUPS_CURRENCIES_DELETE" description="COM_SUPPORTGROUPS_CURRENCIES_DELETE_DESC" />
+		<action name="currency.access" title="COM_SUPPORTGROUPS_CURRENCIES_ACCESS" description="COM_SUPPORTGROUPS_CURRENCIES_ACCESS_DESC" />
+		<action name="currency.version" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_VERSION_DESC" />
+	</section>
+	<section name="country">
+		<action name="country.edit" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_DESC" />
+		<action name="country.edit.own" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN_DESC" />
+		<action name="country.edit.state" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE_DESC" />
+		<action name="country.create" title="COM_SUPPORTGROUPS_COUNTRIES_CREATE" description="COM_SUPPORTGROUPS_COUNTRIES_CREATE_DESC" />
+		<action name="country.delete" title="COM_SUPPORTGROUPS_COUNTRIES_DELETE" description="COM_SUPPORTGROUPS_COUNTRIES_DELETE_DESC" />
+		<action name="country.access" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_DESC" />
+		<action name="country.version" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION_DESC" />
+	</section>
+</access>
