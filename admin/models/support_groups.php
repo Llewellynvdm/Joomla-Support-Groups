@@ -44,7 +44,12 @@ class SupportgroupsModelSupport_groups extends JModelList
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.name','name'
+				'a.name','name',
+				'a.phone','phone',
+				'a.location','location',
+				'a.clinic','clinic',
+				'a.male','male',
+				'a.female','female'
 			);
 		}
 
@@ -67,6 +72,21 @@ class SupportgroupsModelSupport_groups extends JModelList
 		}
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
 		$this->setState('filter.name', $name);
+
+		$phone = $this->getUserStateFromRequest($this->context . '.filter.phone', 'filter_phone');
+		$this->setState('filter.phone', $phone);
+
+		$location = $this->getUserStateFromRequest($this->context . '.filter.location', 'filter_location');
+		$this->setState('filter.location', $location);
+
+		$clinic = $this->getUserStateFromRequest($this->context . '.filter.clinic', 'filter_clinic');
+		$this->setState('filter.clinic', $clinic);
+
+		$male = $this->getUserStateFromRequest($this->context . '.filter.male', 'filter_male');
+		$this->setState('filter.male', $male);
+
+		$female = $this->getUserStateFromRequest($this->context . '.filter.female', 'filter_female');
+		$this->setState('filter.female', $female);
         
 		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
 		$this->setState('filter.sorting', $sorting);
@@ -101,7 +121,24 @@ class SupportgroupsModelSupport_groups extends JModelList
 		$this->checkInNow();
 
 		// load parent items
-		$items = parent::getItems(); 
+		$items = parent::getItems();
+
+		// set values to display correctly.
+		if (SupportgroupsHelper::checkArray($items))
+		{
+			// get user object.
+			$user = JFactory::getUser();
+			foreach ($items as $nr => &$item)
+			{
+				$access = ($user->authorise('support_group.access', 'com_supportgroups.support_group.' . (int) $item->id) && $user->authorise('support_group.access', 'com_supportgroups'));
+				if (!$access)
+				{
+					unset($items[$nr]);
+					continue;
+				}
+
+			}
+		} 
         
 		// return items
 		return $items;
@@ -125,6 +162,14 @@ class SupportgroupsModelSupport_groups extends JModelList
 
 		// From the supportgroups_item table
 		$query->from($db->quoteName('#__supportgroups_support_group', 'a'));
+
+		// From the supportgroups_location table.
+		$query->select($db->quoteName('g.name','location_name'));
+		$query->join('LEFT', $db->quoteName('#__supportgroups_location', 'g') . ' ON (' . $db->quoteName('a.location') . ' = ' . $db->quoteName('g.id') . ')');
+
+		// From the supportgroups_clinic table.
+		$query->select($db->quoteName('h.name','clinic_name'));
+		$query->join('LEFT', $db->quoteName('#__supportgroups_clinic', 'h') . ' ON (' . $db->quoteName('a.clinic') . ' = ' . $db->quoteName('h.id') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -162,10 +207,20 @@ class SupportgroupsModelSupport_groups extends JModelList
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search, true) . '%');
-				$query->where('(a.name LIKE '.$search.')');
+				$query->where('(a.name LIKE '.$search.' OR a.phone LIKE '.$search.' OR a.location LIKE '.$search.' OR g.name LIKE '.$search.' OR a.clinic LIKE '.$search.' OR h.name LIKE '.$search.')');
 			}
 		}
 
+		// Filter by location.
+		if ($location = $this->getState('filter.location'))
+		{
+			$query->where('a.location = ' . $db->quote($db->escape($location, true)));
+		}
+		// Filter by clinic.
+		if ($clinic = $this->getState('filter.clinic'))
+		{
+			$query->where('a.clinic = ' . $db->quote($db->escape($clinic, true)));
+		}
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
@@ -220,8 +275,17 @@ class SupportgroupsModelSupport_groups extends JModelList
 				// set values to display correctly.
 				if (SupportgroupsHelper::checkArray($items))
 				{
+					// get user object.
+					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
+						$access = ($user->authorise('support_group.access', 'com_supportgroups.support_group.' . (int) $item->id) && $user->authorise('support_group.access', 'com_supportgroups'));
+						if (!$access)
+						{
+							unset($items[$nr]);
+							continue;
+						}
+
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);
@@ -283,6 +347,11 @@ class SupportgroupsModelSupport_groups extends JModelList
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.name');
+		$id .= ':' . $this->getState('filter.phone');
+		$id .= ':' . $this->getState('filter.location');
+		$id .= ':' . $this->getState('filter.clinic');
+		$id .= ':' . $this->getState('filter.male');
+		$id .= ':' . $this->getState('filter.female');
 
 		return parent::getStoreId($id);
 	}

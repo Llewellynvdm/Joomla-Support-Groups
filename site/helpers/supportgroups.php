@@ -108,11 +108,75 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	*	Can be used to build help urls.
+	*	Load the Component Help URLs.
 	**/
 	public static function getHelpUrl($view)
 	{
+		$user	= JFactory::getUser();
+		$groups = $user->get('groups');
+		$db	= JFactory::getDbo();
+		$query	= $db->getQuery(true);
+		$query->select(array('a.id','a.groups','a.target','a.type','a.article','a.url'));
+		$query->from('#__supportgroups_help_document AS a');
+		$query->where('a.site_view = '.$db->quote($view));
+		$query->where('a.location = 2');
+		$query->where('a.published = 1');
+		$db->setQuery($query);
+		$db->execute();
+		if($db->getNumRows())
+		{
+			$helps = $db->loadObjectList();
+			if (self::checkArray($helps))
+			{
+				foreach ($helps as $nr => $help)
+				{
+					if ($help->target == 1)
+					{
+						$targetgroups = json_decode($help->groups, true);
+						if (!array_intersect($targetgroups, $groups))
+						{
+							// if user not in those target groups then remove the item
+							unset($helps[$nr]);
+							continue;
+						}
+					}
+					// set the return type
+					switch ($help->type)
+					{
+						// set joomla article
+						case 1:
+							return self::loadArticleLink($help->article);
+						break;
+						// set help text
+						case 2:
+							return self::loadHelpTextLink($help->id);
+						break;
+						// set Link
+						case 3:
+							return $help->url;
+						break;
+					}
+				}
+			}
+		}
 		return false;
+	}
+
+	/**
+	*	Get the Article Link.
+	**/
+	protected static function loadArticleLink($id)
+	{
+		return JURI::root().'index.php?option=com_content&view=article&id='.$id.'&tmpl=component&layout=modal';
+	}
+
+	/**
+	*	Get the Help Text Link.
+	**/
+	protected static function loadHelpTextLink($id)
+	{
+		$token = JSession::getFormToken();
+		return 'index.php?option=com_supportgroups&task=help.getText&id=' . (int) $id . '&token=' . $token;
 	}
 
 	/**

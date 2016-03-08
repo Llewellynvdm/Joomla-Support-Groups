@@ -105,7 +105,24 @@ class SupportgroupsModelRegions extends JModelList
 		$this->checkInNow();
 
 		// load parent items
-		$items = parent::getItems(); 
+		$items = parent::getItems();
+
+		// set values to display correctly.
+		if (SupportgroupsHelper::checkArray($items))
+		{
+			// get user object.
+			$user = JFactory::getUser();
+			foreach ($items as $nr => &$item)
+			{
+				$access = ($user->authorise('region.access', 'com_supportgroups.region.' . (int) $item->id) && $user->authorise('region.access', 'com_supportgroups'));
+				if (!$access)
+				{
+					unset($items[$nr]);
+					continue;
+				}
+
+			}
+		} 
         
 		// return items
 		return $items;
@@ -233,8 +250,17 @@ class SupportgroupsModelRegions extends JModelList
 				// set values to display correctly.
 				if (SupportgroupsHelper::checkArray($items))
 				{
+					// get user object.
+					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
+						$access = ($user->authorise('region.access', 'com_supportgroups.region.' . (int) $item->id) && $user->authorise('region.access', 'com_supportgroups'));
+						if (!$access)
+						{
+							unset($items[$nr]);
+							continue;
+						}
+
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

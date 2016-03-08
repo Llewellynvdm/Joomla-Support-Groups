@@ -63,10 +63,10 @@ class SupportgroupsViewLocations extends JViewLegacy
 		$this->saveOrder	= $this->listOrder == 'ordering';
                 // get global action permissions
 		$this->canDo		= SupportgroupsHelper::getActions('location');
-		$this->canEdit		= $this->canDo->get('core.edit');
-		$this->canState		= $this->canDo->get('core.edit.state');
-		$this->canCreate	= $this->canDo->get('core.create');
-		$this->canDelete	= $this->canDo->get('core.delete');
+		$this->canEdit		= $this->canDo->get('location.edit');
+		$this->canState		= $this->canDo->get('location.edit.state');
+		$this->canCreate	= $this->canDo->get('location.create');
+		$this->canDelete	= $this->canDo->get('location.delete');
 		$this->canBatch	= $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.

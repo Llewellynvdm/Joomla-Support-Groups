@@ -126,6 +126,7 @@
 			description="COM_SUPPORTGROUPS_REGION_COUNTRY_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			required="true"
 			button="false"
 		/>
 	</fieldset>

@@ -37,7 +37,7 @@ $edit = "index.php?option=com_supportgroups&view=locations&task=location.edit";
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
-		<?php if ($canDo->get('core.edit.state')): ?>
+		<?php if ($canDo->get('location.edit.state')): ?>
 			<?php
 				if ($this->saveOrder)
 				{
@@ -60,7 +60,7 @@ $edit = "index.php?option=com_supportgroups&view=locations&task=location.edit";
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center">
-		<?php if ($canDo->get('core.edit')): ?>
+		<?php if ($canDo->get('location.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
@@ -75,7 +75,7 @@ $edit = "index.php?option=com_supportgroups&view=locations&task=location.edit";
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
+			<?php if ($canDo->get('location.edit')): ?>
 				<div class="name">
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
@@ -87,7 +87,7 @@ $edit = "index.php?option=com_supportgroups&view=locations&task=location.edit";
 			<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($this->user->authorise('core.edit', 'com_supportgroups.region.' . (int)$item->region)): ?>
+			<?php if ($this->user->authorise('region.edit', 'com_supportgroups.region.' . (int)$item->region)): ?>
 				<div class="name">
 					<a href="index.php?option=com_supportgroups&view=regions&task=region.edit&id=<?php echo $item->region; ?>&ref=locations"><?php echo $this->escape($item->region_name); ?></a>
 				</div>
@@ -96,7 +96,7 @@ $edit = "index.php?option=com_supportgroups&view=locations&task=location.edit";
 			<?php endif; ?>
 		</td>
 		<td class="center">
-		<?php if ($canDo->get('core.edit.state')) : ?>
+		<?php if ($canDo->get('location.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'locations.', true, 'cb'); ?>

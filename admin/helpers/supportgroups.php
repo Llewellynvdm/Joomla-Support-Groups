@@ -31,6 +31,112 @@ defined('_JEXEC') or die('Restricted access');
  */
 abstract class SupportgroupsHelper
 { 
+
+	public static function setCurrency($amount,$support_group)
+	{
+		// get the currency id
+		$currency = self::getCurrency($support_group);
+		// make money
+		return self::makeMoney($amount,$currency);
+	}
+
+	protected static $currency = array();
+
+	public static function getCurrency($support_group)
+	{
+		if (!isset(self::$currency[$support_group]))
+		{
+			// get the location
+			$location = self::getVar('support_group', $support_group, 'id', 'location');
+			// get the Region
+			$region = self::getVar('location', $location, 'id', 'region');
+			// get the Country
+			$country = self::getVar('region', $region, 'id', 'country');
+			// get the Currency Codethree
+			$codethree = self::getVar('country', $country, 'id', 'currency');
+			// get currency id
+			self::$currency[$support_group] = self::getVar('currency', $codethree, 'codethree', 'id');
+		}
+		return self::$currency[$support_group];
+	}
+
+	protected static $currencyDetails = array();
+
+	public static function getCurrencyDetails($id = false)
+	{
+		if(is_numeric($id))
+		{
+			if (!isset(self::$currencyDetails[$id]))
+			{
+				// Get a db connection.
+				$db = JFactory::getDbo();
+				// Create a new query object.
+				$query = $db->getQuery(true);
+
+				$query->select($db->quoteName(
+					array(	'a.id','a.name','a.codethree','a.numericcode','a.symbol','a.thousands','a.decimalplace',
+						'a.decimalsymbol','a.positivestyle','a.negativestyle'),
+					array(	'currency_id','currency_name','currency_codethree','currency_numericcode','currency_symbol',
+						'currency_thousands','currency_decimalplace','currency_decimalsymbol','currency_positivestyle',
+						'currency_negativestyle')));
+				$query->from($db->quoteName('#__supportgroups_currency', 'a'));
+				$query->where($db->quoteName('id') . ' = '.(int) $id);
+				$db->setQuery($query);
+				$db->execute();
+				if ($db->getNumRows())
+				{
+					self::$currencyDetails[$id] = $db->loadObject();
+				}
+				else
+				{
+					self::$currencyDetails[$id] = false;
+				}
+			}
+			return self::$currencyDetails[$id];
+		}
+		return false;
+	}
+	
+	public static function makeMoney($number,$currency = false)
+	{
+		// first check if we have a number
+		if (is_numeric($number))
+		{
+			// make sure to include the negative finder file
+			include_once 'negativefinder.php';
+			// check if the number is negative
+			$negativeFinderObj = new NegativeFinder(new Expression("$number"));
+			$negative = $negativeFinderObj->isItNegative() ? TRUE : FALSE;
+		}
+		else
+		{
+			throw new Exception('ERROR! ('.$number.') is not a number!');
+		}
+		// setup the currency
+		$currency = self::getCurrencyDetails($currency);
+		// set the number to currency
+		if (self::checkObject($currency))
+		{
+			if (!$negative)
+			{
+				$format = $currency->currency_positivestyle;
+				$sign = '+';
+			}
+			else 
+			{
+				$format = $currency->currency_negativestyle;
+				$sign = '-';
+				$number = abs($number);
+			}
+			$setupNumber = number_format((float)$number, (int)$currency->currency_decimalplace, $currency->currency_decimalsymbol, ' '); //$currency->currency_thousands TODO);
+			$search = array('{sign}', '{number}', '{symbol}');
+			$replace = array($sign, $setupNumber, $currency->currency_symbol);
+			$moneyMade = str_replace ($search,$replace,$format);
+
+			return $moneyMade;
+		}
+		return $number;
+	}
 	/**
 	*	Load the Component xml manifest.
 	**/
@@ -79,11 +185,75 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	*	Can be used to build help urls.
+	*	Load the Component Help URLs.
 	**/
 	public static function getHelpUrl($view)
 	{
+		$user	= JFactory::getUser();
+		$groups = $user->get('groups');
+		$db	= JFactory::getDbo();
+		$query	= $db->getQuery(true);
+		$query->select(array('a.id','a.groups','a.target','a.type','a.article','a.url'));
+		$query->from('#__supportgroups_help_document AS a');
+		$query->where('a.admin_view = '.$db->quote($view));
+		$query->where('a.location = 1');
+		$query->where('a.published = 1');
+		$db->setQuery($query);
+		$db->execute();
+		if($db->getNumRows())
+		{
+			$helps = $db->loadObjectList();
+			if (self::checkArray($helps))
+			{
+				foreach ($helps as $nr => $help)
+				{
+					if ($help->target == 1)
+					{
+						$targetgroups = json_decode($help->groups, true);
+						if (!array_intersect($targetgroups, $groups))
+						{
+							// if user not in those target groups then remove the item
+							unset($helps[$nr]);
+							continue;
+						}
+					}
+					// set the return type
+					switch ($help->type)
+					{
+						// set joomla article
+						case 1:
+							return self::loadArticleLink($help->article);
+						break;
+						// set help text
+						case 2:
+							return self::loadHelpTextLink($help->id);
+						break;
+						// set Link
+						case 3:
+							return $help->url;
+						break;
+					}
+				}
+			}
+		}
 		return false;
+	}
+
+	/**
+	*	Get the Article Link.
+	**/
+	protected static function loadArticleLink($id)
+	{
+		return JURI::root().'index.php?option=com_content&view=article&id='.$id.'&tmpl=component&layout=modal';
+	}
+
+	/**
+	*	Get the Help Text Link.
+	**/
+	protected static function loadHelpTextLink($id)
+	{
+		$token = JSession::getFormToken();
+		return 'index.php?option=com_supportgroups&task=help.getText&id=' . (int) $id . '&token=' . $token;
 	}
 
 	/**
@@ -95,16 +265,37 @@ abstract class SupportgroupsHelper
                 $user = JFactory::getUser();
                 // load the submenus to sidebar
                 JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_DASHBOARD'), 'index.php?option=com_supportgroups&view=supportgroups', $submenu == 'supportgroups');
-		JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_SUPPORT_GROUPS'), 'index.php?option=com_supportgroups&view=support_groups', $submenu == 'support_groups');
-		JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_LOCATIONS'), 'index.php?option=com_supportgroups&view=locations', $submenu == 'locations');
-		JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_REGIONS'), 'index.php?option=com_supportgroups&view=regions', $submenu == 'regions');
-		if ($user->authorise('currency.access', 'com_supportgroups') && $user->authorise('currency.submenu', 'com_supportgroups'))
+		if ($user->authorise('support_group.access', 'com_supportgroups') && $user->authorise('support_group.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_CURRENCIES'), 'index.php?option=com_supportgroups&view=currencies', $submenu == 'currencies');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_SUPPORT_GROUPS'), 'index.php?option=com_supportgroups&view=support_groups', $submenu == 'support_groups');
+		}
+		if ($user->authorise('payment.access', 'com_supportgroups') && $user->authorise('payment.submenu', 'com_supportgroups'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_PAYMENTS'), 'index.php?option=com_supportgroups&view=payments', $submenu == 'payments');
+		}
+		if ($user->authorise('clinic.access', 'com_supportgroups') && $user->authorise('clinic.submenu', 'com_supportgroups'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_CLINICS'), 'index.php?option=com_supportgroups&view=clinics', $submenu == 'clinics');
+		}
+		if ($user->authorise('location.access', 'com_supportgroups') && $user->authorise('location.submenu', 'com_supportgroups'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_LOCATIONS'), 'index.php?option=com_supportgroups&view=locations', $submenu == 'locations');
+		}
+		if ($user->authorise('region.access', 'com_supportgroups') && $user->authorise('region.submenu', 'com_supportgroups'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_REGIONS'), 'index.php?option=com_supportgroups&view=regions', $submenu == 'regions');
 		}
 		if ($user->authorise('country.access', 'com_supportgroups') && $user->authorise('country.submenu', 'com_supportgroups'))
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_COUNTRIES'), 'index.php?option=com_supportgroups&view=countries', $submenu == 'countries');
+		}
+		if ($user->authorise('currency.access', 'com_supportgroups') && $user->authorise('currency.submenu', 'com_supportgroups'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_CURRENCIES'), 'index.php?option=com_supportgroups&view=currencies', $submenu == 'currencies');
+		}
+		if ($user->authorise('help_document.access', 'com_supportgroups') && $user->authorise('help_document.submenu', 'com_supportgroups'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_supportgroups&view=help_documents', $submenu == 'help_documents');
 		}
 	} 
 

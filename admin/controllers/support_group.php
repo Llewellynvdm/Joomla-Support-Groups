@@ -59,8 +59,15 @@ class SupportgroupsControllerSupport_group extends JControllerForm
 	 * @since   1.6
 	 */
 	protected function allowAdd($data = array())
-	{		// In the absense of better information, revert to the component permissions.
-		return parent::allowAdd($data);
+	{
+		// Access check.
+		$access = JFactory::getUser()->authorise('support_group.access', 'com_supportgroups');
+		if (!$access)
+		{
+			return false;
+		}
+		// In the absense of better information, revert to the component permissions.
+		return JFactory::getUser()->authorise('support_group.create', $this->option);
 	}
 
 	/**
@@ -81,13 +88,20 @@ class SupportgroupsControllerSupport_group extends JControllerForm
 		$recordId	= (int) isset($data[$key]) ? $data[$key] : 0;
 
 
+		// Access check.
+		$access = ($user->authorise('support_group.access', 'com_supportgroups.support_group.' . (int) $recordId) &&  $user->authorise('support_group.access', 'com_supportgroups'));
+		if (!$access)
+		{
+			return false;
+		}
+
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit', 'com_supportgroups.support_group.' . (int) $recordId);
+			$permission = $user->authorise('support_group.edit', 'com_supportgroups.support_group.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
-				if ($user->authorise('core.edit.own', 'com_supportgroups.support_group.' . $recordId))
+				if ($user->authorise('support_group.edit.own', 'com_supportgroups.support_group.' . $recordId))
 				{
 					// Now test the owner is the user.
 					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
@@ -106,7 +120,7 @@ class SupportgroupsControllerSupport_group extends JControllerForm
 					// If the owner matches 'me' then allow.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('core.edit.own', 'com_supportgroups'))
+						if ($user->authorise('support_group.edit.own', 'com_supportgroups'))
 						{
 							return true;
 						}
@@ -116,7 +130,7 @@ class SupportgroupsControllerSupport_group extends JControllerForm
 			}
 		}
 		// Since there is no permission, revert to the component permissions.
-		return parent::allowEdit($data, $key);
+		return $user->authorise('support_group.edit', $this->option);
 	}
 
 	/**

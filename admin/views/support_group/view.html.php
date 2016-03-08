@@ -70,6 +70,9 @@ class SupportgroupsViewSupport_group extends JViewLegacy
                         $this->referral = '&ref='.(string)$this->ref;
                 }
 
+		// Get Linked view data
+		$this->vvvpayments		= $this->get('Vvvpayments');
+
 		// Set the toolbar
 		$this->addToolBar();
 
@@ -95,12 +98,12 @@ class SupportgroupsViewSupport_group extends JViewLegacy
 		// Built the actions for new and existing records.
 		if ($this->refid || $this->ref)
 		{
-			if ($this->canDo->get('core.create') && $isNew)
+			if ($this->canDo->get('support_group.create') && $isNew)
 			{
 				// We can create the record.
 				JToolBarHelper::save('support_group.save', 'JTOOLBAR_SAVE');
 			}
-			elseif ($this->canDo->get('core.edit'))
+			elseif ($this->canDo->get('support_group.edit'))
 			{
 				// We can save the record.
 				JToolBarHelper::save('support_group.save', 'JTOOLBAR_SAVE');
@@ -121,7 +124,7 @@ class SupportgroupsViewSupport_group extends JViewLegacy
 			if ($isNew)
 			{
 				// For new records, check the create permission.
-				if ($this->canDo->get('core.create'))
+				if ($this->canDo->get('support_group.create'))
 				{
 					JToolBarHelper::apply('support_group.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('support_group.save', 'JTOOLBAR_SAVE');
@@ -131,24 +134,24 @@ class SupportgroupsViewSupport_group extends JViewLegacy
 			}
 			else
 			{
-				if ($this->canDo->get('core.edit'))
+				if ($this->canDo->get('support_group.edit'))
 				{
 					// We can save the new record
 					JToolBarHelper::apply('support_group.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('support_group.save', 'JTOOLBAR_SAVE');
 					// We can save this record, but check the create permission to see
 					// if we can return to make a new one.
-					if ($this->canDo->get('core.create'))
+					if ($this->canDo->get('support_group.create'))
 					{
 						JToolBarHelper::custom('support_group.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 					}
 				}
 				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('support_group.version'));
-				if ($this->state->params->get('save_history', 1) && $this->canDo->get('') && $canVersion)
+				if ($this->state->params->get('save_history', 1) && $this->canDo->get('support_group.edit') && $canVersion)
 				{
 					JToolbarHelper::versions('com_supportgroups.support_group', $this->item->id);
 				}
-				if ($this->canDo->get('core.create'))
+				if ($this->canDo->get('support_group.create'))
 				{
 					JToolBarHelper::custom('support_group.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}
@@ -193,6 +196,30 @@ class SupportgroupsViewSupport_group extends JViewLegacy
 		$document = JFactory::getDocument();
 		$document->setTitle(JText::_($isNew ? 'COM_SUPPORTGROUPS_SUPPORT_GROUP_NEW' : 'COM_SUPPORTGROUPS_SUPPORT_GROUP_EDIT'));
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_supportgroups/assets/css/support_group.css"); 
+
+		// Add the CSS for Footable.
+		$document->addStyleSheet(JURI::root() .'media/com_supportgroups/footable/css/footable.core.min.css');
+
+		// Use the Metro Style
+		if (!isset($this->fooTableStyle) || 0 == $this->fooTableStyle)
+		{
+			$document->addStyleSheet(JURI::root() .'media/com_supportgroups/footable/css/footable.metro.min.css');
+		}
+		// Use the Legacy Style.
+		elseif (isset($this->fooTableStyle) && 1 == $this->fooTableStyle)
+		{
+			$document->addStyleSheet(JURI::root() .'media/com_supportgroups/footable/css/footable.standalone.min.css');
+		}
+
+		// Add the JavaScript for Footable
+		$document->addScript(JURI::root() .'media/com_supportgroups/footable/js/footable.js');
+		$document->addScript(JURI::root() .'media/com_supportgroups/footable/js/footable.sort.js');
+		$document->addScript(JURI::root() .'media/com_supportgroups/footable/js/footable.filter.js');
+		$document->addScript(JURI::root() .'media/com_supportgroups/footable/js/footable.paginate.js');
+
+		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable(); }); jQuery('.nav-tabs').on('click', 'li', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('.footable').trigger('footable_resize'); }";
+		$document->addScriptDeclaration($footable);
+
 		$document->addScript(JURI::root() . $this->script);
 		$document->addScript(JURI::root() . "administrator/components/com_supportgroups/views/support_group/submitbutton.js");
 		JText::script('view not acceptable. Error');

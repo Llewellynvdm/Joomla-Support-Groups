@@ -28,7 +28,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // set the defaults
-$items	= $displayData->vvvregions;
+$items	= $displayData->vvyregions;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
 $edit	= "index.php?option=com_supportgroups&view=regions&task=region.edit";
@@ -38,7 +38,7 @@ $can	= SupportgroupsHelper::getActions('region');
 
 ?>
 <div class="form-vertical">
-<?php if ($can->get('core.create')): ?>
+<?php if ($can->get('region.create')): ?>
 	<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_SUPPORTGROUPS_NEW'); ?></a><br /><br />
 <?php endif; ?>
 <?php if (SupportgroupsHelper::checkArray($items)): ?>
@@ -68,7 +68,7 @@ $can	= SupportgroupsHelper::getActions('region');
 	?>
 	<tr>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
+			<?php if ($canDo->get('region.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>&ref=country&refid=<?php echo $id; ?>"><?php echo $displayData->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'regions.', $canCheckin); ?>

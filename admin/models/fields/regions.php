@@ -59,7 +59,7 @@ class JFormFieldRegions extends JFormFieldList
 		{
 			$user = JFactory::getUser();
 			// only add if user allowed to create region
-			if ($user->authorise('core.create', 'com_supportgroups'))
+			if ($user->authorise('region.create', 'com_supportgroups'))
 			{
 				// get the input from url
 				$jinput = JFactory::getApplication()->input;

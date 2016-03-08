@@ -101,8 +101,97 @@ class SupportgroupsModelLocation extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_supportgroups.location');
 			}
 		}
+		$this->locationvvvw = $item->id;
 
 		return $item;
+	}
+
+	/**
+	* Method to get list data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getVvwsupport_groups()
+	{
+		// Get the user object.
+		$user = JFactory::getUser();
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select('a.*');
+
+		// From the supportgroups_support_group table
+		$query->from($db->quoteName('#__supportgroups_support_group', 'a'));
+
+		// From the supportgroups_location table.
+		$query->select($db->quoteName('g.name','location_name'));
+		$query->join('LEFT', $db->quoteName('#__supportgroups_location', 'g') . ' ON (' . $db->quoteName('a.location') . ' = ' . $db->quoteName('g.id') . ')');
+
+		// From the supportgroups_clinic table.
+		$query->select($db->quoteName('h.name','clinic_name'));
+		$query->join('LEFT', $db->quoteName('#__supportgroups_clinic', 'h') . ' ON (' . $db->quoteName('a.clinic') . ' = ' . $db->quoteName('h.id') . ')');
+
+		// Filter by locationvvvw global.
+		$locationvvvw = $this->locationvvvw;
+		if (is_numeric($locationvvvw ))
+		{
+			$query->where('a.location = ' . (int) $locationvvvw );
+		}
+		elseif (is_string($locationvvvw))
+		{
+			$query->where('a.location = ' . $db->quote($locationvvvw));
+		}
+		else
+		{
+			$query->where('a.location = -5');
+		}
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_supportgroups'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+
+			// set values to display correctly.
+			if (SupportgroupsHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('support_group.access', 'com_supportgroups.support_group.' . (int) $item->id) && $user->authorise('support_group.access', 'com_supportgroups'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
+			return $items;
+		}
+		return false;
 	} 
 
 	/**
@@ -141,8 +230,8 @@ class SupportgroupsModelLocation extends JModelAdmin
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_supportgroups.location.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_supportgroups')))
+		if ($id != 0 && (!$user->authorise('location.edit.state', 'com_supportgroups.location.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('location.edit.state', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
@@ -158,7 +247,8 @@ class SupportgroupsModelLocation extends JModelAdmin
 			$form->setValue('created_by', null, $user->id);
 		}
 		// Modify the form based on Edit Creaded By access controls.
-		if (!$user->authorise('core.edit.created_by', 'com_supportgroups'))
+		if ($id != 0 && (!$user->authorise('location.edit.created_by', 'com_supportgroups.location.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('location.edit.created_by', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created_by', 'disabled', 'true');
@@ -168,7 +258,8 @@ class SupportgroupsModelLocation extends JModelAdmin
 			$form->setFieldAttribute('created_by', 'filter', 'unset');
 		}
 		// Modify the form based on Edit Creaded Date access controls.
-		if (!$user->authorise('core.edit.created', 'com_supportgroups'))
+		if ($id != 0 && (!$user->authorise('location.edit.created', 'com_supportgroups.location.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('location.edit.created', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created', 'disabled', 'true');
@@ -254,7 +345,7 @@ class SupportgroupsModelLocation extends JModelAdmin
 
 			$user = JFactory::getUser();
 			// The record has been set. Check the record permissions.
-			return $user->authorise('core.delete', 'com_supportgroups.location.' . (int) $record->id);
+			return $user->authorise('location.delete', 'com_supportgroups.location.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -276,14 +367,14 @@ class SupportgroupsModelLocation extends JModelAdmin
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit.state', 'com_supportgroups.location.' . (int) $recordId);
+			$permission = $user->authorise('location.edit.state', 'com_supportgroups.location.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
 				return false;
 			}
 		}
 		// In the absense of better information, revert to the component permissions.
-		return parent::canEditState($record);
+		return $user->authorise('location.edit.state', 'com_supportgroups');
 	}
     
 	/**
@@ -298,8 +389,9 @@ class SupportgroupsModelLocation extends JModelAdmin
 	protected function allowEdit($data = array(), $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
+		$user = JFactory::getUser();
 
-		return JFactory::getUser()->authorise('core.edit', 'com_supportgroups.location.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or parent::allowEdit($data, $key);
+		return $user->authorise('location.edit', 'com_supportgroups.location.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('location.edit',  'com_supportgroups');
 	}
     
 	/**
@@ -531,7 +623,7 @@ class SupportgroupsModelLocation extends JModelAdmin
 			$this->canDo		= SupportgroupsHelper::getActions('location');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('location.create') && !$this->canDo->get('location.batch'))
 		{
 			return false;
 		}
@@ -546,7 +638,7 @@ class SupportgroupsModelLocation extends JModelAdmin
 		{
 			$values['published'] = 0;
 		}
-		elseif (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		elseif (isset($values['published']) && !$this->canDo->get('location.edit.state'))
 		{
 				$values['published'] = 0;
 		}
@@ -563,7 +655,7 @@ class SupportgroupsModelLocation extends JModelAdmin
 
 			// only allow copy if user may edit this item.
 
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('location.edit', $contexts[$pk]))
 
 			{
 
@@ -680,14 +772,14 @@ class SupportgroupsModelLocation extends JModelAdmin
 			$this->canDo		= SupportgroupsHelper::getActions('location');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('location.edit') && !$this->canDo->get('location.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
 		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		if (isset($values['published']) && !$this->canDo->get('location.edit.state'))
 		{
 			unset($values['published']);
 		}
@@ -697,7 +789,7 @@ class SupportgroupsModelLocation extends JModelAdmin
 		// Parent exists so we proceed
 		foreach ($pks as $pk)
 		{
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('location.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 

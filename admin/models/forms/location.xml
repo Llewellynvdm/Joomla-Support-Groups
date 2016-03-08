@@ -126,6 +126,7 @@
 			description="COM_SUPPORTGROUPS_LOCATION_REGION_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			required="true"
 			button="true"
 		/>
 		<!-- Note_set_area Field. Type: Note. A None Database Field. (joomla) -->

@@ -14,7 +14,7 @@
 	@build			6th March, 2016
 	@created		24th February, 2016
 	@package		Support Groups
-	@subpackage		details_left.php
+	@subpackage		metadata.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
 	@copyright		Copyright (C) 2015. All Rights Reserved
 	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
@@ -29,26 +29,28 @@ defined('_JEXEC') or die('Restricted access');
 
 $form = $displayData->getForm();
 
-$fields = $displayData->get('fields') ?: array(
-	'name'
-);
+// JLayout for standard handling of metadata fields in the administrator content edit screens.
+$fieldSets = $form->getFieldsets('metadata');
+?>
 
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
+<?php foreach ($fieldSets as $name => $fieldSet) : ?>
+	<?php if (isset($fieldSet->description) && trim($fieldSet->description)) : ?>
+		<p class="alert alert-info"><?php echo $this->escape(JText::_($fieldSet->description)); ?></p>
+	<?php endif; ?>
 
-foreach ($fields as $field)
-{
-	$field = is_array($field) ? $field : array($field);
-	foreach ($field as $f)
+	<?php
+	// Include the real fields in this panel.
+	if ($name == 'vdmmetadata')
 	{
-		if ($form->getField($f))
-		{
-			if (in_array($f, $hiddenFields))
-			{
-				$form->setFieldAttribute($f, 'type', 'hidden');
-			}
-
-			echo $form->renderField($f);
-			break;
-		}
+		echo $form->renderField('metadesc');
+		echo $form->renderField('metakey');
 	}
-}
+
+	foreach ($form->getFieldset($name) as $field)
+	{
+		if ($field->name != 'jform[metadata][tags][]')
+		{
+			echo $field->renderField();
+		}
+	} ?>
+<?php endforeach; ?>

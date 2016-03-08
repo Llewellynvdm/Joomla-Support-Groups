@@ -71,6 +71,8 @@
 		<submenu>
 			<!-- Instead of link you can specify individual link attributes -->
 			<menu option="com_supportgroups" view="support_groups">COM_SUPPORTGROUPS_MENU_SUPPORT_GROUPS</menu>
+			<menu option="com_supportgroups" view="payments">COM_SUPPORTGROUPS_MENU_PAYMENTS</menu>
+			<menu option="com_supportgroups" view="clinics">COM_SUPPORTGROUPS_MENU_CLINICS</menu>
 			<menu option="com_supportgroups" view="locations">COM_SUPPORTGROUPS_MENU_LOCATIONS</menu>
 			<menu option="com_supportgroups" view="regions">COM_SUPPORTGROUPS_MENU_REGIONS</menu>
 		</submenu>

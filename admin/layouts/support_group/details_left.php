@@ -30,7 +30,9 @@ defined('_JEXEC') or die('Restricted access');
 $form = $displayData->getForm();
 
 $fields = $displayData->get('fields') ?: array(
-	'name'
+	'phone',
+	'location',
+	'clinic'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: array();

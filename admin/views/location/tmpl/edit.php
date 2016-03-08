@@ -36,21 +36,33 @@ $componentParams = JComponentHelper::getParams('com_supportgroups');
 
 <form action="<?php echo JRoute::_('index.php?option=com_supportgroups&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('location.details_above', $this); ?><div class="form-horizontal">
+	<?php echo JLayoutHelper::render('location.settings_above', $this); ?><div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'locationTab', array('active' => 'details')); ?>
+	<?php echo JHtml::_('bootstrap.startTabSet', 'locationTab', array('active' => 'settings')); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'locationTab', 'details', JText::_('COM_SUPPORTGROUPS_LOCATION_DETAILS', true)); ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'locationTab', 'settings', JText::_('COM_SUPPORTGROUPS_LOCATION_SETTINGS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('location.details_fullwidth', $this); ?>
+				<?php echo JLayoutHelper::render('location.settings_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php if ($this->canDo->get('core.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.state') || $this->canDo->get('core.edit.created')) : ?>
+	<?php if ($this->canDo->get('support_group.access')) : ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'locationTab', 'support_groups', JText::_('COM_SUPPORTGROUPS_LOCATION_SUPPORT_GROUPS', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('location.support_groups_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php endif; ?>
+
+	<?php if ($this->canDo->get('location.delete') || $this->canDo->get('location.edit.created_by') || $this->canDo->get('location.edit.state') || $this->canDo->get('location.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'locationTab', 'publishing', JText::_('COM_SUPPORTGROUPS_LOCATION_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

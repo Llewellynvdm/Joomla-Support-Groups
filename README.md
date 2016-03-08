@@ -15,31 +15,31 @@ Support Groups
 
 ## Build Time
 
-**76 Hours** or **10 Eight Hour Days** (actual time the author saved -
+**120 Hours** or **15 Eight Hour Days** (actual time the author saved -
 due to [Automated Component Builder] (https://www.vdm.io/joomla-component-builder))
 
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
 > never making one mistake or taking any coffee break.)
 
-+ *Line count*: **27334**
-+ *File count*: **229**
-+ *Folder count*: **64**
++ *Line count*: **42865**
++ *File count*: **331**
++ *Folder count*: **76**
 
-**51 Hours** or **6 Eight Hour Days** (the actual time the author spent)
+**79 Hours** or **10 Eight Hour Days** (the actual time the author spent)
 
 > (with the following break down:
-> **debugging @19hours** = codingtime / 4;
-> **planning @11hours** = codingtime / 7;
-> **mapping @8hours** = codingtime / 10;
-> **office @13hours** = codingtime / 6;)
+> **debugging @30hours** = codingtime / 4;
+> **planning @17hours** = codingtime / 7;
+> **mapping @12hours** = codingtime / 10;
+> **office @20hours** = codingtime / 6;)
 
-**127 Hours** or **16 Eight Hour Days**
+**199 Hours** or **25 Eight Hour Days**
 (a total of the realistic time frame for this project)
 
 > (if creating a folder and file took **5 seconds** and writing one line of code took **10 seconds**,
 > with the normal everyday realities at the office, that includes the component planning, mapping & debugging.)
 
-Project duration: **3.2 weeks** or **0.7 months**
+Project duration: **5 weeks** or **1 months**
 
 > This **component** was build with a Joomla [Automated Component Builder] (https://www.vdm.io/joomla-component-builder).
 > Developed by [Llewellyn van der Merwe] (mailto:joomla@vdm.io)

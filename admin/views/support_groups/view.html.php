@@ -63,10 +63,10 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 		$this->saveOrder	= $this->listOrder == 'ordering';
                 // get global action permissions
 		$this->canDo		= SupportgroupsHelper::getActions('support_group');
-		$this->canEdit		= $this->canDo->get('core.edit');
-		$this->canState		= $this->canDo->get('core.edit.state');
-		$this->canCreate	= $this->canDo->get('core.create');
-		$this->canDelete	= $this->canDo->get('core.delete');
+		$this->canEdit		= $this->canDo->get('support_group.edit');
+		$this->canState		= $this->canDo->get('support_group.edit.state');
+		$this->canCreate	= $this->canDo->get('support_group.create');
+		$this->canDelete	= $this->canDo->get('support_group.delete');
 		$this->canBatch	= $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
@@ -201,6 +201,50 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
                                 JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
                 }  
+
+		// Set Location Name Selection
+		$this->locationNameOptions = JFormHelper::loadFieldType('Locations')->getOptions();
+		if ($this->locationNameOptions)
+		{
+			// Location Name Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL').' -',
+				'filter_location',
+				JHtml::_('select.options', $this->locationNameOptions, 'value', 'text', $this->state->get('filter.location'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Location Name Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL').' -',
+					'batch[location]',
+					JHtml::_('select.options', $this->locationNameOptions, 'value', 'text')
+				);
+			}
+		}
+
+		// Set Clinic Name Selection
+		$this->clinicNameOptions = JFormHelper::loadFieldType('Clinics')->getOptions();
+		if ($this->clinicNameOptions)
+		{
+			// Clinic Name Filter
+			JHtmlSidebar::addFilter(
+				'- Select '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL').' -',
+				'filter_clinic',
+				JHtml::_('select.options', $this->clinicNameOptions, 'value', 'text', $this->state->get('filter.clinic'))
+			);
+
+			if ($this->canBatch && $this->canCreate && $this->canEdit)
+			{
+				// Clinic Name Batch Selection
+				JHtmlBatch_::addListSelection(
+					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL').' -',
+					'batch[clinic]',
+					JHtml::_('select.options', $this->clinicNameOptions, 'value', 'text')
+				);
+			}
+		}
 	}
 
 	/**
@@ -244,6 +288,11 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_LABEL'),
+			'a.phone' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_LABEL'),
+			'g.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL'),
+			'h.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL'),
+			'a.male' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_LABEL'),
+			'a.female' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
 	} 

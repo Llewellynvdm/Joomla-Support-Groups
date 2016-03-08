@@ -51,6 +51,7 @@ $componentParams = JComponentHelper::getParams('com_supportgroups');
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
+	<?php if ($this->canDo->get('region.access')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'countryTab', 'regions', JText::_('COM_SUPPORTGROUPS_COUNTRY_REGIONS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
@@ -60,6 +61,7 @@ $componentParams = JComponentHelper::getParams('com_supportgroups');
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php endif; ?>
 
 	<?php if ($this->canDo->get('country.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('country.edit.state') || $this->canDo->get('core.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'countryTab', 'publishing', JText::_('COM_SUPPORTGROUPS_COUNTRY_PUBLISHING', true)); ?>

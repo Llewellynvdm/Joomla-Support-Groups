@@ -89,10 +89,13 @@ class SupportgroupsController extends JControllerLegacy
                 {
                         $views = array(
 				'support_group' => 'support_groups',
+				'payment' => 'payments',
+				'clinic' => 'clinics',
 				'location' => 'locations',
 				'region' => 'regions',
+				'country' => 'countries',
 				'currency' => 'currencies',
-				'country' => 'countries'
+				'help_document' => 'help_documents'
                                 );
                         // check if this is a list view
                         if (in_array($view,$views))

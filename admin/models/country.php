@@ -101,7 +101,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_supportgroups.country');
 			}
 		}
-		$this->countryvvvv = $item->id;
+		$this->countryvvvy = $item->id;
 
 		return $item;
 	}
@@ -111,7 +111,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 	*
 	* @return mixed  An array of data items on success, false on failure.
 	*/
-	public function getVvvregions()
+	public function getVvyregions()
 	{
 		// Get the user object.
 		$user = JFactory::getUser();
@@ -129,15 +129,15 @@ class SupportgroupsModelCountry extends JModelAdmin
 		$query->select($db->quoteName('g.name','country_name'));
 		$query->join('LEFT', $db->quoteName('#__supportgroups_country', 'g') . ' ON (' . $db->quoteName('a.country') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// Filter by countryvvvv global.
-		$countryvvvv = $this->countryvvvv;
-		if (is_numeric($countryvvvv ))
+		// Filter by countryvvvy global.
+		$countryvvvy = $this->countryvvvy;
+		if (is_numeric($countryvvvy ))
 		{
-			$query->where('a.country = ' . (int) $countryvvvv );
+			$query->where('a.country = ' . (int) $countryvvvy );
 		}
-		elseif (is_string($countryvvvv))
+		elseif (is_string($countryvvvy))
 		{
-			$query->where('a.country = ' . $db->quote($countryvvvv));
+			$query->where('a.country = ' . $db->quote($countryvvvy));
 		}
 		else
 		{
@@ -168,6 +168,23 @@ class SupportgroupsModelCountry extends JModelAdmin
 		if ($db->getNumRows())
 		{
 			$items = $db->loadObjectList();
+
+			// set values to display correctly.
+			if (SupportgroupsHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('region.access', 'com_supportgroups.region.' . (int) $item->id) && $user->authorise('region.access', 'com_supportgroups'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
 			return $items;
 		}
 		return false;

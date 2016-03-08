@@ -35,19 +35,35 @@ $componentParams = JComponentHelper::getParams('com_supportgroups');
 ?>
 
 <form action="<?php echo JRoute::_('index.php?option=com_supportgroups&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
-<div class="form-horizontal">
+
+	<?php echo JLayoutHelper::render('support_group.details_above', $this); ?><div class="form-horizontal">
 
 	<?php echo JHtml::_('bootstrap.startTabSet', 'support_groupTab', array('active' => 'details')); ?>
 
 	<?php echo JHtml::_('bootstrap.addTab', 'support_groupTab', 'details', JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_DETAILS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
+			<div class="span6">
 				<?php echo JLayoutHelper::render('support_group.details_left', $this); ?>
+			</div>
+			<div class="span6">
+				<?php echo JLayoutHelper::render('support_group.details_right', $this); ?>
 			</div>
 		</div>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<?php if ($this->canDo->get('core.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.state') || $this->canDo->get('core.edit.created')) : ?>
+	<?php if ($this->canDo->get('payment.access')) : ?>
+	<?php echo JHtml::_('bootstrap.addTab', 'support_groupTab', 'payments', JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_PAYMENTS', true)); ?>
+		<div class="row-fluid form-horizontal-desktop">
+		</div>
+		<div class="row-fluid form-horizontal-desktop">
+			<div class="span12">
+				<?php echo JLayoutHelper::render('support_group.payments_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php endif; ?>
+
+	<?php if ($this->canDo->get('support_group.delete') || $this->canDo->get('support_group.edit.created_by') || $this->canDo->get('support_group.edit.state') || $this->canDo->get('support_group.edit.created')) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'support_groupTab', 'publishing', JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
@@ -86,4 +102,7 @@ $componentParams = JComponentHelper::getParams('com_supportgroups');
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </div>
+
+<div class="clearfix"></div>
+<?php echo JLayoutHelper::render('support_group.details_under', $this); ?>
 </form>

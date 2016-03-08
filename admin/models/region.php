@@ -101,8 +101,93 @@ class SupportgroupsModelRegion extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_supportgroups.region');
 			}
 		}
+		$this->regionvvvx = $item->id;
 
 		return $item;
+	}
+
+	/**
+	* Method to get list data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getVvxlocations()
+	{
+		// Get the user object.
+		$user = JFactory::getUser();
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select('a.*');
+
+		// From the supportgroups_location table
+		$query->from($db->quoteName('#__supportgroups_location', 'a'));
+
+		// From the supportgroups_region table.
+		$query->select($db->quoteName('g.name','region_name'));
+		$query->join('LEFT', $db->quoteName('#__supportgroups_region', 'g') . ' ON (' . $db->quoteName('a.region') . ' = ' . $db->quoteName('g.id') . ')');
+
+		// Filter by regionvvvx global.
+		$regionvvvx = $this->regionvvvx;
+		if (is_numeric($regionvvvx ))
+		{
+			$query->where('a.region = ' . (int) $regionvvvx );
+		}
+		elseif (is_string($regionvvvx))
+		{
+			$query->where('a.region = ' . $db->quote($regionvvvx));
+		}
+		else
+		{
+			$query->where('a.region = -5');
+		}
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_supportgroups'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+
+			// set values to display correctly.
+			if (SupportgroupsHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('location.access', 'com_supportgroups.location.' . (int) $item->id) && $user->authorise('location.access', 'com_supportgroups'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
+			return $items;
+		}
+		return false;
 	} 
 
 	/**
@@ -141,8 +226,8 @@ class SupportgroupsModelRegion extends JModelAdmin
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_supportgroups.region.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_supportgroups')))
+		if ($id != 0 && (!$user->authorise('region.edit.state', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.edit.state', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
@@ -158,7 +243,8 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$form->setValue('created_by', null, $user->id);
 		}
 		// Modify the form based on Edit Creaded By access controls.
-		if (!$user->authorise('core.edit.created_by', 'com_supportgroups'))
+		if ($id != 0 && (!$user->authorise('region.edit.created_by', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.edit.created_by', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created_by', 'disabled', 'true');
@@ -168,7 +254,8 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$form->setFieldAttribute('created_by', 'filter', 'unset');
 		}
 		// Modify the form based on Edit Creaded Date access controls.
-		if (!$user->authorise('core.edit.created', 'com_supportgroups'))
+		if ($id != 0 && (!$user->authorise('region.edit.created', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.edit.created', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created', 'disabled', 'true');
@@ -254,7 +341,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 
 			$user = JFactory::getUser();
 			// The record has been set. Check the record permissions.
-			return $user->authorise('core.delete', 'com_supportgroups.region.' . (int) $record->id);
+			return $user->authorise('region.delete', 'com_supportgroups.region.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -276,14 +363,14 @@ class SupportgroupsModelRegion extends JModelAdmin
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit.state', 'com_supportgroups.region.' . (int) $recordId);
+			$permission = $user->authorise('region.edit.state', 'com_supportgroups.region.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
 				return false;
 			}
 		}
 		// In the absense of better information, revert to the component permissions.
-		return parent::canEditState($record);
+		return $user->authorise('region.edit.state', 'com_supportgroups');
 	}
     
 	/**
@@ -298,8 +385,9 @@ class SupportgroupsModelRegion extends JModelAdmin
 	protected function allowEdit($data = array(), $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
+		$user = JFactory::getUser();
 
-		return JFactory::getUser()->authorise('core.edit', 'com_supportgroups.region.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or parent::allowEdit($data, $key);
+		return $user->authorise('region.edit', 'com_supportgroups.region.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('region.edit',  'com_supportgroups');
 	}
     
 	/**
@@ -531,7 +619,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$this->canDo		= SupportgroupsHelper::getActions('region');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('region.create') && !$this->canDo->get('region.batch'))
 		{
 			return false;
 		}
@@ -546,7 +634,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 		{
 			$values['published'] = 0;
 		}
-		elseif (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		elseif (isset($values['published']) && !$this->canDo->get('region.edit.state'))
 		{
 				$values['published'] = 0;
 		}
@@ -563,7 +651,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 
 			// only allow copy if user may edit this item.
 
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('region.edit', $contexts[$pk]))
 
 			{
 
@@ -680,14 +768,14 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$this->canDo		= SupportgroupsHelper::getActions('region');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('region.edit') && !$this->canDo->get('region.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
 		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		if (isset($values['published']) && !$this->canDo->get('region.edit.state'))
 		{
 			unset($values['published']);
 		}
@@ -697,7 +785,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 		// Parent exists so we proceed
 		foreach ($pks as $pk)
 		{
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('region.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 

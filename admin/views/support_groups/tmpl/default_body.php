@@ -37,7 +37,7 @@ $edit = "index.php?option=com_supportgroups&view=support_groups&task=support_gro
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
-		<?php if ($canDo->get('core.edit.state')): ?>
+		<?php if ($canDo->get('support_group.edit.state')): ?>
 			<?php
 				if ($this->saveOrder)
 				{
@@ -60,7 +60,7 @@ $edit = "index.php?option=com_supportgroups&view=support_groups&task=support_gro
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center">
-		<?php if ($canDo->get('core.edit')): ?>
+		<?php if ($canDo->get('support_group.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
@@ -75,7 +75,7 @@ $edit = "index.php?option=com_supportgroups&view=support_groups&task=support_gro
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('core.edit')): ?>
+			<?php if ($canDo->get('support_group.edit')): ?>
 				<div class="name">
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
@@ -86,8 +86,35 @@ $edit = "index.php?option=com_supportgroups&view=support_groups&task=support_gro
 				<div class="name"><?php echo $this->escape($item->name); ?></div>
 			<?php endif; ?>
 		</td>
+		<td class="hidden-phone">
+			<?php echo $this->escape($item->phone); ?>
+		</td>
+		<td class="nowrap">
+			<?php if ($this->user->authorise('location.edit', 'com_supportgroups.location.' . (int)$item->location)): ?>
+				<div class="name">
+					<a href="index.php?option=com_supportgroups&view=locations&task=location.edit&id=<?php echo $item->location; ?>&ref=support_groups"><?php echo $this->escape($item->location_name); ?></a>
+				</div>
+			<?php else: ?>
+				<div class="name"><?php echo $this->escape($item->location_name); ?></div>
+			<?php endif; ?>
+		</td>
+		<td class="nowrap">
+			<?php if ($this->user->authorise('clinic.edit', 'com_supportgroups.clinic.' . (int)$item->clinic)): ?>
+				<div class="name">
+					<a href="index.php?option=com_supportgroups&view=clinics&task=clinic.edit&id=<?php echo $item->clinic; ?>&ref=support_groups"><?php echo $this->escape($item->clinic_name); ?></a>
+				</div>
+			<?php else: ?>
+				<div class="name"><?php echo $this->escape($item->clinic_name); ?></div>
+			<?php endif; ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo $this->escape($item->male); ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo $this->escape($item->female); ?>
+		</td>
 		<td class="center">
-		<?php if ($canDo->get('core.edit.state')) : ?>
+		<?php if ($canDo->get('support_group.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'support_groups.', true, 'cb'); ?>

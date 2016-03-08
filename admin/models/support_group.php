@@ -101,8 +101,157 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_supportgroups.support_group');
 			}
 		}
+		$this->support_groupvvvv = $item->id;
 
 		return $item;
+	}
+
+	/**
+	* Method to get list data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getVvvpayments()
+	{
+		// Get the user object.
+		$user = JFactory::getUser();
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select('a.*');
+
+		// From the supportgroups_payment table
+		$query->from($db->quoteName('#__supportgroups_payment', 'a'));
+
+		// From the supportgroups_support_group table.
+		$query->select($db->quoteName('g.name','support_group_name'));
+		$query->join('LEFT', $db->quoteName('#__supportgroups_support_group', 'g') . ' ON (' . $db->quoteName('a.support_group') . ' = ' . $db->quoteName('g.id') . ')');
+
+		// Filter by support_groupvvvv global.
+		$support_groupvvvv = $this->support_groupvvvv;
+		if (is_numeric($support_groupvvvv ))
+		{
+			$query->where('a.support_group = ' . (int) $support_groupvvvv );
+		}
+		elseif (is_string($support_groupvvvv))
+		{
+			$query->where('a.support_group = ' . $db->quote($support_groupvvvv));
+		}
+		else
+		{
+			$query->where('a.support_group = -5');
+		}
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
+		{
+			$query->where('a.access = ' . (int) $access);
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_supportgroups'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+
+			// set values to display correctly.
+			if (SupportgroupsHelper::checkArray($items))
+			{
+				// get user object.
+				$user = JFactory::getUser();
+				foreach ($items as $nr => &$item)
+				{
+					$access = ($user->authorise('payment.access', 'com_supportgroups.payment.' . (int) $item->id) && $user->authorise('payment.access', 'com_supportgroups'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
+
+			// Try Convert the Amount to the Currency value
+		if (SupportgroupsHelper::checkArray($items))
+		{
+			foreach ($items as $nr => &$item)
+			{
+				// convert to currency here
+				$item->amount = SupportgroupsHelper::setCurrency($item->amount, $item->support_group);
+			}
+		}
+
+			// set selection value to a translatable value
+			if (SupportgroupsHelper::checkArray($items))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					// convert year
+					$item->year = $this->selectionTranslationVvvpayments($item->year, 'year');
+				}
+			}
+
+			return $items;
+		}
+		return false;
+	}
+
+	/**
+	* Method to convert selection values to translatable string.
+	*
+	* @return translatable string
+	*/
+	public function selectionTranslationVvvpayments($value,$name)
+	{
+		// Array of year language strings
+		if ($name == 'year')
+		{
+			$yearArray = array(
+				0 => 'COM_SUPPORTGROUPS_PAYMENT_SELECT_A_YEAR',
+				2010 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TEN',
+				2011 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_ELEVEN',
+				2012 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWELVE',
+				2013 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_THIRTEEN',
+				2014 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_FOURTEEN',
+				2015 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_FIFTEEN',
+				2016 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_SIXTEEN',
+				2017 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_SEVENTEEN',
+				2018 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_EIGHTEEN',
+				2019 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_NINETEEN',
+				2020 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY',
+				2021 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_ONE',
+				2022 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_TWO',
+				2023 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_THREE',
+				2024 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_FOUR',
+				2025 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_FIVE',
+				2026 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_SIX',
+				2027 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_SEVEN',
+				2028 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_EIGHT',
+				2029 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_TWENTY_NINE',
+				2030 => 'COM_SUPPORTGROUPS_PAYMENT_TWO_THOUSAND_AND_THIRTY'
+			);
+			// Now check if value is found in this array
+			if (isset($yearArray[$value]) && SupportgroupsHelper::checkString($yearArray[$value]))
+			{
+				return $yearArray[$value];
+			}
+		}
+		return $value;
 	} 
 
 	/**
@@ -141,8 +290,8 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_supportgroups.support_group.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_supportgroups')))
+		if ($id != 0 && (!$user->authorise('support_group.edit.state', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.state', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
@@ -158,7 +307,8 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$form->setValue('created_by', null, $user->id);
 		}
 		// Modify the form based on Edit Creaded By access controls.
-		if (!$user->authorise('core.edit.created_by', 'com_supportgroups'))
+		if ($id != 0 && (!$user->authorise('support_group.edit.created_by', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.created_by', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created_by', 'disabled', 'true');
@@ -168,7 +318,8 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$form->setFieldAttribute('created_by', 'filter', 'unset');
 		}
 		// Modify the form based on Edit Creaded Date access controls.
-		if (!$user->authorise('core.edit.created', 'com_supportgroups'))
+		if ($id != 0 && (!$user->authorise('support_group.edit.created', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.created', 'com_supportgroups')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('created', 'disabled', 'true');
@@ -189,6 +340,134 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				$form->setFieldAttribute('name', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('name', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Phone access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.phone', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.phone', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('phone', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('phone', 'readonly', 'true');
+			if (!$form->getValue('phone'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('phone', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('phone', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Location access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.location', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.location', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('location', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('location', 'readonly', 'true');
+			if (!$form->getValue('location'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('location', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('location', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Clinic access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.clinic', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.clinic', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('clinic', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('clinic', 'readonly', 'true');
+			if (!$form->getValue('clinic'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('clinic', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('clinic', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Male access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.male', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.male', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('male', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('male', 'readonly', 'true');
+			if (!$form->getValue('male'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('male', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('male', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Female access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.female', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.female', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('female', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('female', 'readonly', 'true');
+			if (!$form->getValue('female'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('female', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('female', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Female Art access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.female_art', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.female_art', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('female_art', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('female_art', 'readonly', 'true');
+			if (!$form->getValue('female_art'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('female_art', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('female_art', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Male Art access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.male_art', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.male_art', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('male_art', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('male_art', 'readonly', 'true');
+			if (!$form->getValue('male_art'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('male_art', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('male_art', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Male Children access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.male_children', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.male_children', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('male_children', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('male_children', 'readonly', 'true');
+			if (!$form->getValue('male_children'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('male_children', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('male_children', 'required', 'false');
 			}
 		}
 		// Only load these values if no id is found
@@ -238,7 +517,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 
 			$user = JFactory::getUser();
 			// The record has been set. Check the record permissions.
-			return $user->authorise('core.delete', 'com_supportgroups.support_group.' . (int) $record->id);
+			return $user->authorise('support_group.delete', 'com_supportgroups.support_group.' . (int) $record->id);
 		}
 		return false;
 	}
@@ -260,14 +539,14 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit.state', 'com_supportgroups.support_group.' . (int) $recordId);
+			$permission = $user->authorise('support_group.edit.state', 'com_supportgroups.support_group.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
 				return false;
 			}
 		}
 		// In the absense of better information, revert to the component permissions.
-		return parent::canEditState($record);
+		return $user->authorise('support_group.edit.state', 'com_supportgroups');
 	}
     
 	/**
@@ -282,8 +561,9 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	protected function allowEdit($data = array(), $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
+		$user = JFactory::getUser();
 
-		return JFactory::getUser()->authorise('core.edit', 'com_supportgroups.support_group.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or parent::allowEdit($data, $key);
+		return $user->authorise('support_group.edit', 'com_supportgroups.support_group.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('support_group.edit',  'com_supportgroups');
 	}
     
 	/**
@@ -515,7 +795,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$this->canDo		= SupportgroupsHelper::getActions('support_group');
 		}
 
-		if (!$this->canDo->get('core.create') || !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('support_group.create') && !$this->canDo->get('support_group.batch'))
 		{
 			return false;
 		}
@@ -530,7 +810,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 		{
 			$values['published'] = 0;
 		}
-		elseif (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		elseif (isset($values['published']) && !$this->canDo->get('support_group.edit.state'))
 		{
 				$values['published'] = 0;
 		}
@@ -547,7 +827,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 
 			// only allow copy if user may edit this item.
 
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('support_group.edit', $contexts[$pk]))
 
 			{
 
@@ -664,14 +944,14 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$this->canDo		= SupportgroupsHelper::getActions('support_group');
 		}
 
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('core.batch'))
+		if (!$this->canDo->get('support_group.edit') && !$this->canDo->get('support_group.batch'))
 		{
 			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
 		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('core.edit.state'))
+		if (isset($values['published']) && !$this->canDo->get('support_group.edit.state'))
 		{
 			unset($values['published']);
 		}
@@ -681,7 +961,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 		// Parent exists so we proceed
 		foreach ($pks as $pk)
 		{
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
+			if (!$this->user->authorise('support_group.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 

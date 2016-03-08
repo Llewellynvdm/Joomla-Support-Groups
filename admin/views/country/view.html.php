@@ -71,7 +71,7 @@ class SupportgroupsViewCountry extends JViewLegacy
                 }
 
 		// Get Linked view data
-		$this->vvvregions		= $this->get('Vvvregions');
+		$this->vvyregions		= $this->get('Vvyregions');
 
 		// Set the toolbar
 		$this->addToolBar();

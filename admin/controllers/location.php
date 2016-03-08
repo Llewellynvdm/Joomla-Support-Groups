@@ -59,8 +59,15 @@ class SupportgroupsControllerLocation extends JControllerForm
 	 * @since   1.6
 	 */
 	protected function allowAdd($data = array())
-	{		// In the absense of better information, revert to the component permissions.
-		return parent::allowAdd($data);
+	{
+		// Access check.
+		$access = JFactory::getUser()->authorise('location.access', 'com_supportgroups');
+		if (!$access)
+		{
+			return false;
+		}
+		// In the absense of better information, revert to the component permissions.
+		return JFactory::getUser()->authorise('location.create', $this->option);
 	}
 
 	/**
@@ -81,13 +88,20 @@ class SupportgroupsControllerLocation extends JControllerForm
 		$recordId	= (int) isset($data[$key]) ? $data[$key] : 0;
 
 
+		// Access check.
+		$access = ($user->authorise('location.access', 'com_supportgroups.location.' . (int) $recordId) &&  $user->authorise('location.access', 'com_supportgroups'));
+		if (!$access)
+		{
+			return false;
+		}
+
 		if ($recordId)
 		{
 			// The record has been set. Check the record permissions.
-			$permission = $user->authorise('core.edit', 'com_supportgroups.location.' . (int) $recordId);
+			$permission = $user->authorise('location.edit', 'com_supportgroups.location.' . (int) $recordId);
 			if (!$permission && !is_null($permission))
 			{
-				if ($user->authorise('core.edit.own', 'com_supportgroups.location.' . $recordId))
+				if ($user->authorise('location.edit.own', 'com_supportgroups.location.' . $recordId))
 				{
 					// Now test the owner is the user.
 					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
@@ -106,7 +120,7 @@ class SupportgroupsControllerLocation extends JControllerForm
 					// If the owner matches 'me' then allow.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('core.edit.own', 'com_supportgroups'))
+						if ($user->authorise('location.edit.own', 'com_supportgroups'))
 						{
 							return true;
 						}
@@ -116,7 +130,7 @@ class SupportgroupsControllerLocation extends JControllerForm
 			}
 		}
 		// Since there is no permission, revert to the component permissions.
-		return parent::allowEdit($data, $key);
+		return $user->authorise('location.edit', $this->option);
 	}
 
 	/**

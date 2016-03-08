@@ -46,6 +46,21 @@ defined('_JEXEC') or die('Restricted access');
 	<th class="nowrap" >
 			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_LABEL', 'name', $this->listDirn, $this->listOrder); ?>
 	</th>
+	<th class="nowrap hidden-phone" >
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_LABEL', 'phone', $this->listDirn, $this->listOrder); ?>
+	</th>
+	<th class="nowrap" >
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL', 'location_name', $this->listDirn, $this->listOrder); ?>
+	</th>
+	<th class="nowrap" >
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL', 'clinic_name', $this->listDirn, $this->listOrder); ?>
+	</th>
+	<th class="nowrap hidden-phone" >
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_LABEL', 'male', $this->listDirn, $this->listOrder); ?>
+	</th>
+	<th class="nowrap hidden-phone" >
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_LABEL', 'female', $this->listDirn, $this->listOrder); ?>
+	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >
 			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_STATUS', 'published', $this->listDirn, $this->listOrder); ?>

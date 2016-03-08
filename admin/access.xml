@@ -15,6 +15,23 @@
 		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
 		<action name="core.edit.created_by" title="COM_SUPPORTGROUPS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_EDIT_CREATED_BY_DESC" />
 		<action name="core.edit.created" title="COM_SUPPORTGROUPS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_EDIT_CREATED_DATE_DESC" />
+		<action name="clinic.access" title="COM_SUPPORTGROUPS_CLINICS_ACCESS" description="COM_SUPPORTGROUPS_CLINICS_ACCESS_DESC" />
+		<action name="clinic.batch" title="COM_SUPPORTGROUPS_CLINICS_BATCH_USE" description="COM_SUPPORTGROUPS_CLINICS_BATCH_USE_DESC" />
+		<action name="clinic.create" title="COM_SUPPORTGROUPS_CLINICS_CREATE" description="COM_SUPPORTGROUPS_CLINICS_CREATE_DESC" />
+		<action name="clinic.dashboard_list" title="COM_SUPPORTGROUPS_CLINICS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_CLINICS_DASHBOARD_LIST_DESC" />
+		<action name="clinic.delete" title="COM_SUPPORTGROUPS_CLINICS_DELETE" description="COM_SUPPORTGROUPS_CLINICS_DELETE_DESC" />
+		<action name="clinic.edit" title="COM_SUPPORTGROUPS_CLINICS_EDIT" description="COM_SUPPORTGROUPS_CLINICS_EDIT_DESC" />
+		<action name="clinic.edit.created_by" title="COM_SUPPORTGROUPS_CLINICS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_CLINICS_EDIT_CREATED_BY_DESC" />
+		<action name="clinic.edit.created" title="COM_SUPPORTGROUPS_CLINICS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_CLINICS_EDIT_CREATED_DATE_DESC" />
+		<action name="clinic.edit.name" title="COM_SUPPORTGROUPS_CLINICS_EDIT_NAME" description="COM_SUPPORTGROUPS_CLINICS_EDIT_NAME_DESC" />
+		<action name="clinic.edit.note_set_area" title="COM_SUPPORTGROUPS_CLINICS_EDIT_NOTE_SET_AREA" description="COM_SUPPORTGROUPS_CLINICS_EDIT_NOTE_SET_AREA_DESC" />
+		<action name="clinic.edit.own" title="COM_SUPPORTGROUPS_CLINICS_EDIT_OWN" description="COM_SUPPORTGROUPS_CLINICS_EDIT_OWN_DESC" />
+		<action name="clinic.edit.phone" title="COM_SUPPORTGROUPS_CLINICS_EDIT_PHONE" description="COM_SUPPORTGROUPS_CLINICS_EDIT_PHONE_DESC" />
+		<action name="clinic.edit.state" title="COM_SUPPORTGROUPS_CLINICS_EDIT_STATE" description="COM_SUPPORTGROUPS_CLINICS_EDIT_STATE_DESC" />
+		<action name="clinic.version" title="COM_SUPPORTGROUPS_CLINICS_EDIT_VERSION" description="COM_SUPPORTGROUPS_CLINICS_EDIT_VERSION_DESC" />
+		<action name="clinic.export" title="COM_SUPPORTGROUPS_CLINICS_EXPORT" description="COM_SUPPORTGROUPS_CLINICS_EXPORT_DESC" />
+		<action name="clinic.import" title="COM_SUPPORTGROUPS_CLINICS_IMPORT" description="COM_SUPPORTGROUPS_CLINICS_IMPORT_DESC" />
+		<action name="clinic.submenu" title="COM_SUPPORTGROUPS_CLINICS_SUBMENU" description="COM_SUPPORTGROUPS_CLINICS_SUBMENU_DESC" />
 		<action name="country.access" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_DESC" />
 		<action name="country.batch" title="COM_SUPPORTGROUPS_COUNTRIES_BATCH_USE" description="COM_SUPPORTGROUPS_COUNTRIES_BATCH_USE_DESC" />
 		<action name="country.create" title="COM_SUPPORTGROUPS_COUNTRIES_CREATE" description="COM_SUPPORTGROUPS_COUNTRIES_CREATE_DESC" />
@@ -39,46 +56,175 @@
 		<action name="currency.export" title="COM_SUPPORTGROUPS_CURRENCIES_EXPORT" description="COM_SUPPORTGROUPS_CURRENCIES_EXPORT_DESC" />
 		<action name="currency.import" title="COM_SUPPORTGROUPS_CURRENCIES_IMPORT" description="COM_SUPPORTGROUPS_CURRENCIES_IMPORT_DESC" />
 		<action name="currency.submenu" title="COM_SUPPORTGROUPS_CURRENCIES_SUBMENU" description="COM_SUPPORTGROUPS_CURRENCIES_SUBMENU_DESC" />
+		<action name="help_document.access" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_ACCESS" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_ACCESS_DESC" />
+		<action name="help_document.batch" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_BATCH_USE" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_BATCH_USE_DESC" />
+		<action name="help_document.create" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_CREATE" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_CREATE_DESC" />
+		<action name="help_document.dashboard_list" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_DASHBOARD_LIST_DESC" />
+		<action name="help_document.delete" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_DELETE" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_DELETE_DESC" />
+		<action name="help_document.edit" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_DESC" />
+		<action name="help_document.edit.own" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_OWN" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_OWN_DESC" />
+		<action name="help_document.edit.state" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_STATE" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_STATE_DESC" />
+		<action name="help_document.version" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_VERSION" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_VERSION_DESC" />
+		<action name="help_document.export" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EXPORT" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EXPORT_DESC" />
+		<action name="help_document.import" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_IMPORT" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_IMPORT_DESC" />
+		<action name="help_document.submenu" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_SUBMENU" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_SUBMENU_DESC" />
+		<action name="location.access" title="COM_SUPPORTGROUPS_LOCATIONS_ACCESS" description="COM_SUPPORTGROUPS_LOCATIONS_ACCESS_DESC" />
 		<action name="location.batch" title="COM_SUPPORTGROUPS_LOCATIONS_BATCH_USE" description="COM_SUPPORTGROUPS_LOCATIONS_BATCH_USE_DESC" />
-		<action name="location.dashboard_add" title="COM_SUPPORTGROUPS_LOCATIONS_DASHBOARD_ADD" description="COM_SUPPORTGROUPS_LOCATIONS_DASHBOARD_ADD_DESC" />
+		<action name="location.create" title="COM_SUPPORTGROUPS_LOCATIONS_CREATE" description="COM_SUPPORTGROUPS_LOCATIONS_CREATE_DESC" />
 		<action name="location.dashboard_list" title="COM_SUPPORTGROUPS_LOCATIONS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_LOCATIONS_DASHBOARD_LIST_DESC" />
+		<action name="location.delete" title="COM_SUPPORTGROUPS_LOCATIONS_DELETE" description="COM_SUPPORTGROUPS_LOCATIONS_DELETE_DESC" />
+		<action name="location.edit" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_DESC" />
+		<action name="location.edit.created_by" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_CREATED_BY_DESC" />
+		<action name="location.edit.created" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_CREATED_DATE_DESC" />
 		<action name="location.edit.name" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_NAME_DESC" />
+		<action name="location.edit.own" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_OWN" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_OWN_DESC" />
 		<action name="location.edit.region" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_REGION" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_REGION_DESC" />
+		<action name="location.edit.state" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_STATE" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_STATE_DESC" />
 		<action name="location.version" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_VERSION_DESC" />
 		<action name="location.export" title="COM_SUPPORTGROUPS_LOCATIONS_EXPORT" description="COM_SUPPORTGROUPS_LOCATIONS_EXPORT_DESC" />
 		<action name="location.import" title="COM_SUPPORTGROUPS_LOCATIONS_IMPORT" description="COM_SUPPORTGROUPS_LOCATIONS_IMPORT_DESC" />
 		<action name="location.submenu" title="COM_SUPPORTGROUPS_LOCATIONS_SUBMENU" description="COM_SUPPORTGROUPS_LOCATIONS_SUBMENU_DESC" />
+		<action name="payment.access" title="COM_SUPPORTGROUPS_PAYMENTS_ACCESS" description="COM_SUPPORTGROUPS_PAYMENTS_ACCESS_DESC" />
+		<action name="payment.batch" title="COM_SUPPORTGROUPS_PAYMENTS_BATCH_USE" description="COM_SUPPORTGROUPS_PAYMENTS_BATCH_USE_DESC" />
+		<action name="payment.create" title="COM_SUPPORTGROUPS_PAYMENTS_CREATE" description="COM_SUPPORTGROUPS_PAYMENTS_CREATE_DESC" />
+		<action name="payment.dashboard_add" title="COM_SUPPORTGROUPS_PAYMENTS_DASHBOARD_ADD" description="COM_SUPPORTGROUPS_PAYMENTS_DASHBOARD_ADD_DESC" />
+		<action name="payment.dashboard_list" title="COM_SUPPORTGROUPS_PAYMENTS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_PAYMENTS_DASHBOARD_LIST_DESC" />
+		<action name="payment.delete" title="COM_SUPPORTGROUPS_PAYMENTS_DELETE" description="COM_SUPPORTGROUPS_PAYMENTS_DELETE_DESC" />
+		<action name="payment.edit" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_DESC" />
+		<action name="payment.edit.amount" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_AMOUNT" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_AMOUNT_DESC" />
+		<action name="payment.edit.created_by" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_CREATED_BY_DESC" />
+		<action name="payment.edit.created" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_CREATED_DATE_DESC" />
+		<action name="payment.edit.own" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_OWN" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_OWN_DESC" />
+		<action name="payment.edit.state" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_STATE" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_STATE_DESC" />
+		<action name="payment.edit.support_group" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_SUPPORT_GROUP" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_SUPPORT_GROUP_DESC" />
+		<action name="payment.version" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_VERSION" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_VERSION_DESC" />
+		<action name="payment.edit.year" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_YEAR" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_YEAR_DESC" />
+		<action name="payment.export" title="COM_SUPPORTGROUPS_PAYMENTS_EXPORT" description="COM_SUPPORTGROUPS_PAYMENTS_EXPORT_DESC" />
+		<action name="payment.import" title="COM_SUPPORTGROUPS_PAYMENTS_IMPORT" description="COM_SUPPORTGROUPS_PAYMENTS_IMPORT_DESC" />
+		<action name="payment.submenu" title="COM_SUPPORTGROUPS_PAYMENTS_SUBMENU" description="COM_SUPPORTGROUPS_PAYMENTS_SUBMENU_DESC" />
+		<action name="region.access" title="COM_SUPPORTGROUPS_REGIONS_ACCESS" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_DESC" />
 		<action name="region.batch" title="COM_SUPPORTGROUPS_REGIONS_BATCH_USE" description="COM_SUPPORTGROUPS_REGIONS_BATCH_USE_DESC" />
-		<action name="region.dashboard_add" title="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_ADD" description="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_ADD_DESC" />
+		<action name="region.create" title="COM_SUPPORTGROUPS_REGIONS_CREATE" description="COM_SUPPORTGROUPS_REGIONS_CREATE_DESC" />
 		<action name="region.dashboard_list" title="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_LIST_DESC" />
+		<action name="region.delete" title="COM_SUPPORTGROUPS_REGIONS_DELETE" description="COM_SUPPORTGROUPS_REGIONS_DELETE_DESC" />
+		<action name="region.edit" title="COM_SUPPORTGROUPS_REGIONS_EDIT" description="COM_SUPPORTGROUPS_REGIONS_EDIT_DESC" />
 		<action name="region.edit.country" title="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY_DESC" />
+		<action name="region.edit.created_by" title="COM_SUPPORTGROUPS_REGIONS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_REGIONS_EDIT_CREATED_BY_DESC" />
+		<action name="region.edit.created" title="COM_SUPPORTGROUPS_REGIONS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_REGIONS_EDIT_CREATED_DATE_DESC" />
 		<action name="region.edit.name" title="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME_DESC" />
+		<action name="region.edit.own" title="COM_SUPPORTGROUPS_REGIONS_EDIT_OWN" description="COM_SUPPORTGROUPS_REGIONS_EDIT_OWN_DESC" />
+		<action name="region.edit.state" title="COM_SUPPORTGROUPS_REGIONS_EDIT_STATE" description="COM_SUPPORTGROUPS_REGIONS_EDIT_STATE_DESC" />
 		<action name="region.version" title="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION_DESC" />
 		<action name="region.export" title="COM_SUPPORTGROUPS_REGIONS_EXPORT" description="COM_SUPPORTGROUPS_REGIONS_EXPORT_DESC" />
 		<action name="region.import" title="COM_SUPPORTGROUPS_REGIONS_IMPORT" description="COM_SUPPORTGROUPS_REGIONS_IMPORT_DESC" />
 		<action name="region.submenu" title="COM_SUPPORTGROUPS_REGIONS_SUBMENU" description="COM_SUPPORTGROUPS_REGIONS_SUBMENU_DESC" />
+		<action name="support_group.access" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_ACCESS" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_ACCESS_DESC" />
 		<action name="support_group.batch" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_BATCH_USE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_BATCH_USE_DESC" />
+		<action name="support_group.create" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_CREATE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_CREATE_DESC" />
 		<action name="support_group.dashboard_add" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DASHBOARD_ADD" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DASHBOARD_ADD_DESC" />
 		<action name="support_group.dashboard_list" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DASHBOARD_LIST_DESC" />
+		<action name="support_group.delete" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DELETE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DELETE_DESC" />
+		<action name="support_group.edit" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_DESC" />
+		<action name="support_group.edit.clinic" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CLINIC" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CLINIC_DESC" />
+		<action name="support_group.edit.created_by" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CREATED_BY_DESC" />
+		<action name="support_group.edit.created" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CREATED_DATE_DESC" />
+		<action name="support_group.edit.female" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_FEMALE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_FEMALE_DESC" />
+		<action name="support_group.edit.female_art" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_FEMALE_ART" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_FEMALE_ART_DESC" />
+		<action name="support_group.edit.location" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_LOCATION" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_LOCATION_DESC" />
+		<action name="support_group.edit.male" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_DESC" />
+		<action name="support_group.edit.male_art" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_ART" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_ART_DESC" />
+		<action name="support_group.edit.male_children" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_CHILDREN" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_CHILDREN_DESC" />
 		<action name="support_group.edit.name" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_NAME" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_NAME_DESC" />
+		<action name="support_group.edit.own" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_OWN" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_OWN_DESC" />
+		<action name="support_group.edit.phone" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_PHONE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_PHONE_DESC" />
+		<action name="support_group.edit.state" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_STATE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_STATE_DESC" />
 		<action name="support_group.version" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_VERSION" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_VERSION_DESC" />
 		<action name="support_group.export" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EXPORT" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EXPORT_DESC" />
 		<action name="support_group.import" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_IMPORT" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_IMPORT_DESC" />
 		<action name="support_group.submenu" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_SUBMENU" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_SUBMENU_DESC" />
 	</section>
 	<section name="support_group">
+		<action name="support_group.edit" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_DESC" />
+		<action name="support_group.edit.own" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_OWN" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_OWN_DESC" />
+		<action name="support_group.edit.state" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_STATE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_STATE_DESC" />
+		<action name="support_group.edit.created_by" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CREATED_BY_DESC" />
+		<action name="support_group.edit.created" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CREATED_DATE_DESC" />
+		<action name="support_group.create" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_CREATE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_CREATE_DESC" />
+		<action name="support_group.delete" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DELETE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_DELETE_DESC" />
+		<action name="support_group.access" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_ACCESS" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_ACCESS_DESC" />
 		<action name="support_group.edit.name" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_NAME" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_NAME_DESC" />
+		<action name="support_group.edit.phone" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_PHONE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_PHONE_DESC" />
+		<action name="support_group.edit.location" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_LOCATION" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_LOCATION_DESC" />
+		<action name="support_group.edit.clinic" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CLINIC" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_CLINIC_DESC" />
+		<action name="support_group.edit.male" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_DESC" />
+		<action name="support_group.edit.female" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_FEMALE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_FEMALE_DESC" />
+		<action name="support_group.edit.female_art" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_FEMALE_ART" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_FEMALE_ART_DESC" />
+		<action name="support_group.edit.male_art" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_ART" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_ART_DESC" />
+		<action name="support_group.edit.male_children" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_CHILDREN" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_MALE_CHILDREN_DESC" />
 		<action name="support_group.version" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_VERSION" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_EDIT_VERSION_DESC" />
 	</section>
+	<section name="payment">
+		<action name="payment.edit" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_DESC" />
+		<action name="payment.edit.own" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_OWN" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_OWN_DESC" />
+		<action name="payment.edit.state" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_STATE" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_STATE_DESC" />
+		<action name="payment.edit.created_by" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_CREATED_BY_DESC" />
+		<action name="payment.edit.created" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_CREATED_DATE_DESC" />
+		<action name="payment.create" title="COM_SUPPORTGROUPS_PAYMENTS_CREATE" description="COM_SUPPORTGROUPS_PAYMENTS_CREATE_DESC" />
+		<action name="payment.delete" title="COM_SUPPORTGROUPS_PAYMENTS_DELETE" description="COM_SUPPORTGROUPS_PAYMENTS_DELETE_DESC" />
+		<action name="payment.access" title="COM_SUPPORTGROUPS_PAYMENTS_ACCESS" description="COM_SUPPORTGROUPS_PAYMENTS_ACCESS_DESC" />
+		<action name="payment.edit.support_group" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_SUPPORT_GROUP" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_SUPPORT_GROUP_DESC" />
+		<action name="payment.edit.year" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_YEAR" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_YEAR_DESC" />
+		<action name="payment.edit.amount" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_AMOUNT" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_AMOUNT_DESC" />
+		<action name="payment.version" title="COM_SUPPORTGROUPS_PAYMENTS_EDIT_VERSION" description="COM_SUPPORTGROUPS_PAYMENTS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="clinic">
+		<action name="clinic.edit" title="COM_SUPPORTGROUPS_CLINICS_EDIT" description="COM_SUPPORTGROUPS_CLINICS_EDIT_DESC" />
+		<action name="clinic.edit.own" title="COM_SUPPORTGROUPS_CLINICS_EDIT_OWN" description="COM_SUPPORTGROUPS_CLINICS_EDIT_OWN_DESC" />
+		<action name="clinic.edit.state" title="COM_SUPPORTGROUPS_CLINICS_EDIT_STATE" description="COM_SUPPORTGROUPS_CLINICS_EDIT_STATE_DESC" />
+		<action name="clinic.edit.created_by" title="COM_SUPPORTGROUPS_CLINICS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_CLINICS_EDIT_CREATED_BY_DESC" />
+		<action name="clinic.edit.created" title="COM_SUPPORTGROUPS_CLINICS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_CLINICS_EDIT_CREATED_DATE_DESC" />
+		<action name="clinic.create" title="COM_SUPPORTGROUPS_CLINICS_CREATE" description="COM_SUPPORTGROUPS_CLINICS_CREATE_DESC" />
+		<action name="clinic.delete" title="COM_SUPPORTGROUPS_CLINICS_DELETE" description="COM_SUPPORTGROUPS_CLINICS_DELETE_DESC" />
+		<action name="clinic.access" title="COM_SUPPORTGROUPS_CLINICS_ACCESS" description="COM_SUPPORTGROUPS_CLINICS_ACCESS_DESC" />
+		<action name="clinic.edit.name" title="COM_SUPPORTGROUPS_CLINICS_EDIT_NAME" description="COM_SUPPORTGROUPS_CLINICS_EDIT_NAME_DESC" />
+		<action name="clinic.edit.phone" title="COM_SUPPORTGROUPS_CLINICS_EDIT_PHONE" description="COM_SUPPORTGROUPS_CLINICS_EDIT_PHONE_DESC" />
+		<action name="clinic.edit.note_set_area" title="COM_SUPPORTGROUPS_CLINICS_EDIT_NOTE_SET_AREA" description="COM_SUPPORTGROUPS_CLINICS_EDIT_NOTE_SET_AREA_DESC" />
+		<action name="clinic.version" title="COM_SUPPORTGROUPS_CLINICS_EDIT_VERSION" description="COM_SUPPORTGROUPS_CLINICS_EDIT_VERSION_DESC" />
+	</section>
 	<section name="location">
+		<action name="location.edit" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_DESC" />
+		<action name="location.edit.own" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_OWN" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_OWN_DESC" />
+		<action name="location.edit.state" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_STATE" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_STATE_DESC" />
+		<action name="location.edit.created_by" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_CREATED_BY_DESC" />
+		<action name="location.edit.created" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_CREATED_DATE_DESC" />
+		<action name="location.create" title="COM_SUPPORTGROUPS_LOCATIONS_CREATE" description="COM_SUPPORTGROUPS_LOCATIONS_CREATE_DESC" />
+		<action name="location.delete" title="COM_SUPPORTGROUPS_LOCATIONS_DELETE" description="COM_SUPPORTGROUPS_LOCATIONS_DELETE_DESC" />
+		<action name="location.access" title="COM_SUPPORTGROUPS_LOCATIONS_ACCESS" description="COM_SUPPORTGROUPS_LOCATIONS_ACCESS_DESC" />
 		<action name="location.edit.name" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_NAME_DESC" />
 		<action name="location.edit.region" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_REGION" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_REGION_DESC" />
 		<action name="location.version" title="COM_SUPPORTGROUPS_LOCATIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_LOCATIONS_EDIT_VERSION_DESC" />
 	</section>
 	<section name="region">
+		<action name="region.edit" title="COM_SUPPORTGROUPS_REGIONS_EDIT" description="COM_SUPPORTGROUPS_REGIONS_EDIT_DESC" />
+		<action name="region.edit.own" title="COM_SUPPORTGROUPS_REGIONS_EDIT_OWN" description="COM_SUPPORTGROUPS_REGIONS_EDIT_OWN_DESC" />
+		<action name="region.edit.state" title="COM_SUPPORTGROUPS_REGIONS_EDIT_STATE" description="COM_SUPPORTGROUPS_REGIONS_EDIT_STATE_DESC" />
+		<action name="region.edit.created_by" title="COM_SUPPORTGROUPS_REGIONS_EDIT_CREATED_BY" description="COM_SUPPORTGROUPS_REGIONS_EDIT_CREATED_BY_DESC" />
+		<action name="region.edit.created" title="COM_SUPPORTGROUPS_REGIONS_EDIT_CREATED_DATE" description="COM_SUPPORTGROUPS_REGIONS_EDIT_CREATED_DATE_DESC" />
+		<action name="region.create" title="COM_SUPPORTGROUPS_REGIONS_CREATE" description="COM_SUPPORTGROUPS_REGIONS_CREATE_DESC" />
+		<action name="region.delete" title="COM_SUPPORTGROUPS_REGIONS_DELETE" description="COM_SUPPORTGROUPS_REGIONS_DELETE_DESC" />
+		<action name="region.access" title="COM_SUPPORTGROUPS_REGIONS_ACCESS" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_DESC" />
 		<action name="region.edit.name" title="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME_DESC" />
 		<action name="region.edit.country" title="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY_DESC" />
 		<action name="region.version" title="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION_DESC" />
+	</section>
+	<section name="country">
+		<action name="country.edit" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_DESC" />
+		<action name="country.edit.own" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN_DESC" />
+		<action name="country.edit.state" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE_DESC" />
+		<action name="country.create" title="COM_SUPPORTGROUPS_COUNTRIES_CREATE" description="COM_SUPPORTGROUPS_COUNTRIES_CREATE_DESC" />
+		<action name="country.delete" title="COM_SUPPORTGROUPS_COUNTRIES_DELETE" description="COM_SUPPORTGROUPS_COUNTRIES_DELETE_DESC" />
+		<action name="country.access" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_DESC" />
+		<action name="country.version" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION_DESC" />
 	</section>
 	<section name="currency">
 		<action name="currency.edit" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_DESC" />
@@ -89,13 +235,13 @@
 		<action name="currency.access" title="COM_SUPPORTGROUPS_CURRENCIES_ACCESS" description="COM_SUPPORTGROUPS_CURRENCIES_ACCESS_DESC" />
 		<action name="currency.version" title="COM_SUPPORTGROUPS_CURRENCIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_CURRENCIES_EDIT_VERSION_DESC" />
 	</section>
-	<section name="country">
-		<action name="country.edit" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_DESC" />
-		<action name="country.edit.own" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN_DESC" />
-		<action name="country.edit.state" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE_DESC" />
-		<action name="country.create" title="COM_SUPPORTGROUPS_COUNTRIES_CREATE" description="COM_SUPPORTGROUPS_COUNTRIES_CREATE_DESC" />
-		<action name="country.delete" title="COM_SUPPORTGROUPS_COUNTRIES_DELETE" description="COM_SUPPORTGROUPS_COUNTRIES_DELETE_DESC" />
-		<action name="country.access" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_DESC" />
-		<action name="country.version" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION_DESC" />
+	<section name="help_document">
+		<action name="help_document.edit" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_DESC" />
+		<action name="help_document.edit.own" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_OWN" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_OWN_DESC" />
+		<action name="help_document.edit.state" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_STATE" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_STATE_DESC" />
+		<action name="help_document.create" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_CREATE" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_CREATE_DESC" />
+		<action name="help_document.delete" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_DELETE" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_DELETE_DESC" />
+		<action name="help_document.access" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_ACCESS" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_ACCESS_DESC" />
+		<action name="help_document.version" title="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_VERSION" description="COM_SUPPORTGROUPS_HELP_DOCUMENTS_EDIT_VERSION_DESC" />
 	</section>
 </access>

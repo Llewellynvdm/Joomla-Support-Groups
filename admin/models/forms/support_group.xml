@@ -118,6 +118,133 @@
 			message="Error! Please add name here."
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_HINT"
 		/>
+		<!-- Phone Field. Type: Tel. (joomla) -->
+		<field
+			type="tel"
+			name="phone"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="STRING"
+			validated="tel"
+			message="Error! Please add phone number here."
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_HINT"
+		/>
+		<!-- Location Field. Type: Locations. (custom) -->
+		<field
+			type="locations"
+			name="location"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			required="true"
+			button="true"
+		/>
+		<!-- Clinic Field. Type: Clinics. (custom) -->
+		<field
+			type="clinics"
+			name="clinic"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			required="true"
+			button="true"
+		/>
+		<!-- Male Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="male"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="Error! Please add number of males text here."
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Female Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="female"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="Error! Please add number of females text here."
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Female_art Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="female_art"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_ART_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_ART_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="Error! Please add number of females on ART here."
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_ART_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Male_art Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="male_art"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="Error! Please add number of males on ART here."
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Female_children Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="female_children"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_CHILDREN_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_CHILDREN_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="Error! Please add number of females here."
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_CHILDREN_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Male_children Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="male_children"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_CHILDREN_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_CHILDREN_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="Error! Please add number of males here."
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_CHILDREN_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Area Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="area"
+			default="1"
+		/>
 	</fieldset>
 
 	<!-- Metadata Fields. -->
