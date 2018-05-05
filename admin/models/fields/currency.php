@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		currency.php
@@ -40,51 +40,7 @@ class JFormFieldCurrency extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'currency'; 
-	/**
-	 * Override to add new button
-	 *
-	 * @return  string  The field input markup.
-	 *
-	 * @since   3.2
-	 */
-	protected function getInput()
-	{
-		// see if we should add buttons
-		$setButton = $this->getAttribute('button');
-		// get html
-		$html = parent::getInput();
-		// if true set button
-		if ($setButton === 'true')
-		{
-			$user = JFactory::getUser();
-			// only add if user allowed to create currency
-			if ($user->authorise('currency.create', 'com_supportgroups'))
-			{
-				// get the input from url
-				$jinput = JFactory::getApplication()->input;
-				// get the view name & id
-				$values = $jinput->getArray(array(
-					'id' => 'int',
-					'view' => 'word'
-				));
-				// check if new item
-				$ref = '';
-				if (!is_null($values['id']) && strlen($values['view']))
-				{
-					// only load referal if not new item.
-					$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
-				}
-				// build the button
-				$button = '<a class="btn btn-small btn-success"
-					href="index.php?option=com_supportgroups&amp;view=currency&amp;layout=edit'.$ref.'" >
-					<span class="icon-new icon-white"></span>' . JText::_('COM_SUPPORTGROUPS_NEW') . '</a>';
-				// return the button attached to input field
-				return $html . $button;
-			}
-		}
-		return $html;
-	}
+	public $type = 'currency';
 
 	/**
 	 * Method to get a list of options for a list input.

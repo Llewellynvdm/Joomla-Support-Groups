@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 36 of this MVC
+	@build			25th October, 2017
+	@created		4th March, 2016
 	@package		Support Groups
 	@subpackage		default_head.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -50,10 +50,10 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_LABEL', 'phone', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL', 'location_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL', 'area_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL', 'clinic_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL', 'facility_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_LABEL', 'male', $this->listDirn, $this->listOrder); ?>

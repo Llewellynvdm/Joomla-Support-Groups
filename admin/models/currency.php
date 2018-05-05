@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 19 of this MVC
+	@build			25th October, 2017
+	@created		8th July, 2015
 	@package		Support Groups
 	@subpackage		currency.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -79,7 +79,7 @@ class SupportgroupsModelCurrency extends JModelAdmin
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params))
+			if (!empty($item->params) && !is_array($item->params))
 			{
 				// Convert the params field to an array.
 				$registry = new Registry;
@@ -116,7 +116,8 @@ class SupportgroupsModelCurrency extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_supportgroups.currency', 'currency', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
@@ -379,6 +380,26 @@ class SupportgroupsModelCurrency extends JModelAdmin
 		
 		return true;
 	}
+
+	/**
+	 * Method to change the published state of one or more records.
+	 *
+	 * @param   array    &$pks   A list of the primary keys to change.
+	 * @param   integer  $value  The value of the published state.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   12.2
+	 */
+	public function publish(&$pks, $value = 1)
+	{
+		if (!parent::publish($pks, $value))
+		{
+			return false;
+		}
+		
+		return true;
+        }
     
 	/**
 	 * Method to perform batch operations on an item or a set of items.
@@ -495,8 +516,6 @@ class SupportgroupsModelCurrency extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= SupportgroupsHelper::getActions('currency');
 		}
 
@@ -521,7 +540,6 @@ class SupportgroupsModelCurrency extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -531,17 +549,11 @@ class SupportgroupsModelCurrency extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('currency.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -551,7 +563,6 @@ class SupportgroupsModelCurrency extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -561,7 +572,6 @@ class SupportgroupsModelCurrency extends JModelAdmin
 					continue;
 				}
 			}
-
 			list($this->table->name, $this->table->alias) = $this->_generateNewTitle($this->table->alias, $this->table->name);
 
 			// insert all set values
@@ -644,8 +654,6 @@ class SupportgroupsModelCurrency extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= SupportgroupsHelper::getActions('currency');
 		}
 
@@ -669,7 +677,6 @@ class SupportgroupsModelCurrency extends JModelAdmin
 			if (!$this->user->authorise('currency.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -680,7 +687,6 @@ class SupportgroupsModelCurrency extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -697,7 +703,7 @@ class SupportgroupsModelCurrency extends JModelAdmin
 				foreach ($values as $key => $value)
 				{
 					// Do special action for access.
-					if ('access' == $key && strlen($value) > 0)
+					if ('access' === $key && strlen($value) > 0)
 					{
 						$this->table->$key = $value;
 					}
@@ -770,7 +776,7 @@ class SupportgroupsModelCurrency extends JModelAdmin
 		}
 
 		// Alter the name for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			$origTable = clone $this->getTable();
 			$origTable->load($input->getInt('id'));
@@ -795,7 +801,7 @@ class SupportgroupsModelCurrency extends JModelAdmin
 		// Automatic handling of alias for empty fields
 		if (in_array($input->get('task'), array('apply', 'save', 'save2new')) && (int) $input->get('id') == 0)
 		{
-			if ($data['alias'] == null)
+			if ($data['alias'] == null || empty($data['alias']))
 			{
 				if (JFactory::getConfig()->get('unicodeslugs') == 1)
 				{
@@ -813,8 +819,7 @@ class SupportgroupsModelCurrency extends JModelAdmin
 					$msg = JText::_('COM_SUPPORTGROUPS_CURRENCY_SAVE_WARNING');
 				}
 
-				list($name, $alias) = $this->_generateNewTitle($data['alias'], $data['name']);
-				$data['alias'] = $alias;
+				$data['alias'] = $this->_generateNewTitle($data['alias']);
 
 				if (isset($msg))
 				{
@@ -824,7 +829,7 @@ class SupportgroupsModelCurrency extends JModelAdmin
 		}
 
 		// Alter the uniqe field for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			// Automatic handling of other uniqe fields
 			$uniqeFields = $this->getUniqeFields();
@@ -869,26 +874,49 @@ class SupportgroupsModelCurrency extends JModelAdmin
 	}
 
 	/**
-	* Method to change the title & alias.
+	* Method to change the title/s & alias.
 	*
-	* @param   string   $alias        The alias.
-	* @param   string   $title        The title.
+	* @param   string         $alias        The alias.
+	* @param   string/array   $title        The title.
 	*
-	* @return	array  Contains the modified title and alias.
+	* @return	array/string  Contains the modified title/s and/or alias.
 	*
 	*/
-	protected function _generateNewTitle($alias, $title)
+	protected function _generateNewTitle($alias, $title = null)
 	{
 
-		// Alter the title & alias
+		// Alter the title/s & alias
 		$table = $this->getTable();
 
 		while ($table->load(array('alias' => $alias)))
 		{
-			$title = JString::increment($title);
+			// Check if this is an array of titles
+			if (SupportgroupsHelper::checkArray($title))
+			{
+				foreach($title as $nr => &$_title)
+				{
+					$_title = JString::increment($_title);
+				}
+			}
+			// Make sure we have a title
+			elseif ($title)
+			{
+				$title = JString::increment($title);
+			}
 			$alias = JString::increment($alias, 'dash');
 		}
-
-		return array($title, $alias);
+		// Check if this is an array of titles
+		if (SupportgroupsHelper::checkArray($title))
+		{
+			$title[] = $alias;
+			return $title;
+		}
+		// Make sure we have a title
+		elseif ($title)
+		{
+			return array($title, $alias);
+		}
+		// We only had an alias
+		return $alias;
 	}
 }

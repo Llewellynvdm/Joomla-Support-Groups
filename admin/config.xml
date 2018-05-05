@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
 	<fieldset
+		addrulepath="/administrator/components/com_supportgroups/models/rules"
+		addfieldpath="/administrator/components/com_supportgroups/models/fields"
 		name="global_config"
 		label="COM_SUPPORTGROUPS_CONFIG_GLOBAL_LABEL"
 		description="COM_SUPPORTGROUPS_CONFIG_GLOBAL_DESC">
@@ -44,6 +46,60 @@
 			default="10"
 		/>
 		<field type="spacer" name="spacerHistory" hr="true" />
+
+		<!-- Set_browser_storage Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="set_browser_storage"
+			label="COM_SUPPORTGROUPS_CONFIG_SET_BROWSER_STORAGE_LABEL"
+			description="COM_SUPPORTGROUPS_CONFIG_SET_BROWSER_STORAGE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_SUPPORTGROUPS_CONFIG_ACTIVE</option>
+			<option value="0">
+				COM_SUPPORTGROUPS_CONFIG_INACTIVE</option>
+		</field>
+		<!-- Storage_time_to_live Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="storage_time_to_live"
+			label="COM_SUPPORTGROUPS_CONFIG_STORAGE_TIME_TO_LIVE_LABEL"
+			description="COM_SUPPORTGROUPS_CONFIG_STORAGE_TIME_TO_LIVE_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default="global"
+			showon="set_browser_storage:1">
+			<!-- Option Set. -->
+			<option value="global">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_SESSION</option>
+			<option value="30">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_THIRTY_SECONDS</option>
+			<option value="60">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_MINUTE</option>
+			<option value="300">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_FIVE_MINUTES</option>
+			<option value="900">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_FIFTEEN_MINUTES</option>
+			<option value="1800">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_THIRTY_MINUTES</option>
+			<option value="3600">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_HOUR</option>
+			<option value="18000">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_FIVE_HOURS</option>
+			<option value="36000">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_TEN_HOURS</option>
+			<option value="86400">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_DAY</option>
+			<option value="604800">
+				COM_SUPPORTGROUPS_CONFIG_EVERY_WEEK</option>
+			<option value="0">
+				COM_SUPPORTGROUPS_CONFIG_NEVER_UPDATE</option>
+		</field>
+		<!-- Spacer_hr Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr" hr="true" class="spacer_hr" />
 		<field name="autorTitle"
 			type="spacer"
 			label="COM_SUPPORTGROUPS_CONFIG_AUTHOR"
@@ -62,7 +118,7 @@
 			label="COM_SUPPORTGROUPS_CONFIG_AUTHOR_EMAIL_LABEL"
 			description="COM_SUPPORTGROUPS_CONFIG_AUTHOR_EMAIL_DESC"
 			size="60"
-			default="llewellyn@vdm.io"
+			default="joomla@vdm.io"
 			readonly="true"
 			class="readonly"
 		/>
@@ -113,6 +169,134 @@
 			<option value=".gradient">
 				COM_SUPPORTGROUPS_CONFIG_GRADIANT_LOAD</option>"
 		</field>
+	</fieldset>
+	<fieldset
+		name="google_maps_custom_config"
+		label="COM_SUPPORTGROUPS_CONFIG_GOOGLE_MAPS">
+
+		<!-- Note_google_api Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_google_api" label="COM_SUPPORTGROUPS_CONFIG_NOTE_GOOGLE_API_LABEL" description="COM_SUPPORTGROUPS_CONFIG_NOTE_GOOGLE_API_DESCRIPTION" heading="h2" class="note_google_api" />
+		<!-- Api_key Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="api_key"
+			label="COM_SUPPORTGROUPS_CONFIG_API_KEY_LABEL"
+			size="60"
+			maxlength="150"
+			description="COM_SUPPORTGROUPS_CONFIG_API_KEY_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="COM_SUPPORTGROUPS_CONFIG_API_KEY_MESSAGE"
+			hint="COM_SUPPORTGROUPS_CONFIG_API_KEY_HINT"
+		/>
+		<!-- Maptype Field. Type: List. (joomla) -->
+		<field
+			type="list"
+			name="maptype"
+			label="COM_SUPPORTGROUPS_CONFIG_MAPTYPE_LABEL"
+			description="COM_SUPPORTGROUPS_CONFIG_MAPTYPE_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			filter="WORD"
+			required="true"
+			default="roadmap">
+			<!-- Option Set. -->
+			<option value="roadmap">
+				COM_SUPPORTGROUPS_CONFIG_ROAD</option>
+			<option value="satellite">
+				COM_SUPPORTGROUPS_CONFIG_SATELLITE</option>
+			<option value="hybrid">
+				COM_SUPPORTGROUPS_CONFIG_HYBRID</option>
+			<option value="terrain">
+				COM_SUPPORTGROUPS_CONFIG_TERRAIN</option>
+		</field>
+		<!-- Maxzoom Field. Type: Integer. (joomla) -->
+		<field
+			type="integer"
+			name="maxzoom"
+			label="COM_SUPPORTGROUPS_CONFIG_MAXZOOM_LABEL"
+			default="6"
+			description="COM_SUPPORTGROUPS_CONFIG_MAXZOOM_DESCRIPTION"
+			class="text_area"
+			required="true"
+			first="1"
+			last="20"
+			step="1"
+		/>
+		<!-- Gotozoom Field. Type: Integer. (joomla) -->
+		<field
+			type="integer"
+			name="gotozoom"
+			label="COM_SUPPORTGROUPS_CONFIG_GOTOZOOM_LABEL"
+			default="8"
+			description="COM_SUPPORTGROUPS_CONFIG_GOTOZOOM_DESCRIPTION"
+			class="text_area"
+			required="true"
+			first="1"
+			last="20"
+			step="1"
+		/>
+		<!-- Cluster Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="cluster"
+			label="COM_SUPPORTGROUPS_CONFIG_CLUSTER_LABEL"
+			description="COM_SUPPORTGROUPS_CONFIG_CLUSTER_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_SUPPORTGROUPS_CONFIG_YES</option>
+			<option value="0">
+				COM_SUPPORTGROUPS_CONFIG_NO</option>
+		</field>
+		<!-- Cluster_at Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="cluster_at"
+			label="COM_SUPPORTGROUPS_CONFIG_CLUSTER_AT_LABEL"
+			size="10"
+			maxlength="50"
+			default="300"
+			description="COM_SUPPORTGROUPS_CONFIG_CLUSTER_AT_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="COM_SUPPORTGROUPS_CONFIG_CLUSTER_AT_MESSAGE"
+			hint="COM_SUPPORTGROUPS_CONFIG_CLUSTER_AT_HINT"
+			showon="cluster:1"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Clustergridsize Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="clustergridsize"
+			label="COM_SUPPORTGROUPS_CONFIG_CLUSTERGRIDSIZE_LABEL"
+			size="10"
+			maxlength="50"
+			default="100"
+			description="COM_SUPPORTGROUPS_CONFIG_CLUSTERGRIDSIZE_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="COM_SUPPORTGROUPS_CONFIG_CLUSTERGRIDSIZE_MESSAGE"
+			hint="COM_SUPPORTGROUPS_CONFIG_CLUSTERGRIDSIZE_HINT"
+			showon="cluster:1"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Clustermaxzoom Field. Type: Integer. (joomla) -->
+		<field
+			type="integer"
+			name="clustermaxzoom"
+			label="COM_SUPPORTGROUPS_CONFIG_CLUSTERMAXZOOM_LABEL"
+			default="7"
+			description="COM_SUPPORTGROUPS_CONFIG_CLUSTERMAXZOOM_DESCRIPTION"
+			class="text_area"
+			required="true"
+			first="1"
+			last="20"
+			step="1"
+			showon="cluster:1"
+		/>
 	</fieldset>
 	<fieldset
 		name="permissions"

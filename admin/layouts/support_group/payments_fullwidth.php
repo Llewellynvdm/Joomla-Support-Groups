@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		payments_fullwidth.php
@@ -31,10 +31,10 @@ defined('_JEXEC') or die('Restricted access');
 $items	= $displayData->vvvpayments;
 $user	= JFactory::getUser();
 $id	= $displayData->item->id;
-$edit	= "index.php?option=com_supportgroups&view=payments&task=payment.edit";
-$ref	= ($id) ? "&ref=support_group&refid=".$id : "";
-$new	= "index.php?option=com_supportgroups&view=payment&layout=edit".$ref;
-$can	= SupportgroupsHelper::getActions('payment');
+$edit = "index.php?option=com_supportgroups&view=payments&task=payment.edit";
+$ref = ($id) ? "&ref=support_group&refid=".$id : "";
+$new = "index.php?option=com_supportgroups&view=payment&layout=edit".$ref;
+$can = SupportgroupsHelper::getActions('payment');
 
 ?>
 <div class="form-vertical">
@@ -42,22 +42,22 @@ $can	= SupportgroupsHelper::getActions('payment');
 	<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_SUPPORTGROUPS_NEW'); ?></a><br /><br />
 <?php endif; ?>
 <?php if (SupportgroupsHelper::checkArray($items)): ?>
-<table class="footable table data payments metro-blue" data-filter="#filter_payments" data-page-size="20">
+<table class="footable table data payments" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
 <thead>
 	<tr>
-		<th data-toggle="true">
+		<th data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL'); ?>
 		</th>
-		<th data-hide="phone">
+		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_SUPPORTGROUPS_PAYMENT_YEAR_LABEL'); ?>
 		</th>
-		<th data-hide="phone">
+		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
 			<?php echo JText::_('COM_SUPPORTGROUPS_PAYMENT_AMOUNT_LABEL'); ?>
 		</th>
-		<th width="10" data-hide="phone,tablet">
+		<th width="10" data-breakpoints="xs sm md">
 			<?php echo JText::_('COM_SUPPORTGROUPS_PAYMENT_STATUS'); ?>
 		</th>
-		<th width="5" data-type="numeric" data-hide="phone,tablet">
+		<th width="5" data-type="number" data-breakpoints="xs sm md">
 			<?php echo JText::_('COM_SUPPORTGROUPS_PAYMENT_ID'); ?>
 		</th>
 	</tr>
@@ -87,27 +87,27 @@ $can	= SupportgroupsHelper::getActions('payment');
 			<?php echo $displayData->escape($item->amount); ?>
 		</td>
 		<?php if ($item->published == 1):?>
-			<td class="center"  data-value="1">
-				<span class="status-metro status-published" title="<?php echo JText::_('PUBLISHED');  ?>">
-					<?php echo JText::_('PUBLISHED'); ?>
+			<td class="center"  data-sort-value="1">
+				<span class="status-metro status-published" title="<?php echo JText::_('COM_SUPPORTGROUPS_PUBLISHED');  ?>">
+					<?php echo JText::_('COM_SUPPORTGROUPS_PUBLISHED'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == 0):?>
-			<td class="center"  data-value="2">
-				<span class="status-metro status-inactive" title="<?php echo JText::_('INACTIVE');  ?>">
-					<?php echo JText::_('INACTIVE'); ?>
+			<td class="center"  data-sort-value="2">
+				<span class="status-metro status-inactive" title="<?php echo JText::_('COM_SUPPORTGROUPS_INACTIVE');  ?>">
+					<?php echo JText::_('COM_SUPPORTGROUPS_INACTIVE'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == 2):?>
-			<td class="center"  data-value="3">
-				<span class="status-metro status-archived" title="<?php echo JText::_('ARCHIVED');  ?>">
-					<?php echo JText::_('ARCHIVED'); ?>
+			<td class="center"  data-sort-value="3">
+				<span class="status-metro status-archived" title="<?php echo JText::_('COM_SUPPORTGROUPS_ARCHIVED');  ?>">
+					<?php echo JText::_('COM_SUPPORTGROUPS_ARCHIVED'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == -2):?>
-			<td class="center"  data-value="4">
-				<span class="status-metro status-trashed" title="<?php echo JText::_('ARCHIVED');  ?>">
-					<?php echo JText::_('ARCHIVED'); ?>
+			<td class="center"  data-sort-value="4">
+				<span class="status-metro status-trashed" title="<?php echo JText::_('COM_SUPPORTGROUPS_TRASHED');  ?>">
+					<?php echo JText::_('COM_SUPPORTGROUPS_TRASHED'); ?>
 				</span>
 			</td>
 		<?php endif; ?>
@@ -117,13 +117,6 @@ $can	= SupportgroupsHelper::getActions('payment');
 	</tr>
 <?php endforeach; ?>
 </tbody>
-<tfoot class="hide-if-no-paging">
-	<tr>
-		<td colspan="5">
-			<div class="pagination pagination-centered"></div>
-		</td>
-	</tr>
-</tfoot>
 </table>
 <?php else: ?>
 	<div class="alert alert-no-items">

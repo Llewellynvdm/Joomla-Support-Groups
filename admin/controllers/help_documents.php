@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 20 of this MVC
+	@build			13th April, 2018
+	@created		13th July, 2015
 	@package		Support Groups
 	@subpackage		help_documents.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -107,5 +107,5 @@ class SupportgroupsControllerHelp_documents extends JControllerAdmin
 		$message = JText::_('COM_SUPPORTGROUPS_IMPORT_FAILED');
 		$this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view=help_documents', false), $message, 'error');
 		return;
-	} 
+	}  
 }

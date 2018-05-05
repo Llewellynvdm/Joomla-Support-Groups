@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 36 of this MVC
+	@build			25th October, 2017
+	@created		4th March, 2016
 	@package		Support Groups
 	@subpackage		support_group.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -79,7 +79,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params))
+			if (!empty($item->params) && !is_array($item->params))
 			{
 				// Convert the params field to an array.
 				$registry = new Registry;
@@ -93,6 +93,12 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				$registry = new Registry;
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
+			}
+
+			if (!empty($item->info))
+			{
+				// JSON Decode info.
+				$item->info = json_decode($item->info);
 			}
 			
 			if (!empty($item->id))
@@ -160,6 +166,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 		}
 
 		// Order the results by ordering
+		$query->order('a.published  ASC');
 		$query->order('a.ordering  ASC');
 
 		// Load the items
@@ -219,7 +226,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	public function selectionTranslationVvvpayments($value,$name)
 	{
 		// Array of year language strings
-		if ($name == 'year')
+		if ($name === 'year')
 		{
 			$yearArray = array(
 				0 => 'COM_SUPPORTGROUPS_PAYMENT_SELECT_A_YEAR',
@@ -265,7 +272,8 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_supportgroups.support_group', 'support_group', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
@@ -358,36 +366,36 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				$form->setFieldAttribute('phone', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Location access controls.
-		if ($id != 0 && (!$user->authorise('support_group.edit.location', 'com_supportgroups.support_group.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('support_group.edit.location', 'com_supportgroups')))
+		// Modify the form based on Edit Area access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.area', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.area', 'com_supportgroups')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('location', 'disabled', 'true');
+			$form->setFieldAttribute('area', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('location', 'readonly', 'true');
-			if (!$form->getValue('location'))
+			$form->setFieldAttribute('area', 'readonly', 'true');
+			if (!$form->getValue('area'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('location', 'filter', 'unset');
+				$form->setFieldAttribute('area', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('location', 'required', 'false');
+				$form->setFieldAttribute('area', 'required', 'false');
 			}
 		}
-		// Modify the form based on Edit Clinic access controls.
-		if ($id != 0 && (!$user->authorise('support_group.edit.clinic', 'com_supportgroups.support_group.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('support_group.edit.clinic', 'com_supportgroups')))
+		// Modify the form based on Edit Facility access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.facility', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.facility', 'com_supportgroups')))
 		{
 			// Disable fields for display.
-			$form->setFieldAttribute('clinic', 'disabled', 'true');
+			$form->setFieldAttribute('facility', 'disabled', 'true');
 			// Disable fields for display.
-			$form->setFieldAttribute('clinic', 'readonly', 'true');
-			if (!$form->getValue('clinic'))
+			$form->setFieldAttribute('facility', 'readonly', 'true');
+			if (!$form->getValue('facility'))
 			{
 				// Disable fields while saving.
-				$form->setFieldAttribute('clinic', 'filter', 'unset');
+				$form->setFieldAttribute('facility', 'filter', 'unset');
 				// Disable fields while saving.
-				$form->setFieldAttribute('clinic', 'required', 'false');
+				$form->setFieldAttribute('facility', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Male access controls.
@@ -420,6 +428,38 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				$form->setFieldAttribute('female', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('female', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Alias access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.alias', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.alias', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('alias', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('alias', 'readonly', 'true');
+			if (!$form->getValue('alias'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Details access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.details', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.details', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('details', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('details', 'readonly', 'true');
+			if (!$form->getValue('details'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('details', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('details', 'required', 'false');
 			}
 		}
 		// Modify the form based on Edit Female Art access controls.
@@ -468,6 +508,22 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				$form->setFieldAttribute('male_children', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('male_children', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Info access controls.
+		if ($id != 0 && (!$user->authorise('support_group.edit.info', 'com_supportgroups.support_group.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('support_group.edit.info', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('info', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('info', 'readonly', 'true');
+			if (!$form->getValue('info'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('info', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('info', 'required', 'false');
 			}
 		}
 		// Only load these values if no id is found
@@ -674,6 +730,26 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 		
 		return true;
 	}
+
+	/**
+	 * Method to change the published state of one or more records.
+	 *
+	 * @param   array    &$pks   A list of the primary keys to change.
+	 * @param   integer  $value  The value of the published state.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   12.2
+	 */
+	public function publish(&$pks, $value = 1)
+	{
+		if (!parent::publish($pks, $value))
+		{
+			return false;
+		}
+		
+		return true;
+        }
     
 	/**
 	 * Method to perform batch operations on an item or a set of items.
@@ -790,8 +866,6 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= SupportgroupsHelper::getActions('support_group');
 		}
 
@@ -816,7 +890,6 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -826,17 +899,11 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('support_group.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -846,7 +913,6 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -856,8 +922,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 					continue;
 				}
 			}
-
-			$this->table->name = $this->generateUniqe('name',$this->table->name);
+			list($this->table->name, $this->table->alias) = $this->_generateNewTitle($this->table->alias, $this->table->name);
 
 			// insert all set values
 			if (SupportgroupsHelper::checkArray($values))
@@ -939,8 +1004,6 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= SupportgroupsHelper::getActions('support_group');
 		}
 
@@ -964,7 +1027,6 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			if (!$this->user->authorise('support_group.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -975,7 +1037,6 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -992,7 +1053,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				foreach ($values as $key => $value)
 				{
 					// Do special action for access.
-					if ('access' == $key && strlen($value) > 0)
+					if ('access' === $key && strlen($value) > 0)
 					{
 						$this->table->$key = $value;
 					}
@@ -1054,7 +1115,19 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
+		}
+
+		// Set the empty info item to data
+		if (!isset($data['info']))
+		{
+			$data['info'] = '';
 		} 
+
+		// Set the info string to JSON string.
+		if (isset($data['info']))
+		{
+			$data['info'] = (string) json_encode($data['info']);
+		}
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
@@ -1064,8 +1137,61 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			$data['params'] = (string) $params;
 		}
 
+		// Alter the name for save as copy
+		if ($input->get('task') === 'save2copy')
+		{
+			$origTable = clone $this->getTable();
+			$origTable->load($input->getInt('id'));
+
+			if ($data['name'] == $origTable->name)
+			{
+				list($name, $alias) = $this->_generateNewTitle($data['alias'], $data['name']);
+				$data['name'] = $name;
+				$data['alias'] = $alias;
+			}
+			else
+			{
+				if ($data['alias'] == $origTable->alias)
+				{
+					$data['alias'] = '';
+				}
+			}
+
+			$data['published'] = 0;
+		}
+
+		// Automatic handling of alias for empty fields
+		if (in_array($input->get('task'), array('apply', 'save', 'save2new')) && (int) $input->get('id') == 0)
+		{
+			if ($data['alias'] == null || empty($data['alias']))
+			{
+				if (JFactory::getConfig()->get('unicodeslugs') == 1)
+				{
+					$data['alias'] = JFilterOutput::stringURLUnicodeSlug($data['name']);
+				}
+				else
+				{
+					$data['alias'] = JFilterOutput::stringURLSafe($data['name']);
+				}
+
+				$table = JTable::getInstance('support_group', 'supportgroupsTable');
+
+				if ($table->load(array('alias' => $data['alias'])) && ($table->id != $data['id'] || $data['id'] == 0))
+				{
+					$msg = JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_SAVE_WARNING');
+				}
+
+				$data['alias'] = $this->_generateNewTitle($data['alias']);
+
+				if (isset($msg))
+				{
+					JFactory::getApplication()->enqueueMessage($msg, 'warning');
+				}
+			}
+		}
+
 		// Alter the uniqe field for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			// Automatic handling of other uniqe fields
 			$uniqeFields = $this->getUniqeFields();
@@ -1110,24 +1236,49 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	}
 
 	/**
-	* Method to change the title & alias.
+	* Method to change the title/s & alias.
 	*
-	* @param   string   $title        The title.
+	* @param   string         $alias        The alias.
+	* @param   string/array   $title        The title.
 	*
-	* @return	array  Contains the modified title and alias.
+	* @return	array/string  Contains the modified title/s and/or alias.
 	*
 	*/
-	protected function _generateNewTitle($title)
+	protected function _generateNewTitle($alias, $title = null)
 	{
 
-		// Alter the title
+		// Alter the title/s & alias
 		$table = $this->getTable();
 
-		while ($table->load(array('title' => $title)))
+		while ($table->load(array('alias' => $alias)))
 		{
-			$title = JString::increment($title);
+			// Check if this is an array of titles
+			if (SupportgroupsHelper::checkArray($title))
+			{
+				foreach($title as $nr => &$_title)
+				{
+					$_title = JString::increment($_title);
+				}
+			}
+			// Make sure we have a title
+			elseif ($title)
+			{
+				$title = JString::increment($title);
+			}
+			$alias = JString::increment($alias, 'dash');
 		}
-
-		return $title;
+		// Check if this is an array of titles
+		if (SupportgroupsHelper::checkArray($title))
+		{
+			$title[] = $alias;
+			return $title;
+		}
+		// Make sure we have a title
+		elseif ($title)
+		{
+			return array($title, $alias);
+		}
+		// We only had an alias
+		return $alias;
 	}
 }

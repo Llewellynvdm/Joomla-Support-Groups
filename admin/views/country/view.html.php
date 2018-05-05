@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 4 of this MVC
+	@build			25th October, 2017
+	@created		5th March, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -40,41 +40,40 @@ class SupportgroupsViewCountry extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		// Assign the variables
-		$this->form 		= $this->get('Form');
-		$this->item 		= $this->get('Item');
-		$this->script 		= $this->get('Script');
-		$this->state		= $this->get('State');
-                // get action permissions
-		$this->canDo		= SupportgroupsHelper::getActions('country',$this->item);
+		$this->form = $this->get('Form');
+		$this->item = $this->get('Item');
+		$this->script = $this->get('Script');
+		$this->state = $this->get('State');
+		// get action permissions
+		$this->canDo = SupportgroupsHelper::getActions('country',$this->item);
 		// get input
 		$jinput = JFactory::getApplication()->input;
-		$this->ref 		= $jinput->get('ref', 0, 'word');
-		$this->refid            = $jinput->get('refid', 0, 'int');
-		$this->referral         = '';
+		$this->ref = $jinput->get('ref', 0, 'word');
+		$this->refid = $jinput->get('refid', 0, 'int');
+		$this->referral = '';
 		if ($this->refid)
-                {
-                        // return to the item that refered to this item
-                        $this->referral = '&ref='.(string)$this->ref.'&refid='.(int)$this->refid;
-                }
-                elseif($this->ref)
-                {
-                        // return to the list view that refered to this item
-                        $this->referral = '&ref='.(string)$this->ref;
-                }
+		{
+			// return to the item that refered to this item
+			$this->referral = '&ref='.(string)$this->ref.'&refid='.(int)$this->refid;
+		}
+		elseif($this->ref)
+		{
+			// return to the list view that refered to this item
+			$this->referral = '&ref='.(string)$this->ref;
+		}
 
 		// Get Linked view data
-		$this->vvyregions		= $this->get('Vvyregions');
+		$this->vvyregions = $this->get('Vvyregions');
 
 		// Set the toolbar
 		$this->addToolBar();
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
+		}
 
 		// Display the template
 		parent::display($tpl);
@@ -167,7 +166,7 @@ class SupportgroupsViewCountry extends JViewLegacy
 		}
 	}
 
-        /**
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var  The output to escape.
@@ -181,7 +180,7 @@ class SupportgroupsViewCountry extends JViewLegacy
     		// use the helper htmlEscape method instead and shorten the string
 			return SupportgroupsHelper::htmlEscape($var, $this->_charset, true, 30);
 		}
-                // use the helper htmlEscape method instead.
+		// use the helper htmlEscape method instead.
 		return SupportgroupsHelper::htmlEscape($var, $this->_charset);
 	}
 
@@ -193,35 +192,24 @@ class SupportgroupsViewCountry extends JViewLegacy
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_($isNew ? 'COM_SUPPORTGROUPS_COUNTRY_NEW' : 'COM_SUPPORTGROUPS_COUNTRY_EDIT'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_supportgroups/assets/css/country.css"); 
-
-		// Add the CSS for Footable.
-		$document->addStyleSheet(JURI::root() .'media/com_supportgroups/footable/css/footable.core.min.css');
-
-		// Use the Metro Style
-		if (!isset($this->fooTableStyle) || 0 == $this->fooTableStyle)
+		if (!isset($this->document))
 		{
-			$document->addStyleSheet(JURI::root() .'media/com_supportgroups/footable/css/footable.metro.min.css');
+			$this->document = JFactory::getDocument();
 		}
-		// Use the Legacy Style.
-		elseif (isset($this->fooTableStyle) && 1 == $this->fooTableStyle)
-		{
-			$document->addStyleSheet(JURI::root() .'media/com_supportgroups/footable/css/footable.standalone.min.css');
-		}
+		$this->document->setTitle(JText::_($isNew ? 'COM_SUPPORTGROUPS_COUNTRY_NEW' : 'COM_SUPPORTGROUPS_COUNTRY_EDIT'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_supportgroups/assets/css/country.css", (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css'); 
 
-		// Add the JavaScript for Footable
-		$document->addScript(JURI::root() .'media/com_supportgroups/footable/js/footable.js');
-		$document->addScript(JURI::root() .'media/com_supportgroups/footable/js/footable.sort.js');
-		$document->addScript(JURI::root() .'media/com_supportgroups/footable/js/footable.filter.js');
-		$document->addScript(JURI::root() .'media/com_supportgroups/footable/js/footable.paginate.js');
+		// Add the CSS for Footable
+		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
+		$this->document->addStyleSheet(JURI::root() .'media/com_supportgroups/footable-v3/css/footable.standalone.min.css', (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		// Add the JavaScript for Footable (adding all funtions)
+		$this->document->addScript(JURI::root() .'media/com_supportgroups/footable-v3/js/footable.min.js', (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 
-		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable(); }); jQuery('.nav-tabs').on('click', 'li', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('.footable').trigger('footable_resize'); }";
-		$document->addScriptDeclaration($footable);
+		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
+		$this->document->addScriptDeclaration($footable);
 
-		$document->addScript(JURI::root() . $this->script);
-		$document->addScript(JURI::root() . "administrator/components/com_supportgroups/views/country/submitbutton.js");
+		$this->document->addScript(JURI::root() . $this->script, (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		$this->document->addScript(JURI::root() . "administrator/components/com_supportgroups/views/country/submitbutton.js", (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
 		JText::script('view not acceptable. Error');
 	}
 }

@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 36 of this MVC
+	@build			25th October, 2017
+	@created		4th March, 2016
 	@package		Support Groups
 	@subpackage		support_group.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -265,7 +265,7 @@ class SupportgroupsTableSupport_group extends JTable
 						}
 					}
 					// check if there are any view values remaining
-					if (count($_result))
+					if (count( (array) $_result))
 					{
 						$_result = json_encode($_result);
 						$_result = array($_result);
@@ -326,11 +326,11 @@ class SupportgroupsTableSupport_group extends JTable
 	}
 
 	/**
-	 * Generate a valid alias from title / date.
-	 * Remains public to be able to check for duplicated alias before saving
-	 *
-	 * @return  string
-	 */
+	* Generate a valid alias from title / date.
+	* Remains public to be able to check for duplicated alias before saving
+	*
+	* @return  string
+	*/
 	public function generateAlias()
 	{
 		if (empty($this->alias))
@@ -342,7 +342,7 @@ class SupportgroupsTableSupport_group extends JTable
 
 		if (trim(str_replace('-', '', $this->alias)) == '')
 		{
-			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
+			$this->alias = JFactory::getDate()->format('Y-m-d-H-i-s');
 		}
 
 		return $this->alias;

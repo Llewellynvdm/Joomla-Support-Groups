@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 11 of this MVC
+	@build			25th October, 2017
+	@created		15th May, 2016
 	@package		Support Groups
 	@subpackage		regions.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -107,5 +107,5 @@ class SupportgroupsControllerRegions extends JControllerAdmin
 		$message = JText::_('COM_SUPPORTGROUPS_IMPORT_FAILED');
 		$this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view=regions', false), $message, 'error');
 		return;
-	} 
+	}  
 }

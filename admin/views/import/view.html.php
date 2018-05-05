@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -41,17 +41,11 @@ class SupportgroupsViewImport extends JViewLegacy
 	protected $dataType;
 
 	public function display($tpl = null)
-	{
+	{		
 		if ($this->getLayout() !== 'modal')
 		{
 			// Include helper submenu
 			SupportgroupsHelper::addSubmenu('import');
-		}
-
-		// Check for errors.
-		if (count($errors = $this->get('Errors'))){
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
 		}
 
 		$paths = new stdClass;
@@ -82,6 +76,12 @@ class SupportgroupsViewImport extends JViewLegacy
 			// clear the data type
 			$session->clear('dataType');
 		}
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
+		}
 
 		// Display the template
 		parent::display($tpl);
@@ -101,10 +101,10 @@ class SupportgroupsViewImport extends JViewLegacy
 		}
 
 		// set help url for this view if found
-                $help_url = SupportgroupsHelper::getHelpUrl('import');
-                if (SupportgroupsHelper::checkString($help_url))
-                {
-                       JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
-                }
+		$help_url = SupportgroupsHelper::getHelpUrl('import');
+		if (SupportgroupsHelper::checkString($help_url))
+		{
+			   JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
+		}
 	}
 }

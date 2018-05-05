@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 19 of this MVC
+	@build			25th October, 2017
+	@created		8th July, 2015
 	@package		Support Groups
 	@subpackage		currencies.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -130,7 +130,7 @@ class SupportgroupsModelCurrencies extends JModelList
 				}
 
 			}
-		} 
+		}  
         
 		// return items
 		return $items;
@@ -190,7 +190,7 @@ class SupportgroupsModelCurrencies extends JModelList
 			}
 			else
 			{
-				$search = $db->quote('%' . $db->escape($search, true) . '%');
+				$search = $db->quote('%' . $db->escape($search) . '%');
 				$query->where('(a.name LIKE '.$search.' OR a.codethree LIKE '.$search.' OR a.numericcode LIKE '.$search.' OR a.alias LIKE '.$search.')');
 			}
 		}
@@ -217,6 +217,8 @@ class SupportgroupsModelCurrencies extends JModelList
 		// setup the query
 		if (SupportgroupsHelper::checkArray($pks))
 		{
+			// Set a value to know this is exporting method.
+			$_export = true;
 			// Get the user object.
 			$user = JFactory::getUser();
 			// Create a new query object.

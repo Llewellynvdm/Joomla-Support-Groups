@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default.php
@@ -30,18 +30,52 @@ JHtml::_('behavior.tooltip');
 
 ?>
 <div id="j-main-container">
-	<div class="span9">
-		<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>
-			<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_left', 'cPanel', 'main'); ?>
-				<?php echo $this->loadTemplate('main');?>
-			<?php echo JHtml::_('bootstrap.endSlide'); ?>
-		<?php echo JHtml::_('bootstrap.endAccordion'); ?>
-	</div>
-	<div class="span3">
-		<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>
-			<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', 'Vast Development Method', 'vdm'); ?>
-				<?php echo $this->loadTemplate('vdm');?>
-			<?php echo JHtml::_('bootstrap.endSlide'); ?>
-		<?php echo JHtml::_('bootstrap.endAccordion'); ?>
+	<div class="form-horizontal">
+	<?php echo JHtml::_('bootstrap.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>
+
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'cpanel', JText::_('cPanel', true)); ?>
+		<div class="row-fluid">
+			<div class="span9">
+				<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>
+					<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_left', 'Control Panel', 'main'); ?>
+						<?php echo $this->loadTemplate('main');?>
+					<?php echo JHtml::_('bootstrap.endSlide'); ?>
+				<?php echo JHtml::_('bootstrap.endAccordion'); ?>
+			</div>
+			<div class="span3">
+				<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>
+					<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', 'Vast Development Method', 'vdm'); ?>
+						<?php echo $this->loadTemplate('vdm');?>
+					<?php echo JHtml::_('bootstrap.endSlide'); ?>
+				<?php echo JHtml::_('bootstrap.endAccordion'); ?>
+			</div>
+		</div>
+		<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'vast_development_method', JText::_('Vast Development Method', true)); ?>
+		<div class="row-fluid">
+			<div class="span12">
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'vast_development_method_accordian', array('active' => 'vast_development_method_one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'vast_development_method_accordian', 'Notice Board', 'vast_development_method_one'); ?>
+						<?php echo $this->loadTemplate('vast_development_method_notice_board');?>
+					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
+				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
+			</div>
+		</div>
+		<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+		<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'readme', JText::_('Readme', true)); ?>
+		<div class="row-fluid">
+			<div class="span12">
+				<?php  echo JHtml::_('bootstrap.startAccordion', 'readme_accordian', array('active' => 'readme_one')); ?>
+					<?php  echo JHtml::_('bootstrap.addSlide', 'readme_accordian', 'Information', 'readme_one'); ?>
+						<?php echo $this->loadTemplate('readme_information');?>
+					<?php  echo JHtml::_('bootstrap.endSlide'); ?>
+				<?php  echo JHtml::_('bootstrap.endAccordion'); ?>
+			</div>
+		</div>
+		<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+	<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 	</div>
 </div>

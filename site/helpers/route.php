@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		route.php
@@ -36,6 +36,88 @@ jimport('joomla.application.categories');
 abstract class SupportgroupsHelperRoute
 {
 	protected static $lookup;
+
+	/**
+	* @param int The route of the Map
+	*/
+	public static function getMapRoute($id = 0, $catid = 0)
+	{
+		if ($id > 0)
+		{
+			// Initialize the needel array.
+			$needles = array(
+				'map'  => array((int) $id)
+			);
+			// Create the link
+			$link = 'index.php?option=com_supportgroups&view=map&id='. $id;
+		}
+		else
+		{
+			// Initialize the needel array.
+			$needles = array();
+			//Create the link but don't add the id.
+			$link = 'index.php?option=com_supportgroups&view=map';
+		}
+		if ($catid > 1)
+		{
+			$categories = JCategories::getInstance('supportgroups.map');
+			$category = $categories->get($catid);
+			if ($category)
+			{
+				$needles['category'] = array_reverse($category->getPath());
+				$needles['categories'] = $needles['category'];
+				$link .= '&catid='.$catid;
+			}
+		}
+
+		if ($item = self::_findItem($needles))
+		{
+			$link .= '&Itemid='.$item;
+		}
+
+		return $link;
+	}
+
+	/**
+	* @param int The route of the Supportgroups
+	*/
+	public static function getSupportgroupsRoute($id = 0, $catid = 0)
+	{
+		if ($id > 0)
+		{
+			// Initialize the needel array.
+			$needles = array(
+				'supportgroups'  => array((int) $id)
+			);
+			// Create the link
+			$link = 'index.php?option=com_supportgroups&view=supportgroups&id='. $id;
+		}
+		else
+		{
+			// Initialize the needel array.
+			$needles = array();
+			//Create the link but don't add the id.
+			$link = 'index.php?option=com_supportgroups&view=supportgroups';
+		}
+		if ($catid > 1)
+		{
+			$categories = JCategories::getInstance('supportgroups.supportgroups');
+			$category = $categories->get($catid);
+			if ($category)
+			{
+				$needles['category'] = array_reverse($category->getPath());
+				$needles['categories'] = $needles['category'];
+				$link .= '&catid='.$catid;
+			}
+		}
+
+		if ($item = self::_findItem($needles))
+		{
+			$link .= '&Itemid='.$item;
+		}
+
+		return $link;
+	}
 
 	/**
 	 * Get the URL route for supportgroups category from a category ID and language

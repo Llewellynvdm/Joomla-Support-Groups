@@ -44,11 +44,12 @@
 		</field>
 		<!-- Date Modified Field. Type: Calendar (joomla) -->
 		<field name="modified" type="calendar" class="readonly"
-			label="JGLOBAL_FIELD_MODIFIED_LABEL" description="COM_CONTENT_FIELD_MODIFIED_DESC"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_MODIFIED_DATE_LABEL" description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MODIFIED_DATE_DESC"
 			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
 		<!-- User Modified Field. Type: User (joomla) -->
 		<field name="modified_by" type="user"
-			label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_MODIFIED_BY_LABEL"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MODIFIED_BY_DESC"
 			class="readonly"
 			readonly="true"
 			filter="unset"
@@ -115,7 +116,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_MESSAGE"
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_HINT"
 		/>
 		<!-- Phone Field. Type: Tel. (joomla) -->
@@ -127,29 +128,28 @@
 			maxlength="150"
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_DESCRIPTION"
 			class="text_area"
-			required="true"
 			filter="STRING"
 			validated="tel"
-			message="Error! Please add phone number here."
+			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_HINT"
 		/>
-		<!-- Location Field. Type: Locations. (custom) -->
+		<!-- Area Field. Type: Areas. (custom) -->
 		<field
-			type="locations"
-			name="location"
-			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL"
-			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_DESCRIPTION"
+			type="areas"
+			name="area"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_DESCRIPTION"
 			class="list_class"
 			multiple="false"
 			required="true"
 			button="true"
 		/>
-		<!-- Clinic Field. Type: Clinics. (custom) -->
+		<!-- Facility Field. Type: Facilities. (custom) -->
 		<field
-			type="clinics"
-			name="clinic"
-			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL"
-			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_DESCRIPTION"
+			type="facilities"
+			name="facility"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_DESCRIPTION"
 			class="list_class"
 			multiple="false"
 			required="true"
@@ -165,7 +165,7 @@
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_DESCRIPTION"
 			class="text_area"
 			filter="INT"
-			message="Error! Please add number of males text here."
+			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_HINT"
 			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
 		/>
@@ -179,9 +179,38 @@
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_DESCRIPTION"
 			class="text_area"
 			filter="INT"
-			message="Error! Please add number of females text here."
+			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_HINT"
 			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Note_set_marker Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_set_marker" label="COM_SUPPORTGROUPS_SUPPORT_GROUP_NOTE_SET_MARKER_LABEL" description="COM_SUPPORTGROUPS_SUPPORT_GROUP_NOTE_SET_MARKER_DESCRIPTION" heading="h2" class="note_set_marker" />
+		<!-- Marker Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="marker"
+			default="1"
+		/>
+		<!-- Alias Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="alias"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_ALIAS_LABEL"
+			description="JFIELD_ALIAS_DESC"
+			filter="STRING"
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_ALIAS_HINT"
+		/>
+		<!-- Details Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="details"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_DETAILS_LABEL"
+			width="100%"
+			height="500"
+			cols="13"
+			rows="50"
+			buttons="false"
+			filter="safehtml"
 		/>
 		<!-- Female_art Field. Type: Text. (joomla) -->
 		<field
@@ -193,22 +222,8 @@
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_ART_DESCRIPTION"
 			class="text_area"
 			filter="INT"
-			message="Error! Please add number of females on ART here."
+			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_ART_MESSAGE"
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_ART_HINT"
-			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
-		/>
-		<!-- Male_art Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="male_art"
-			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_LABEL"
-			size="10"
-			maxlength="50"
-			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_DESCRIPTION"
-			class="text_area"
-			filter="INT"
-			message="Error! Please add number of males on ART here."
-			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_HINT"
 			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
 		/>
 		<!-- Female_children Field. Type: Text. (joomla) -->
@@ -221,8 +236,22 @@
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_CHILDREN_DESCRIPTION"
 			class="text_area"
 			filter="INT"
-			message="Error! Please add number of females here."
+			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_CHILDREN_MESSAGE"
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_CHILDREN_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Male_art Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="male_art"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_DESCRIPTION"
+			class="text_area"
+			filter="INT"
+			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_MESSAGE"
+			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_ART_HINT"
 			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
 		/>
 		<!-- Male_children Field. Type: Text. (joomla) -->
@@ -235,15 +264,18 @@
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_CHILDREN_DESCRIPTION"
 			class="text_area"
 			filter="INT"
-			message="Error! Please add number of males here."
+			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_CHILDREN_MESSAGE"
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_CHILDREN_HINT"
 			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
 		/>
-		<!-- Area Field. Type: Hidden. (joomla) -->
+		<!-- Info Field. Type: Additionalinfo. (custom) -->
 		<field
-			type="hidden"
-			name="area"
-			default="1"
+			type="additionalinfo"
+			name="info"
+			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_INFO_LABEL"
+			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_INFO_DESCRIPTION"
+			class="list_class"
+			required="false"
 		/>
 	</fieldset>
 

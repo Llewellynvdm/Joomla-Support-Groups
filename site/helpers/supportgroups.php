@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -30,43 +30,195 @@ defined('_JEXEC') or die('Restricted access');
  * Supportgroups component helper
  */
 abstract class SupportgroupsHelper
-{###SITE_GLOBAL_EVENT_HELPER### ###SITE_CUSTOM_HELPER_SCRIPT###
+{ 
 
-	public static function jsonToString($value)
+	public static function setTotals(&$data,&$type,&$id)
 	{
-		// check if string is JSON
-		$result = json_decode($value, true);
-		if (json_last_error() === JSON_ERROR_NONE) {
-			// is JSON
-				if (self::checkArray($result))
-				{
-					$value = '';
-					$counter = 0;
-					foreach ($result as $string)
-					{
-						if ($counter)
-						{
-							$value .= ", ".$string;
-						}
-						else
-						{
-							$value .= $string;
-						}
-						$counter++;
-					}
-				}
-			return json_decode($value);
+		list($path, $fileName, $fullPath) = self::getTotalsFilePath($type,$id);
+		// did we get a valid result set
+		if (self::checkArray($data))
+		{
+			// now save for next time
+			return self::saveJson($data, $fullPath, $path);
 		}
-		return $value;
+		return false;
+	}
+
+	public static function getTotals(&$type,&$id)
+	{
+		list($path, $fileName, $fullPath) = self::getTotalsFilePath($type,$id);
+		// check if file exists
+		if (file_exists($fullPath) && (($jsonFile = @file_get_contents($fullPath)) !== FALSE))
+		{
+			// great we are done return results as array
+			return json_decode($jsonFile,true);
+		}
+		// remove the old files
+		self::removeFile($path, $fileName);
+		return false;
+	}
+	
+	protected static function getTotalsFilePath(&$type,&$id)
+	{
+		$path[0] = JPATH_ADMINISTRATOR.'/components/com_supportgroups/helpers/totals';
+		$path[1] = self::getFileKEY($type,$id);
+		// build full path to file
+		$path[2] = $path[0].'/'.$path[1].'.json';
+
+		return $path;
+	}
+	
+	protected static function getFileKEY(&$type,&$id)
+	{
+		// Get a db connection.
+		$db = JFactory::getDbo();
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Get from #__supportgroups_support_group as a
+		$query->select('MAX(a.modified)');
+		$query->from($db->quoteName('#__supportgroups_support_group', 'a'));
+		$query->where('a.published = 1');
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			return 'VDM_'.$type.'__'.md5($db->loadResult()).'__'.$id;
+		}
+		return 'VDM_'.$type.'__289d7b0527868d7f9a5f8c7b1c80d7a6__'.$id;
+	}
+
+	/**
+	* Safes json to a file
+	*
+	* @input	  object/array/json  $data      Data to be stored
+	* @input	  string                  $fullPath Full path to file
+	* @input	  string                  $path      Full path to folder
+	*
+	* @returns  boolean on success
+	**/
+	protected static function saveJson($data, $fullPath, $path = __DIR__)
+	{
+		// check if path exists
+		if (!file_exists($path))
+		{
+			// if not the make the path
+			mkdir($path, 0755, true);
+		}
+		// check that the string is json
+		if (!self::checkJson($data))
+		{
+			// json encode if not json
+			$data = json_encode($data);
+		}
+		// make sure this is a string
+		if (self::checkString($data))
+		{
+			$fp = fopen($fullPath, 'w');
+			fwrite($fp, $data);
+			fclose($fp);
+			return true;
+		}
+		return false;
 	}
 	
 	/**
+	 * Remove file
+	 * 
+	 * @param   string   $dir  The path to folder to remove
+	 * @param   string   $newFileName the new file name
+	 *
+	 * @return  boolean   True in all is removed
+	 * 
+	 */
+	protected static function removeFile($dir, $newFileName)
+	{
+		if (is_dir($dir))
+		{
+			// build the old folder name
+			$oldFileName = explode('__',$newFileName);
+			// little fix to remove this item old file if found
+			$found = glob($dir.'/'.$oldFileName[0].'*'.$oldFileName[2].'.json');
+			if (self::checkArray($found) && ($done = @array_map( "unlink",$found)) !== FALSE)
+			{
+				return true;
+			}
+		}
+		return false;
+	} 
+	
+	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
+	{
+		// do some table foot work
+		$external = false;
+		if (strpos($table, '#__') !== false)
+		{
+			$external = true;
+			$table = str_replace('#__', '', $table);
+		}
+		// check if string is JSON
+		$result = json_decode($value, true);
+		if (json_last_error() === JSON_ERROR_NONE)
+		{
+			// is JSON
+			if (self::checkArray($result))
+			{
+				if (self::checkString($table))
+				{
+					$names = array();
+					foreach ($result as $val)
+					{
+						if ($external)
+						{
+							if ($name = self::getVar(null, $val, $id, $name, '=', $table))
+							{
+								$names[] = $name;
+							}
+						}
+						else
+						{
+							if ($name = self::getVar($table, $val, $id, $name))
+							{
+								$names[] = $name;
+							}
+						}
+					}
+					if (self::checkArray($names))
+					{
+						return (string) implode($sperator,$names);
+					}	
+				}
+				return (string) implode($sperator,$result);
+			}
+			return (string) json_decode($value);
+		}
+		return $value;
+	}
+
+	/**
 	*	Load the Component xml manifest.
 	**/
-        public static function manifest()
-        {
-                $manifestUrl = JPATH_ADMINISTRATOR."/components/com_supportgroups/supportgroups.xml";
-                return simplexml_load_file($manifestUrl);
+	public static function manifest()
+	{
+		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_supportgroups/supportgroups.xml";
+		return simplexml_load_file($manifestUrl);
+	}
+
+	/**
+	*	Joomla version object
+	**/	
+	protected static $JVersion;
+
+	/**
+	*	set/get Joomla version
+	**/
+	public static function jVersion()
+	{
+		// check if set
+		if (!self::checkObject(self::$JVersion))
+		{
+			self::$JVersion = new JVersion();
+		}
+		return self::$JVersion;
 	}
 
 	/**
@@ -81,9 +233,9 @@ abstract class SupportgroupsHelper
 		// get all Contributors (max 20)
 		$searchArray = range('0','20');
 		foreach($searchArray as $nr)
-                {
+		{
 			if ((NULL !== $params->get("showContributor".$nr)) && ($params->get("showContributor".$nr) == 2 || $params->get("showContributor".$nr) == 3))
-                        {
+			{
 				// set link based of selected option
 				if($params->get("useContributor".$nr) == 1)
                                 {
@@ -182,16 +334,47 @@ abstract class SupportgroupsHelper
 	/**
 	*	Get any component's model
 	**/
-	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $component = 'supportgroups')
+	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $component = 'Supportgroups', $config = array())
 	{
-		// load some joomla helpers
-		JLoader::import('joomla.application.component.model');
+		// fix the name
+		$name = self::safeString($name);
+		// full path
+		$fullPath = $path . '/models';
+		// set prefix
+		$prefix = $component.'Model';
 		// load the model file
-		JLoader::import( $name, $path . '/models' );
-		// return instance
-		return JModelLegacy::getInstance( $name, $component.'Model' );
+		JModelLegacy::addIncludePath($fullPath, $prefix);
+		// get instance
+		$model = JModelLegacy::getInstance($name, $prefix, $config);
+		// if model not found (strange)
+		if ($model == false)
+		{
+			jimport('joomla.filesystem.file');
+			// get file path
+			$filePath = $path.'/'.$name.'.php';
+			$fullPath = $fullPath.'/'.$name.'.php';
+			// check if it exists
+			if (JFile::exists($filePath))
+			{
+				// get the file
+				require_once $filePath;
+			}
+			elseif (JFile::exists($fullPath))
+			{
+				// get the file
+				require_once $fullPath;
+			}
+			// build class names
+			$modelClass = $prefix.$name;
+			if (class_exists($modelClass))
+			{
+				// initialize the model
+				return new $modelClass($config);
+			}
+		}
+		return $model;
 	}
-	
+
 	/**
 	*	Add to asset Table
 	*/
@@ -237,7 +420,7 @@ abstract class SupportgroupsHelper
 
 			if (!$asset->check() || !$asset->store())
 			{
-				JError::raiseWarning(500, $asset->getError());
+				JFactory::getApplication()->enqueueMessage($asset->getError(), 'warning');
 				return false;
 			}
 			else
@@ -255,7 +438,7 @@ abstract class SupportgroupsHelper
 		}
 		return false;
 	}
-	
+
 	/**
 	 *	Gets the default asset Rules for a component/view.
 	 */
@@ -308,28 +491,141 @@ abstract class SupportgroupsHelper
 		return JAccess::getAssetRules(0);
 	}
 
+	/**
+	 * xmlAppend
+	 *
+	 * @param   SimpleXMLElement   $xml      The XML element reference in which to inject a comment
+	 * @param   mixed              $node     A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlAppend(&$xml, $node)
+	{
+		if (!$node)
+		{
+			// element was not returned
+			return;
+		}
+		switch (get_class($node))
+		{
+			case 'stdClass':
+				if (property_exists($node, 'comment'))
+				{
+					self::xmlComment($xml, $node->comment);
+				}
+				if (property_exists($node, 'fieldXML'))
+				{
+					self::xmlAppend($xml, $node->fieldXML);
+				}
+				break;
+			case 'SimpleXMLElement':
+				$domXML = dom_import_simplexml($xml);
+				$domNode = dom_import_simplexml($node);
+				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
+				$xml = simplexml_import_dom($domXML);
+				break;
+		}
+	}
+
+	/**
+	 * xmlComment
+	 *
+	 * @param   SimpleXMLElement   $xml        The XML element reference in which to inject a comment
+	 * @param   string             $comment    The comment to inject
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlComment(&$xml, $comment)
+	{
+		$domXML = dom_import_simplexml($xml);
+		$domComment = new DOMComment($comment);
+		$nodeTarget = $domXML->ownerDocument->importNode($domComment, true);
+		$domXML->appendChild($nodeTarget);
+		$xml = simplexml_import_dom($domXML);
+	}
+
+	/**
+	 * xmlAddAttributes
+	 *
+	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
+	 * @param   array              $attributes   The attributes to apply to the XML element
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlAddAttributes(&$xml, $attributes = array())
+	{
+		foreach ($attributes as $key => $value)
+		{
+			$xml->addAttribute($key, $value);
+		}
+	}
+
+	/**
+	 * xmlAddOptions
+	 *
+	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
+	 * @param   array              $options      The options to apply to the XML element
+	 *
+	 * @return  void
+	 *
+	 */
+	public static function xmlAddOptions(&$xml, $options = array())
+	{
+		foreach ($options as $key => $value)
+		{
+			$addOption = $xml->addChild('option');
+			$addOption->addAttribute('value', $key);
+			$addOption[] = $value;
+		}
+	}
+
+	/**
+	 * Render Bool Button
+	 *
+	 * @param   array    $args   All the args for the button
+	 *                             0) name
+	 *                             1) additional (options class) // not used at this time
+	 *                             2) default
+	 *                             3) yes (name)
+	 *                             4) no (name)
+	 *
+	 * @return  string    The input html of the button
+	 *
+	 */
 	public static function renderBoolButton()
 	{
 		$args = func_get_args();
+		// check if there is additional button class
+		$additional = isset($args[1]) ? (string) $args[1] : ''; // not used at this time
+		// start the xml
+		$buttonXML = new SimpleXMLElement('<field/>');
+		// button attributes
+		$buttonAttributes = array(
+			'type' => 'radio',
+			'name' => isset($args[0]) ? self::htmlEscape($args[0]) : 'bool_button',
+			'label' => isset($args[0]) ? self::safeString(self::htmlEscape($args[0]), 'Ww') : 'Bool Button', // not seen anyway
+			'class' => 'btn-group',
+			'filter' => 'INT',
+			'default' => isset($args[2]) ? (int) $args[2] : 0);
+		// load the haskey attributes
+		self::xmlAddAttributes($buttonXML, $buttonAttributes);
+		// set the button options
+		$buttonOptions = array(
+			'1' => isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES',
+			'0' => isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO');
+		// load the button options
+		self::xmlAddOptions($buttonXML, $buttonOptions);
 
 		// get the radio element
 		$button = JFormHelper::loadFieldType('radio');
 
-		// setup the properties
-		$name	 	= self::htmlEscape($args[0]);
-		$additional = isset($args[1]) ? (string) $args[1] : '';
-		$value		= $args[2];
-		$yes 	 	= isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES';
-		$no 	 	= isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO';
-
-		// prepare the xml
-		$element = new SimpleXMLElement('<field name="'.$name.'" type="radio" class="btn-group"><option '.$additional.' value="0">'.$no.'</option><option '.$additional.' value="1">'.$yes.'</option></field>');
-
 		// run
-		$button->setup($element, $value);
+		$button->setup($buttonXML, $buttonAttributes['default']);
 
 		return $button->input;
-
 	}
 
 	/**
@@ -434,6 +730,19 @@ abstract class SupportgroupsHelper
 		return false;
 	} 
 
+	/**
+	 * Get a variable 
+	 *
+	 * @param   string   $table        The table from which to get the variable
+	 * @param   string   $where        The value where
+	 * @param   string   $whereString  The target/field string where/name
+	 * @param   string   $what         The return field
+	 * @param   string   $operator     The operator between $whereString/field and $where/value
+	 * @param   string   $main         The component in which the table is found
+	 *
+	 * @return  mix string/int/float
+	 *
+	 */
 	public static function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = 'supportgroups')
 	{
 		if(!$where)
@@ -444,9 +753,15 @@ abstract class SupportgroupsHelper
 		$db = JFactory::getDbo();
 		// Create a new query object.
 		$query = $db->getQuery(true);
-
-		$query->select($db->quoteName(array($what)));
-		$query->from($db->quoteName('#__'.$main.'_'.$table));
+		$query->select($db->quoteName(array($what)));		
+		if (empty($table))
+		{
+			$query->from($db->quoteName('#__'.$main));
+		}
+		else
+		{
+			$query->from($db->quoteName('#__'.$main.'_'.$table));
+		}
 		if (is_numeric($where))
 		{
 			$query->where($db->quoteName($whereString) . ' '.$operator.' '.(int) $where);
@@ -468,6 +783,20 @@ abstract class SupportgroupsHelper
 		return false;
 	}
 
+	/**
+	 * Get array of variables
+	 *
+	 * @param   string   $table        The table from which to get the variables
+	 * @param   string   $where        The value where
+	 * @param   string   $whereString  The target/field string where/name
+	 * @param   string   $what         The return field
+	 * @param   string   $operator     The operator between $whereString/field and $where/value
+	 * @param   string   $main         The component in which the table is found
+	 * @param   bool     $unique       The switch to return a unique array
+	 *
+	 * @return  array
+	 *
+	 */
 	public static function getVars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = 'supportgroups', $unique = true)
 	{
 		if(!$where)
@@ -482,13 +811,25 @@ abstract class SupportgroupsHelper
 
 		if (self::checkArray($where))
 		{
+			// prep main <-- why? well if $main='' is empty then $table can be categories or users
+			if (self::checkString($main))
+			{
+				$main = '_'.ltrim($main, '_');
+			}
 			// Get a db connection.
 			$db = JFactory::getDbo();
 			// Create a new query object.
 			$query = $db->getQuery(true);
 
 			$query->select($db->quoteName(array($what)));
-			$query->from($db->quoteName('#__'.$main.'_'.$table));
+			if (empty($table))
+			{
+				$query->from($db->quoteName('#__'.$main));
+			}
+			else
+			{
+				$query->from($db->quoteName('#_'.$main.'_'.$table));
+			}
 			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
 			$db->setQuery($query);
 			$db->execute();
@@ -503,35 +844,74 @@ abstract class SupportgroupsHelper
 		}
 		return false;
 	} 
-	
+
+	public static function isPublished($id,$type)
+	{
+		if ($type == 'raw')
+		{
+			$type = 'item';
+		}
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select(array('a.published'));
+		$query->from('#__supportgroups_'.$type.' AS a');
+		$query->where('a.id = '. (int) $id);
+		$query->where('a.published = 1');
+		$db->setQuery($query);
+		$db->execute();
+		$found = $db->getNumRows();
+		if($found)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public static function getGroupName($id)
+	{
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select(array('a.title'));
+		$query->from('#__usergroups AS a');
+		$query->where('a.id = '. (int) $id);
+		$db->setQuery($query);
+		$db->execute();
+		$found = $db->getNumRows();
+		if($found)
+		{
+			return $db->loadResult();
+		}
+		return $id;
+	}
+
 	/**
 	*	Get the actions permissions
 	**/
-        public static function getActions($view,&$record = null,$views = null)
+	public static function getActions($view,&$record = null,$views = null)
 	{
 		jimport('joomla.access.access');
 
 		$user	= JFactory::getUser();
 		$result	= new JObject;
 		$view	= self::safeString($view);
-                if (self::checkString($views))
-                {
+		if (self::checkString($views))
+		{
 			$views = self::safeString($views);
-                }
+		}
 		// get all actions from component
 		$actions = JAccess::getActions('com_supportgroups', 'component');
-                // set acctions only set in component settiongs
-                $componentActions = array('core.admin','core.manage','core.options','core.export');
+		// set acctions only set in component settiongs
+		$componentActions = array('core.admin','core.manage','core.options','core.export');
 		// loop the actions and set the permissions
 		foreach ($actions as $action)
-                {
+		{
 			// set to use component default
 			$fallback = true;
 			if (self::checkObject($record) && isset($record->id) && $record->id > 0 && !in_array($action->name,$componentActions))
 			{
 				// The record has been set. Check the record permissions.
 				$permission = $user->authorise($action->name, 'com_supportgroups.'.$view.'.' . (int) $record->id);
-				if (!$permission && !is_null($permission))
+				if (!$permission) // TODO removed && !is_null($permission)
 				{
 					if ($action->name == 'core.edit' || $action->name == $view.'.edit')
 					{
@@ -603,17 +983,17 @@ abstract class SupportgroupsHelper
 				}
 				elseif (self::checkString($views) && isset($record->catid) && $record->catid > 0)
 				{
-                                        // make sure we use the core. action check for the categories
-                                        if (strpos($action->name,$view) !== false && strpos($action->name,'core.') === false ) {
-                                                $coreCheck		= explode('.',$action->name);
-                                                $coreCheck[0]	= 'core';
-                                                $categoryCheck	= implode('.',$coreCheck);
-                                        }
-                                        else
-                                        {
-                                                $categoryCheck = $action->name;
-                                        }
-                                        // The record has a category. Check the category permissions.
+					// make sure we use the core. action check for the categories
+					if (strpos($action->name,$view) !== false && strpos($action->name,'core.') === false ) {
+						$coreCheck		= explode('.',$action->name);
+						$coreCheck[0]	= 'core';
+						$categoryCheck	= implode('.',$coreCheck);
+					}
+					else
+					{
+						$categoryCheck = $action->name;
+					}
+					// The record has a category. Check the category permissions.
 					$catpermission = $user->authorise($categoryCheck, 'com_supportgroups.'.$views.'.category.' . (int) $record->catid);
 					if (!$catpermission && !is_null($catpermission))
 					{
@@ -696,24 +1076,74 @@ abstract class SupportgroupsHelper
 		return $result;
 	}
 
-	public static function checkObject($object)
+	/**
+	*	Check if have an json string
+	*
+	*	@input	string   The json string to check
+	*
+	*	@returns bool true on success
+	**/
+	public static function checkJson($string)
 	{
-		if (isset($object) && is_object($object) && count($object) > 0)
+		if (self::checkString($string))
 		{
-			return true;
+			json_decode($string);
+			return (json_last_error() === JSON_ERROR_NONE);
 		}
 		return false;
 	}
 
-	public static function checkArray($array)
+	/**
+	*	Check if have an object with a length
+	*
+	*	@input	object   The object to check
+	*
+	*	@returns bool true on success
+	**/
+	public static function checkObject($object)
+	{
+		if (isset($object) && is_object($object))
+		{
+			return count((array)$object) > 0;
+		}
+		return false;
+	}
+
+	/**
+	*	Check if have an array with a length
+	*
+	*	@input	array   The array to check
+	*
+	*	@returns bool true on success
+	**/
+	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && count($array) > 0)
 		{
+			// also make sure the empty strings are removed
+			if ($removeEmptyString)
+			{
+				foreach ($array as $key => $string)
+				{
+					if (empty($string))
+					{
+						unset($array[$key]);
+					}
+				}
+				return self::checkArray($array, false);
+			}
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	*	Check if have a string with a length
+	*
+	*	@input	string   The string to check
+	*
+	*	@returns bool true on success
+	**/
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -723,6 +1153,38 @@ abstract class SupportgroupsHelper
 		return false;
 	}
 
+	/**
+	*	Check if we are connected
+	*	Thanks https://stackoverflow.com/a/4860432/1429677
+	*
+	*	@returns bool true on success
+	**/
+	public static function isConnected()
+	{
+		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
+		$connected = @fsockopen("www.example.com", 80); 
+			// website, port  (try 80 or 443)
+		if ($connected)
+		{
+			//action when connected
+			$is_conn = true;
+			fclose($connected);
+		}
+		else
+		{
+			//action in connection failure
+			$is_conn = false;
+		}
+		return $is_conn;
+	}
+
+	/**
+	*	Merge an array of array's
+	*
+	*	@input	array   The arrays you would like to merge
+	*
+	*	@returns array on success
+	**/
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -740,7 +1202,20 @@ abstract class SupportgroupsHelper
 		return false;
 	}
 
+	// typo sorry!
 	public static function sorten($string, $length = 40, $addTip = true)
+	{
+		return self::shorten($string, $length, $addTip);
+	}
+
+	/**
+	*	Shorten a string
+	*
+	*	@input	string   The you would like to shorten
+	*
+	*	@returns string on success
+	**/
+	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
 		{
@@ -763,7 +1238,7 @@ abstract class SupportgroupsHelper
 			$final	= strlen($newString);
 			if ($initial != $final && $addTip)
 			{
-				$title = self::sorten($string, 400 , false);
+				$title = self::shorten($string, 400 , false);
 				return '<span class="hasTip" title="'.$title.'" style="cursor:help">'.trim($newString).'...</span>';
 			}
 			elseif ($initial != $final && !$addTip)
@@ -774,57 +1249,94 @@ abstract class SupportgroupsHelper
 		return $string;
 	}
 
-	public static function safeString($string, $type = 'L', $spacer = '_')
+	/**
+	*	Making strings safe (various ways)
+	*
+	*	@input	string   The you would like to make safe
+	*
+	*	@returns string on success
+	**/
+	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true)
 	{
-		// remove all numbers and replace with english text version (works well only up to a thousand)
-		$string = self::replaceNumbers($string);
-
+		if ($replaceNumbers === true)
+		{
+			// remove all numbers and replace with english text version (works well only up to millions)
+			$string = self::replaceNumbers($string);
+		}
+		// 0nly continue if we have a string
 		if (self::checkString($string))
 		{
+			// create file name without the extention that is safe
+			if ($type === 'filename')
+			{
+				// make sure VDM is not in the string
+				$string = str_replace('VDM', 'vDm', $string);
+				// Remove anything which isn't a word, whitespace, number
+				// or any of the following caracters -_()
+				// If you don't need to handle multi-byte characters
+				// you can use preg_replace rather than mb_ereg_replace
+				// Thanks @Łukasz Rysiak!
+				// $string = mb_ereg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				$string = preg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				// http://stackoverflow.com/a/2021729/1429677
+				return preg_replace('/\s+/', ' ', $string);
+			}
 			// remove all other characters
 			$string = trim($string);
 			$string = preg_replace('/'.$spacer.'+/', ' ', $string);
 			$string = preg_replace('/\s+/', ' ', $string);
 			$string = preg_replace("/[^A-Za-z ]/", '', $string);
-			// return a string with all first letter of each word uppercase(no undersocre)
-			if ($type == 'W')
-				    {
-			    return ucwords(strtolower($string));
+			// select final adaptations
+			if ($type === 'L' || $type === 'strtolower')
+			{
+				// replace white space with underscore
+				$string = preg_replace('/\s+/', $spacer, $string);
+				// default is to return lower
+				return strtolower($string);
 			}
-				    elseif ($type == 'w')
-				    {
-			    return strtolower($string);
+			elseif ($type === 'W')
+			{
+				// return a string with all first letter of each word uppercase(no undersocre)
+				return ucwords(strtolower($string));
 			}
-				    elseif ($type == 'Ww')
-				    {
-			    return ucfirst(strtolower($string));
+			elseif ($type === 'w' || $type === 'word')
+			{
+				// return a string with all lowercase(no undersocre)
+				return strtolower($string);
 			}
-				    elseif ($type == 'WW')
-				    {
-			    return strtoupper($string);
+			elseif ($type === 'Ww' || $type === 'Word')
+			{
+				// return a string with first letter of the first word uppercase and all the rest lowercase(no undersocre)
+				return ucfirst(strtolower($string));
 			}
-			elseif ($type == 'U')
+			elseif ($type === 'WW' || $type === 'WORD')
+			{
+				// return a string with all the uppercase(no undersocre)
+				return strtoupper($string);
+			}
+			elseif ($type === 'U' || $type === 'strtoupper')
 			{
 				// replace white space with underscore
 				$string = preg_replace('/\s+/', $spacer, $string);
 				// return all upper
 				return strtoupper($string);
 			}
-			elseif ($type == 'F')
+			elseif ($type === 'F' || $type === 'ucfirst')
 			{
 				// replace white space with underscore
 				$string = preg_replace('/\s+/', $spacer, $string);
 				// return with first caracter to upper
 				return ucfirst(strtolower($string));
 			}
-			elseif ($type == 'L')
+			elseif ($type === 'cA' || $type === 'cAmel' || $type === 'camelcase')
 			{
-				// replace white space with underscore
-				$string = preg_replace('/\s+/', $spacer, $string);
-				// default is to return lower
-				    return strtolower($string);
+				// convert all words to first letter uppercase
+				$string = ucwords(strtolower($string));
+				// remove white space
+				$string = preg_replace('/\s+/', '', $string);
+				// now return first letter lowercase
+				return lcfirst($string);
 			}
-
 			// return string
 			return $string;
 		}
@@ -832,15 +1344,15 @@ abstract class SupportgroupsHelper
 		return '';
 	}
 
-	public static function htmlEscape($var, $charset = 'UTF-8', $sorten = false, $length = 40)
+	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
 		if (self::checkString($var))
 		{
 			$filter = new JFilterInput();
 			$string = $filter->clean(html_entity_decode(htmlentities($var, ENT_COMPAT, $charset)), 'HTML');
-			if ($sorten)
+			if ($shorten)
 			{
-           		return self::sorten($string,$length);
+           		return self::shorten($string,$length);
 			}
 			return $string;
 		}
@@ -871,7 +1383,7 @@ abstract class SupportgroupsHelper
 		// return the string with no numbers remaining.
 		return $string;
 	}
-	
+
 	/**
 	*	Convert an integer into an English word string
 	*	Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
@@ -954,7 +1466,7 @@ abstract class SupportgroupsHelper
 					$w .= ' ';
 					if($r < 100)
 					{
-						$word .= 'and ';
+						$w .= 'and ';
 					}
 					$w .= self::numberToString($r);
 				}

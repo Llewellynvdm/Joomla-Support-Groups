@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 20 of this MVC
+	@build			13th April, 2018
+	@created		13th July, 2015
 	@package		Support Groups
 	@subpackage		help_document.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -99,7 +99,7 @@ class SupportgroupsControllerHelp_document extends JControllerForm
 		{
 			// The record has been set. Check the record permissions.
 			$permission = $user->authorise('help_document.edit', 'com_supportgroups.help_document.' . (int) $recordId);
-			if (!$permission && !is_null($permission))
+			if (!$permission)
 			{
 				if ($user->authorise('help_document.edit.own', 'com_supportgroups.help_document.' . $recordId))
 				{
@@ -159,10 +159,10 @@ class SupportgroupsControllerHelp_document extends JControllerForm
                 {
 			$append .= '&ref='.(string)$ref.'&refid='.(int)$refid;
 		}
-                elseif ($ref)
-                {
+		elseif ($ref)
+		{
 			$append .= '&ref='.(string)$ref;
-                }
+		}
 
 		if ($tmpl)
 		{
@@ -274,11 +274,11 @@ class SupportgroupsControllerHelp_document extends JControllerForm
 		$this->ref 		= $this->input->get('ref', 0, 'word');
 		$this->refid 	= $this->input->get('refid', 0, 'int');
 
-                if ($this->ref || $this->refid)
-                {
-                        // to make sure the item is checkedin on redirect
-                        $this->task = 'save';
-                }
+		if ($this->ref || $this->refid)
+		{
+			// to make sure the item is checkedin on redirect
+			$this->task = 'save';
+		}
 
 		$saved = parent::save($key, $urlVar);
 

@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 4 of this MVC
+	@build			25th October, 2017
+	@created		5th March, 2016
 	@package		Support Groups
 	@subpackage		default.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	

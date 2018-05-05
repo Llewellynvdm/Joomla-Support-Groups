@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -40,18 +40,23 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		};
 		// Assign data to the view
 		$this->icons			= $this->get('Icons');
 		$this->contributors		= SupportgroupsHelper::getContributors();
-
+		$this->noticeboard = $this->get('Noticeboard');
+		$this->readme = $this->get('Readme');
+		
+		// get the manifest details of the component
+		$this->manifest = SupportgroupsHelper::manifest();
+		
 		// Set the toolbar
 		$this->addToolBar();
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
+		}
 
 		// Display the template
 		parent::display($tpl);
@@ -68,15 +73,15 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 		$canDo = SupportgroupsHelper::getActions('supportgroups');
 		JToolBarHelper::title(JText::_('COM_SUPPORTGROUPS_DASHBOARD'), 'grid-2');
 
-                // set help url for this view if found
-                $help_url = SupportgroupsHelper::getHelpUrl('supportgroups');
-                if (SupportgroupsHelper::checkString($help_url))
-                {
+		// set help url for this view if found
+		$help_url = SupportgroupsHelper::getHelpUrl('supportgroups');
+		if (SupportgroupsHelper::checkString($help_url))
+		{
 			JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
-                }
+		}
 
 		if ($canDo->get('core.admin') || $canDo->get('core.options'))
-                {
+		{
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 	}
@@ -84,15 +89,19 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 	/**
 	 * Method to set up the document properties
 	 *
-	 *
 	 * @return void
 	 */
 	protected function setDocument()
 	{
 		$document = JFactory::getDocument();
-
+		
+		// add dashboard style sheets
 		$document->addStyleSheet(JURI::root() . "administrator/components/com_supportgroups/assets/css/dashboard.css");
-
+		
+		// set page title
 		$document->setTitle(JText::_('COM_SUPPORTGROUPS_DASHBOARD'));
+		
+		// add manifest to page JavaScript
+		$document->addScriptDeclaration("var manifest = jQuery.parseJSON('" . json_encode($this->manifest) . "');", "text/javascript");
 	}
 }

@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 36 of this MVC
+	@build			25th October, 2017
+	@created		4th March, 2016
 	@package		Support Groups
 	@subpackage		support_groups.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -46,14 +46,180 @@ class SupportgroupsModelSupport_groups extends JModelList
 				'a.modified_by','modified_by',
 				'a.name','name',
 				'a.phone','phone',
-				'a.location','location',
-				'a.clinic','clinic',
+				'a.area','area',
+				'a.facility','facility',
 				'a.male','male',
 				'a.female','female'
 			);
 		}
 
 		parent::__construct($config);
+	}
+
+	/**
+	* Method to get list export data.
+	*
+	* @return mixed  An array of data items on success, false on failure.
+	*/
+	public function getSmartExport($pks)
+	{
+		// setup the query
+		if (SupportgroupsHelper::checkArray($pks))
+		{
+			// Get the user object.
+			$user = JFactory::getUser();
+			// Create a new query object.
+			$db = JFactory::getDBO();
+			$query = $db->getQuery(true);
+
+			// Select some fields
+			$query->select($db->quoteName(
+				array('a.id','a.name','a.phone','g.name','r.name','c.name','h.name','a.female','a.female_art','a.female_children','a.male','a.male_art','a.male_children','a.info'),
+				array('id','name','phone','area','region','country','facility','female','female_art','female_children','male','male_art','male_children','info')));
+
+			$query->select($db->quoteName(
+				array('at.name','ft.name'),
+				array('area_type','facility_type')));
+			
+			// From the supportgroups_support_group table
+			$query->from($db->quoteName('#__supportgroups_support_group', 'a'));
+			$query->where('a.id IN (' . implode(',',$pks) . ')');
+
+			// we convert all ids to the actual names for export
+			$query->join('LEFT', $db->quoteName('#__supportgroups_area', 'g') . ' ON (' . $db->quoteName('a.area') . ' = ' . $db->quoteName('g.id') . ')');
+			$query->join('LEFT', $db->quoteName('#__supportgroups_facility', 'h') . ' ON (' . $db->quoteName('a.facility') . ' = ' . $db->quoteName('h.id') . ')');
+			$query->join('LEFT', $db->quoteName('#__supportgroups_area_type', 'at') . ' ON (' . $db->quoteName('g.area_type') . ' = ' . $db->quoteName('at.id') . ')');
+			$query->join('LEFT', $db->quoteName('#__supportgroups_region', 'r') . ' ON (' . $db->quoteName('g.region') . ' = ' . $db->quoteName('r.id') . ')');
+			$query->join('LEFT', $db->quoteName('#__supportgroups_country', 'c') . ' ON (' . $db->quoteName('r.country') . ' = ' . $db->quoteName('c.id') . ')');
+			$query->join('LEFT', $db->quoteName('#__supportgroups_facility_type', 'ft') . ' ON (' . $db->quoteName('h.facility_type') . ' = ' . $db->quoteName('ft.id') . ')');
+			
+			// Implement View Level Access
+			if (!$user->authorise('core.options', 'com_supportgroups'))
+			{
+				$groups = implode(',', $user->getAuthorisedViewLevels());
+				$query->where('a.access IN (' . $groups . ')');
+			}
+
+			// Order the results by ordering
+			$query->order('a.ordering  ASC');
+
+			// Load the items
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				$items = $db->loadObjectList();
+				$information = $this->getInformationKeys();
+				// set values to display correctly.
+				if (SupportgroupsHelper::checkArray($items))
+				{
+					foreach ($items as $nr => &$item)
+					{
+						$access = ($user->authorise('support_group.access', 'com_supportgroups.support_group.' . (int) $item->id) && $user->authorise('support_group.access', 'com_supportgroups'));
+						if (!$access)
+						{
+							unset($items[$nr]);
+							continue;
+						}
+						// set the area type
+						$item->area = $item->area . ' (' . $item->area_type . ')';
+						// set the facility type
+						$item->facility = $item->facility . ' (' . $item->facility_type . ')';
+						// clear those values
+						unset($item->area_type);
+						unset($item->facility_type);
+						if (SupportgroupsHelper::checkArray($information))
+						{
+							// load information
+							if (SupportgroupsHelper::checkJson($item->info))
+							{
+								$item->info = json_decode($item->info, true);
+							}
+							foreach ($information as $info => $name)
+							{
+								if (in_array($info, $item->info))
+								{
+									$item->$name = 'yes';
+								}
+								else
+								{
+									$item->$name = 'no';
+								}									
+							}
+						}
+						unset($item->info);
+					}
+				}
+				// Add headers to items array.
+				$headers = new stdClass();
+				$headers->id = 'ID';
+				$headers->name = 'Name';
+				$headers->phone = 'Phone';
+				$headers->area = 'Area';
+				$headers->region = 'Region';
+				$headers->country = 'Country';
+				$headers->facility = 'Facility';
+				$headers->female = 'Female';
+				$headers->female_art = 'Female art';
+				$headers->female_children = 'Female children';
+				$headers->male = 'Male';
+				$headers->male_art = 'Male art';
+				$headers->male_children = 'Male children';
+				if (SupportgroupsHelper::checkArray($information))
+				{
+					// load information Headers
+					foreach ($information as $info => $name)
+					{
+						$key = SupportgroupsHelper::safeString($name);
+						$headers->$key = $name;							
+					}
+				}
+				if (SupportgroupsHelper::checkObject($headers))
+				{
+					array_unshift($items,$headers);
+				}
+				return $items;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Method to get the information keys
+	 *
+	 * @return  array
+	 */
+	protected function getInformationKeys()
+	{
+		// Create a new query object.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select($db->quoteName(
+			array('a.id','a.name','b.name'),
+			array('id','name','type')));
+
+		// From the supportgroups_support_group table
+		$query->from($db->quoteName('#__supportgroups_additional_info', 'a'));
+
+		// we convert all ids to the actual names for export
+		$query->join('LEFT', $db->quoteName('#__supportgroups_info_type', 'b') . ' ON (' . $db->quoteName('a.info_type') . ' = ' . $db->quoteName('b.id') . ')');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+			$bucket = array();
+			foreach ($items as $item)
+			{
+				$bucket[$item->id] = $item->name .' (' . $item->type . ')';
+			}
+			return $bucket;
+		}
+		return false;
 	}
 	
 	/**
@@ -76,11 +242,11 @@ class SupportgroupsModelSupport_groups extends JModelList
 		$phone = $this->getUserStateFromRequest($this->context . '.filter.phone', 'filter_phone');
 		$this->setState('filter.phone', $phone);
 
-		$location = $this->getUserStateFromRequest($this->context . '.filter.location', 'filter_location');
-		$this->setState('filter.location', $location);
+		$area = $this->getUserStateFromRequest($this->context . '.filter.area', 'filter_area');
+		$this->setState('filter.area', $area);
 
-		$clinic = $this->getUserStateFromRequest($this->context . '.filter.clinic', 'filter_clinic');
-		$this->setState('filter.clinic', $clinic);
+		$facility = $this->getUserStateFromRequest($this->context . '.filter.facility', 'filter_facility');
+		$this->setState('filter.facility', $facility);
 
 		$male = $this->getUserStateFromRequest($this->context . '.filter.male', 'filter_male');
 		$this->setState('filter.male', $male);
@@ -138,7 +304,7 @@ class SupportgroupsModelSupport_groups extends JModelList
 				}
 
 			}
-		} 
+		}  
         
 		// return items
 		return $items;
@@ -163,13 +329,13 @@ class SupportgroupsModelSupport_groups extends JModelList
 		// From the supportgroups_item table
 		$query->from($db->quoteName('#__supportgroups_support_group', 'a'));
 
-		// From the supportgroups_location table.
-		$query->select($db->quoteName('g.name','location_name'));
-		$query->join('LEFT', $db->quoteName('#__supportgroups_location', 'g') . ' ON (' . $db->quoteName('a.location') . ' = ' . $db->quoteName('g.id') . ')');
+		// From the supportgroups_area table.
+		$query->select($db->quoteName('g.name','area_name'));
+		$query->join('LEFT', $db->quoteName('#__supportgroups_area', 'g') . ' ON (' . $db->quoteName('a.area') . ' = ' . $db->quoteName('g.id') . ')');
 
-		// From the supportgroups_clinic table.
-		$query->select($db->quoteName('h.name','clinic_name'));
-		$query->join('LEFT', $db->quoteName('#__supportgroups_clinic', 'h') . ' ON (' . $db->quoteName('a.clinic') . ' = ' . $db->quoteName('h.id') . ')');
+		// From the supportgroups_facility table.
+		$query->select($db->quoteName('h.name','facility_name'));
+		$query->join('LEFT', $db->quoteName('#__supportgroups_facility', 'h') . ' ON (' . $db->quoteName('a.facility') . ' = ' . $db->quoteName('h.id') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -206,20 +372,20 @@ class SupportgroupsModelSupport_groups extends JModelList
 			}
 			else
 			{
-				$search = $db->quote('%' . $db->escape($search, true) . '%');
-				$query->where('(a.name LIKE '.$search.' OR a.phone LIKE '.$search.' OR a.location LIKE '.$search.' OR g.name LIKE '.$search.' OR a.clinic LIKE '.$search.' OR h.name LIKE '.$search.')');
+				$search = $db->quote('%' . $db->escape($search) . '%');
+				$query->where('(a.name LIKE '.$search.' OR a.phone LIKE '.$search.' OR a.area LIKE '.$search.' OR g.name LIKE '.$search.' OR a.facility LIKE '.$search.' OR h.name LIKE '.$search.' OR a.details LIKE '.$search.')');
 			}
 		}
 
-		// Filter by location.
-		if ($location = $this->getState('filter.location'))
+		// Filter by area.
+		if ($area = $this->getState('filter.area'))
 		{
-			$query->where('a.location = ' . $db->quote($db->escape($location, true)));
+			$query->where('a.area = ' . $db->quote($db->escape($area)));
 		}
-		// Filter by clinic.
-		if ($clinic = $this->getState('filter.clinic'))
+		// Filter by facility.
+		if ($facility = $this->getState('filter.facility'))
 		{
-			$query->where('a.clinic = ' . $db->quote($db->escape($clinic, true)));
+			$query->where('a.facility = ' . $db->quote($db->escape($facility)));
 		}
 
 		// Add the list ordering clause.
@@ -243,6 +409,8 @@ class SupportgroupsModelSupport_groups extends JModelList
 		// setup the query
 		if (SupportgroupsHelper::checkArray($pks))
 		{
+			// Set a value to know this is exporting method.
+			$_export = true;
 			// Get the user object.
 			$user = JFactory::getUser();
 			// Create a new query object.
@@ -348,8 +516,8 @@ class SupportgroupsModelSupport_groups extends JModelList
 		$id .= ':' . $this->getState('filter.modified_by');
 		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.phone');
-		$id .= ':' . $this->getState('filter.location');
-		$id .= ':' . $this->getState('filter.clinic');
+		$id .= ':' . $this->getState('filter.area');
+		$id .= ':' . $this->getState('filter.facility');
 		$id .= ':' . $this->getState('filter.male');
 		$id .= ':' . $this->getState('filter.female');
 

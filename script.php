@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		script.php
@@ -37,7 +37,6 @@ class com_supportgroupsInstallerScript
 {
 	/**
 	 * method to install the component
-	 *
 	 *
 	 * @return void
 	 */
@@ -236,83 +235,83 @@ class com_supportgroupsInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
-		// Where Clinic alias is found
-		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.clinic') );
+		// Where Facility alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.facility') );
 		$db->setQuery($query);
 		// Execute query to see if alias is found
 		$db->execute();
-		$clinic_found = $db->getNumRows();
+		$facility_found = $db->getNumRows();
 		// Now check if there were any rows
-		if ($clinic_found)
+		if ($facility_found)
 		{
-			// Since there are load the needed  clinic type ids
-			$clinic_ids = $db->loadColumn();
-			// Remove Clinic from the content type table
-			$clinic_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.clinic') );
+			// Since there are load the needed  facility type ids
+			$facility_ids = $db->loadColumn();
+			// Remove Facility from the content type table
+			$facility_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.facility') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__content_types'));
-			$query->where($clinic_condition);
+			$query->where($facility_condition);
 			$db->setQuery($query);
-			// Execute the query to remove Clinic items
-			$clinic_done = $db->execute();
-			if ($clinic_done);
+			// Execute the query to remove Facility items
+			$facility_done = $db->execute();
+			if ($facility_done);
 			{
-				// If succesfully remove Clinic add queued success message.
-				$app->enqueueMessage(JText::_('The (com_supportgroups.clinic) type alias was removed from the <b>#__content_type</b> table'));
+				// If succesfully remove Facility add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.facility) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
-			// Remove Clinic items from the contentitem tag map table
-			$clinic_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.clinic') );
+			// Remove Facility items from the contentitem tag map table
+			$facility_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.facility') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__contentitem_tag_map'));
-			$query->where($clinic_condition);
+			$query->where($facility_condition);
 			$db->setQuery($query);
-			// Execute the query to remove Clinic items
-			$clinic_done = $db->execute();
-			if ($clinic_done);
+			// Execute the query to remove Facility items
+			$facility_done = $db->execute();
+			if ($facility_done);
 			{
-				// If succesfully remove Clinic add queued success message.
-				$app->enqueueMessage(JText::_('The (com_supportgroups.clinic) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				// If succesfully remove Facility add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.facility) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
-			// Remove Clinic items from the ucm content table
-			$clinic_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_supportgroups.clinic') );
+			// Remove Facility items from the ucm content table
+			$facility_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_supportgroups.facility') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__ucm_content'));
-			$query->where($clinic_condition);
+			$query->where($facility_condition);
 			$db->setQuery($query);
-			// Execute the query to remove Clinic items
-			$clinic_done = $db->execute();
-			if ($clinic_done);
+			// Execute the query to remove Facility items
+			$facility_done = $db->execute();
+			if ($facility_done);
 			{
-				// If succesfully remove Clinic add queued success message.
-				$app->enqueueMessage(JText::_('The (com_supportgroups.clinic) type alias was removed from the <b>#__ucm_content</b> table'));
+				// If succesfully remove Facility add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.facility) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
-			// Make sure that all the Clinic items are cleared from DB
-			foreach ($clinic_ids as $clinic_id)
+			// Make sure that all the Facility items are cleared from DB
+			foreach ($facility_ids as $facility_id)
 			{
-				// Remove Clinic items from the ucm base table
-				$clinic_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $clinic_id);
+				// Remove Facility items from the ucm base table
+				$facility_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $facility_id);
 				// Create a new query object.
 				$query = $db->getQuery(true);
 				$query->delete($db->quoteName('#__ucm_base'));
-				$query->where($clinic_condition);
+				$query->where($facility_condition);
 				$db->setQuery($query);
-				// Execute the query to remove Clinic items
+				// Execute the query to remove Facility items
 				$db->execute();
 
-				// Remove Clinic items from the ucm history table
-				$clinic_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $clinic_id);
+				// Remove Facility items from the ucm history table
+				$facility_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $facility_id);
 				// Create a new query object.
 				$query = $db->getQuery(true);
 				$query->delete($db->quoteName('#__ucm_history'));
-				$query->where($clinic_condition);
+				$query->where($facility_condition);
 				$db->setQuery($query);
-				// Execute the query to remove Clinic items
+				// Execute the query to remove Facility items
 				$db->execute();
 			}
 		}
@@ -322,83 +321,427 @@ class com_supportgroupsInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
-		// Where Location alias is found
-		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.location') );
+		// Where Facility_type alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.facility_type') );
 		$db->setQuery($query);
 		// Execute query to see if alias is found
 		$db->execute();
-		$location_found = $db->getNumRows();
+		$facility_type_found = $db->getNumRows();
 		// Now check if there were any rows
-		if ($location_found)
+		if ($facility_type_found)
 		{
-			// Since there are load the needed  location type ids
-			$location_ids = $db->loadColumn();
-			// Remove Location from the content type table
-			$location_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.location') );
+			// Since there are load the needed  facility_type type ids
+			$facility_type_ids = $db->loadColumn();
+			// Remove Facility_type from the content type table
+			$facility_type_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.facility_type') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__content_types'));
-			$query->where($location_condition);
+			$query->where($facility_type_condition);
 			$db->setQuery($query);
-			// Execute the query to remove Location items
-			$location_done = $db->execute();
-			if ($location_done);
+			// Execute the query to remove Facility_type items
+			$facility_type_done = $db->execute();
+			if ($facility_type_done);
 			{
-				// If succesfully remove Location add queued success message.
-				$app->enqueueMessage(JText::_('The (com_supportgroups.location) type alias was removed from the <b>#__content_type</b> table'));
+				// If succesfully remove Facility_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.facility_type) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
-			// Remove Location items from the contentitem tag map table
-			$location_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.location') );
+			// Remove Facility_type items from the contentitem tag map table
+			$facility_type_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.facility_type') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__contentitem_tag_map'));
-			$query->where($location_condition);
+			$query->where($facility_type_condition);
 			$db->setQuery($query);
-			// Execute the query to remove Location items
-			$location_done = $db->execute();
-			if ($location_done);
+			// Execute the query to remove Facility_type items
+			$facility_type_done = $db->execute();
+			if ($facility_type_done);
 			{
-				// If succesfully remove Location add queued success message.
-				$app->enqueueMessage(JText::_('The (com_supportgroups.location) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				// If succesfully remove Facility_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.facility_type) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
-			// Remove Location items from the ucm content table
-			$location_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_supportgroups.location') );
+			// Remove Facility_type items from the ucm content table
+			$facility_type_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_supportgroups.facility_type') );
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__ucm_content'));
-			$query->where($location_condition);
+			$query->where($facility_type_condition);
 			$db->setQuery($query);
-			// Execute the query to remove Location items
-			$location_done = $db->execute();
-			if ($location_done);
+			// Execute the query to remove Facility_type items
+			$facility_type_done = $db->execute();
+			if ($facility_type_done);
 			{
-				// If succesfully remove Location add queued success message.
-				$app->enqueueMessage(JText::_('The (com_supportgroups.location) type alias was removed from the <b>#__ucm_content</b> table'));
+				// If succesfully remove Facility_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.facility_type) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
-			// Make sure that all the Location items are cleared from DB
-			foreach ($location_ids as $location_id)
+			// Make sure that all the Facility_type items are cleared from DB
+			foreach ($facility_type_ids as $facility_type_id)
 			{
-				// Remove Location items from the ucm base table
-				$location_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $location_id);
+				// Remove Facility_type items from the ucm base table
+				$facility_type_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $facility_type_id);
 				// Create a new query object.
 				$query = $db->getQuery(true);
 				$query->delete($db->quoteName('#__ucm_base'));
-				$query->where($location_condition);
+				$query->where($facility_type_condition);
 				$db->setQuery($query);
-				// Execute the query to remove Location items
+				// Execute the query to remove Facility_type items
 				$db->execute();
 
-				// Remove Location items from the ucm history table
-				$location_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $location_id);
+				// Remove Facility_type items from the ucm history table
+				$facility_type_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $facility_type_id);
 				// Create a new query object.
 				$query = $db->getQuery(true);
 				$query->delete($db->quoteName('#__ucm_history'));
-				$query->where($location_condition);
+				$query->where($facility_type_condition);
 				$db->setQuery($query);
-				// Execute the query to remove Location items
+				// Execute the query to remove Facility_type items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Additional_info alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.additional_info') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$additional_info_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($additional_info_found)
+		{
+			// Since there are load the needed  additional_info type ids
+			$additional_info_ids = $db->loadColumn();
+			// Remove Additional_info from the content type table
+			$additional_info_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.additional_info') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($additional_info_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Additional_info items
+			$additional_info_done = $db->execute();
+			if ($additional_info_done);
+			{
+				// If succesfully remove Additional_info add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.additional_info) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Additional_info items from the contentitem tag map table
+			$additional_info_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.additional_info') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($additional_info_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Additional_info items
+			$additional_info_done = $db->execute();
+			if ($additional_info_done);
+			{
+				// If succesfully remove Additional_info add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.additional_info) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Additional_info items from the ucm content table
+			$additional_info_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_supportgroups.additional_info') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($additional_info_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Additional_info items
+			$additional_info_done = $db->execute();
+			if ($additional_info_done);
+			{
+				// If succesfully remove Additional_info add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.additional_info) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Additional_info items are cleared from DB
+			foreach ($additional_info_ids as $additional_info_id)
+			{
+				// Remove Additional_info items from the ucm base table
+				$additional_info_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $additional_info_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($additional_info_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Additional_info items
+				$db->execute();
+
+				// Remove Additional_info items from the ucm history table
+				$additional_info_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $additional_info_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($additional_info_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Additional_info items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Info_type alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.info_type') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$info_type_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($info_type_found)
+		{
+			// Since there are load the needed  info_type type ids
+			$info_type_ids = $db->loadColumn();
+			// Remove Info_type from the content type table
+			$info_type_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.info_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($info_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Info_type items
+			$info_type_done = $db->execute();
+			if ($info_type_done);
+			{
+				// If succesfully remove Info_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.info_type) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Info_type items from the contentitem tag map table
+			$info_type_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.info_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($info_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Info_type items
+			$info_type_done = $db->execute();
+			if ($info_type_done);
+			{
+				// If succesfully remove Info_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.info_type) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Info_type items from the ucm content table
+			$info_type_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_supportgroups.info_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($info_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Info_type items
+			$info_type_done = $db->execute();
+			if ($info_type_done);
+			{
+				// If succesfully remove Info_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.info_type) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Info_type items are cleared from DB
+			foreach ($info_type_ids as $info_type_id)
+			{
+				// Remove Info_type items from the ucm base table
+				$info_type_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $info_type_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($info_type_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Info_type items
+				$db->execute();
+
+				// Remove Info_type items from the ucm history table
+				$info_type_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $info_type_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($info_type_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Info_type items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Area alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.area') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$area_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($area_found)
+		{
+			// Since there are load the needed  area type ids
+			$area_ids = $db->loadColumn();
+			// Remove Area from the content type table
+			$area_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.area') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($area_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Area items
+			$area_done = $db->execute();
+			if ($area_done);
+			{
+				// If succesfully remove Area add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.area) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Area items from the contentitem tag map table
+			$area_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.area') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($area_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Area items
+			$area_done = $db->execute();
+			if ($area_done);
+			{
+				// If succesfully remove Area add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.area) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Area items from the ucm content table
+			$area_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_supportgroups.area') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($area_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Area items
+			$area_done = $db->execute();
+			if ($area_done);
+			{
+				// If succesfully remove Area add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.area) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Area items are cleared from DB
+			foreach ($area_ids as $area_id)
+			{
+				// Remove Area items from the ucm base table
+				$area_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $area_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($area_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Area items
+				$db->execute();
+
+				// Remove Area items from the ucm history table
+				$area_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $area_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($area_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Area items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
+		// Where Area_type alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.area_type') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$area_type_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($area_type_found)
+		{
+			// Since there are load the needed  area_type type ids
+			$area_type_ids = $db->loadColumn();
+			// Remove Area_type from the content type table
+			$area_type_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.area_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($area_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Area_type items
+			$area_type_done = $db->execute();
+			if ($area_type_done);
+			{
+				// If succesfully remove Area_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.area_type) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Area_type items from the contentitem tag map table
+			$area_type_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.area_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($area_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Area_type items
+			$area_type_done = $db->execute();
+			if ($area_type_done);
+			{
+				// If succesfully remove Area_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.area_type) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Area_type items from the ucm content table
+			$area_type_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_supportgroups.area_type') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($area_type_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Area_type items
+			$area_type_done = $db->execute();
+			if ($area_type_done);
+			{
+				// If succesfully remove Area_type add queued success message.
+				$app->enqueueMessage(JText::_('The (com_supportgroups.area_type) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Area_type items are cleared from DB
+			foreach ($area_type_ids as $area_type_id)
+			{
+				// Remove Area_type items from the ucm base table
+				$area_type_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $area_type_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($area_type_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Area_type items
+				$db->execute();
+
+				// Remove Area_type items from the ucm history table
+				$area_type_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $area_type_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($area_type_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Area_type items
 				$db->execute();
 			}
 		}
@@ -768,7 +1111,7 @@ class com_supportgroupsInstallerScript
 
 		// little notice as after service, in case of bad experience with component.
 		echo '<h2>Did something go wrong? Are you disappointed?</h2>
-		<p>Please let me know at <a href="mailto:llewellyn@vdm.io">llewellyn@vdm.io</a>.
+		<p>Please let me know at <a href="mailto:joomla@vdm.io">joomla@vdm.io</a>.
 		<br />We at Vast Development Method are committed to building extensions that performs proficiently! You can help us, really!
 		<br />Send me your thoughts on improvements that is needed, trust me, I will be very grateful!
 		<br />Visit us at <a href="http://www.vdm.io" target="_blank">http://www.vdm.io</a> today!</p>';
@@ -791,17 +1134,27 @@ class com_supportgroupsInstallerScript
 	 */
 	function preflight($type, $parent)
 	{
+		// get application
+		$app = JFactory::getApplication();
+		// is redundant ...hmmm
 		if ($type == 'uninstall')
-		{        	
+		{
 			return true;
 		}
-		
-		$app = JFactory::getApplication();
+		// the default for both install and update
 		$jversion = new JVersion();
-		if (!$jversion->isCompatible('3.4.1'))
+		if (!$jversion->isCompatible('3.6.0'))
 		{
-			$app->enqueueMessage('Please upgrade to at least Joomla! 3.4.1 before continuing!', 'error');
+			$app->enqueueMessage('Please upgrade to at least Joomla! 3.6.0 before continuing!', 'error');
 			return false;
+		}
+		// do any updates needed
+		if ($type == 'update')
+		{
+		}
+		// do any install needed
+		if ($type == 'install')
+		{
 		}
 	}
 
@@ -812,6 +1165,8 @@ class com_supportgroupsInstallerScript
 	 */
 	function postflight($type, $parent)
 	{
+		// get application
+		$app = JFactory::getApplication();
 		// set the default component settings
 		if ($type == 'install')
 		{
@@ -824,9 +1179,9 @@ class com_supportgroupsInstallerScript
 			$support_group->type_title = 'Supportgroups Support_group';
 			$support_group->type_alias = 'com_supportgroups.support_group';
 			$support_group->table = '{"special": {"dbtable": "#__supportgroups_support_group","key": "id","type": "Support_group","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$support_group->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","phone":"phone","location":"location","clinic":"clinic","male":"male","female":"female","female_art":"female_art","male_art":"male_art","female_children":"female_children","male_children":"male_children","area":"area"}}';
+			$support_group->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "details","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","phone":"phone","area":"area","facility":"facility","male":"male","female":"female","marker":"marker","alias":"alias","details":"details","female_art":"female_art","female_children":"female_children","male_art":"male_art","male_children":"male_children","info":"info"}}';
 			$support_group->router = 'SupportgroupsHelperRoute::getSupport_groupRoute';
-			$support_group->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/support_group.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","area"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","location","clinic","male","female","female_art","male_art","female_children","male_children"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "location","targetTable": "#__supportgroups_location","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "clinic","targetTable": "#__supportgroups_clinic","targetColumn": "id","displayColumn": "name"}]}';
+			$support_group->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/support_group.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","marker"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","area","facility","male","female","female_art","female_children","male_art","male_children"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "area","targetTable": "#__supportgroups_area","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "facility","targetTable": "#__supportgroups_facility","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "info","targetTable": "#__supportgroups_additional_info","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$support_group_Inserted = $db->insertObject('#__content_types', $support_group);
@@ -843,36 +1198,84 @@ class com_supportgroupsInstallerScript
 			// Set the object into the content types table.
 			$payment_Inserted = $db->insertObject('#__content_types', $payment);
 
-			// Create the clinic content type object.
-			$clinic = new stdClass();
-			$clinic->type_title = 'Supportgroups Clinic';
-			$clinic->type_alias = 'com_supportgroups.clinic';
-			$clinic->table = '{"special": {"dbtable": "#__supportgroups_clinic","key": "id","type": "Clinic","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$clinic->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","phone":"phone","area":"area"}}';
-			$clinic->router = 'SupportgroupsHelperRoute::getClinicRoute';
-			$clinic->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/clinic.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","area"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			// Create the facility content type object.
+			$facility = new stdClass();
+			$facility->type_title = 'Supportgroups Facility';
+			$facility->type_alias = 'com_supportgroups.facility';
+			$facility->table = '{"special": {"dbtable": "#__supportgroups_facility","key": "id","type": "Facility","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$facility->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "details","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","facility_type":"facility_type","phone":"phone","details":"details","marker":"marker","alias":"alias"}}';
+			$facility->router = 'SupportgroupsHelperRoute::getFacilityRoute';
+			$facility->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/facility.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","marker"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","facility_type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "facility_type","targetTable": "#__supportgroups_facility_type","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
-			$clinic_Inserted = $db->insertObject('#__content_types', $clinic);
+			$facility_Inserted = $db->insertObject('#__content_types', $facility);
 
-			// Create the location content type object.
-			$location = new stdClass();
-			$location->type_title = 'Supportgroups Location';
-			$location->type_alias = 'com_supportgroups.location';
-			$location->table = '{"special": {"dbtable": "#__supportgroups_location","key": "id","type": "Location","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$location->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","region":"region","area":"area"}}';
-			$location->router = 'SupportgroupsHelperRoute::getLocationRoute';
-			$location->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/location.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","area"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","region"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "region","targetTable": "#__supportgroups_region","targetColumn": "id","displayColumn": "name"}]}';
+			// Create the facility_type content type object.
+			$facility_type = new stdClass();
+			$facility_type->type_title = 'Supportgroups Facility_type';
+			$facility_type->type_alias = 'com_supportgroups.facility_type';
+			$facility_type->table = '{"special": {"dbtable": "#__supportgroups_facility_type","key": "id","type": "Facility_type","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$facility_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","alias":"alias"}}';
+			$facility_type->router = 'SupportgroupsHelperRoute::getFacility_typeRoute';
+			$facility_type->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/facility_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
-			$location_Inserted = $db->insertObject('#__content_types', $location);
+			$facility_type_Inserted = $db->insertObject('#__content_types', $facility_type);
+
+			// Create the additional_info content type object.
+			$additional_info = new stdClass();
+			$additional_info->type_title = 'Supportgroups Additional_info';
+			$additional_info->type_alias = 'com_supportgroups.additional_info';
+			$additional_info->table = '{"special": {"dbtable": "#__supportgroups_additional_info","key": "id","type": "Additional_info","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$additional_info->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "details","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","info_type":"info_type","details":"details","alias":"alias"}}';
+			$additional_info->router = 'SupportgroupsHelperRoute::getAdditional_infoRoute';
+			$additional_info->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/additional_info.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","info_type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "info_type","targetTable": "#__supportgroups_info_type","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$additional_info_Inserted = $db->insertObject('#__content_types', $additional_info);
+
+			// Create the info_type content type object.
+			$info_type = new stdClass();
+			$info_type->type_title = 'Supportgroups Info_type';
+			$info_type->type_alias = 'com_supportgroups.info_type';
+			$info_type->table = '{"special": {"dbtable": "#__supportgroups_info_type","key": "id","type": "Info_type","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$info_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","alias":"alias"}}';
+			$info_type->router = 'SupportgroupsHelperRoute::getInfo_typeRoute';
+			$info_type->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/info_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$info_type_Inserted = $db->insertObject('#__content_types', $info_type);
+
+			// Create the area content type object.
+			$area = new stdClass();
+			$area->type_title = 'Supportgroups Area';
+			$area->type_alias = 'com_supportgroups.area';
+			$area->table = '{"special": {"dbtable": "#__supportgroups_area","key": "id","type": "Area","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$area->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "details","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","area_type":"area_type","region":"region","details":"details","color":"color","alias":"alias"}}';
+			$area->router = 'SupportgroupsHelperRoute::getAreaRoute';
+			$area->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/area.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","area_type","region"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "area_type","targetTable": "#__supportgroups_area_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "region","targetTable": "#__supportgroups_region","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$area_Inserted = $db->insertObject('#__content_types', $area);
+
+			// Create the area_type content type object.
+			$area_type = new stdClass();
+			$area_type->type_title = 'Supportgroups Area_type';
+			$area_type->type_alias = 'com_supportgroups.area_type';
+			$area_type->table = '{"special": {"dbtable": "#__supportgroups_area_type","key": "id","type": "Area_type","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$area_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","alias":"alias"}}';
+			$area_type->router = 'SupportgroupsHelperRoute::getArea_typeRoute';
+			$area_type->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/area_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$area_type_Inserted = $db->insertObject('#__content_types', $area_type);
 
 			// Create the region content type object.
 			$region = new stdClass();
 			$region->type_title = 'Supportgroups Region';
 			$region->type_alias = 'com_supportgroups.region';
 			$region->table = '{"special": {"dbtable": "#__supportgroups_region","key": "id","type": "Region","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$region->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","country":"country"}}';
+			$region->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","country":"country","alias":"alias"}}';
 			$region->router = 'SupportgroupsHelperRoute::getRegionRoute';
 			$region->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/region.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","country"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "country","targetTable": "#__supportgroups_country","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -896,7 +1299,7 @@ class com_supportgroupsInstallerScript
 			$currency->type_title = 'Supportgroups Currency';
 			$currency->type_alias = 'com_supportgroups.currency';
 			$currency->table = '{"special": {"dbtable": "#__supportgroups_currency","key": "id","type": "Currency","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$currency->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","codethree":"codethree","numericcode":"numericcode","symbol":"symbol","alias":"alias","positivestyle":"positivestyle","thousands":"thousands","decimalsymbol":"decimalsymbol","decimalplace":"decimalplace","negativestyle":"negativestyle"}}';
+			$currency->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","codethree":"codethree","numericcode":"numericcode","symbol":"symbol","alias":"alias","negativestyle":"negativestyle","positivestyle":"positivestyle","decimalsymbol":"decimalsymbol","decimalplace":"decimalplace","thousands":"thousands"}}';
 			$currency->router = 'SupportgroupsHelperRoute::getCurrencyRoute';
 			$currency->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/currency.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","numericcode","decimalplace"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -908,9 +1311,9 @@ class com_supportgroupsInstallerScript
 			$help_document->type_title = 'Supportgroups Help_document';
 			$help_document->type_alias = 'com_supportgroups.help_document';
 			$help_document->table = '{"special": {"dbtable": "#__supportgroups_help_document","key": "id","type": "Help_document","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","target":"target","content":"content","alias":"alias","article":"article","url":"url","not_required":"not_required"}}';
+			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","not_required":"not_required","content":"content","article":"article","url":"url","target":"target","alias":"alias"}}';
 			$help_document->router = 'SupportgroupsHelperRoute::getHelp_documentRoute';
-			$help_document->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","target","article","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
+			$help_document->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","not_required","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
 
 			// Set the object into the content types table.
 			$help_document_Inserted = $db->insertObject('#__content_types', $help_document);
@@ -918,22 +1321,20 @@ class com_supportgroupsInstallerScript
 
 			// Install the global extenstion params.
 			$query = $db->getQuery(true);
-
 			// Field to update.
 			$fields = array(
-				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"llewellyn@vdm.io","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
+				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","maptype":"ROADMAP","maxzoom":"6","gotozoom":"8","cluster":"0","cluster_at":"300","clustergridsize":"100","clustermaxzoom":"7","set_browser_storage":"1","storage_time_to_live":"global","check_in":"-1 day","save_history":"1","history_limit":"10","uikit_load":"1","uikit_min":"","uikit_style":""}'),
 			);
-
 			// Condition.
 			$conditions = array(
 				$db->quoteName('element') . ' = ' . $db->quote('com_supportgroups')
 			);
-
 			$query->update($db->quoteName('#__extensions'))->set($fields)->where($conditions);
 			$db->setQuery($query);
 			$allDone = $db->execute();
+
 			echo '<a target="_blank" href="http://www.vdm.io" title="Support Groups">
-				<img src="components/com_supportgroups/assets/images/component-300.jpg"/>
+				<img src="components/com_supportgroups/assets/images/vdm-component.jpg"/>
 				</a>';
 		}
 		// do any updates needed
@@ -948,9 +1349,9 @@ class com_supportgroupsInstallerScript
 			$support_group->type_title = 'Supportgroups Support_group';
 			$support_group->type_alias = 'com_supportgroups.support_group';
 			$support_group->table = '{"special": {"dbtable": "#__supportgroups_support_group","key": "id","type": "Support_group","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$support_group->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","phone":"phone","location":"location","clinic":"clinic","male":"male","female":"female","female_art":"female_art","male_art":"male_art","female_children":"female_children","male_children":"male_children","area":"area"}}';
+			$support_group->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "details","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","phone":"phone","area":"area","facility":"facility","male":"male","female":"female","marker":"marker","alias":"alias","details":"details","female_art":"female_art","female_children":"female_children","male_art":"male_art","male_children":"male_children","info":"info"}}';
 			$support_group->router = 'SupportgroupsHelperRoute::getSupport_groupRoute';
-			$support_group->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/support_group.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","area"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","location","clinic","male","female","female_art","male_art","female_children","male_children"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "location","targetTable": "#__supportgroups_location","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "clinic","targetTable": "#__supportgroups_clinic","targetColumn": "id","displayColumn": "name"}]}';
+			$support_group->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/support_group.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","marker"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","area","facility","male","female","female_art","female_children","male_art","male_children"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "area","targetTable": "#__supportgroups_area","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "facility","targetTable": "#__supportgroups_facility","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "info","targetTable": "#__supportgroups_additional_info","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if support_group type is already in content_type DB.
 			$support_group_id = null;
@@ -1001,62 +1402,178 @@ class com_supportgroupsInstallerScript
 				$payment_Inserted = $db->insertObject('#__content_types', $payment);
 			}
 
-			// Create the clinic content type object.
-			$clinic = new stdClass();
-			$clinic->type_title = 'Supportgroups Clinic';
-			$clinic->type_alias = 'com_supportgroups.clinic';
-			$clinic->table = '{"special": {"dbtable": "#__supportgroups_clinic","key": "id","type": "Clinic","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$clinic->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","phone":"phone","area":"area"}}';
-			$clinic->router = 'SupportgroupsHelperRoute::getClinicRoute';
-			$clinic->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/clinic.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","area"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			// Create the facility content type object.
+			$facility = new stdClass();
+			$facility->type_title = 'Supportgroups Facility';
+			$facility->type_alias = 'com_supportgroups.facility';
+			$facility->table = '{"special": {"dbtable": "#__supportgroups_facility","key": "id","type": "Facility","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$facility->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "details","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","facility_type":"facility_type","phone":"phone","details":"details","marker":"marker","alias":"alias"}}';
+			$facility->router = 'SupportgroupsHelperRoute::getFacilityRoute';
+			$facility->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/facility.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","marker"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","facility_type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "facility_type","targetTable": "#__supportgroups_facility_type","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Check if clinic type is already in content_type DB.
-			$clinic_id = null;
+			// Check if facility type is already in content_type DB.
+			$facility_id = null;
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName(array('type_id')));
 			$query->from($db->quoteName('#__content_types'));
-			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($clinic->type_alias));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($facility->type_alias));
 			$db->setQuery($query);
 			$db->execute();
 
 			// Set the object into the content types table.
 			if ($db->getNumRows())
 			{
-				$clinic->type_id = $db->loadResult();
-				$clinic_Updated = $db->updateObject('#__content_types', $clinic, 'type_id');
+				$facility->type_id = $db->loadResult();
+				$facility_Updated = $db->updateObject('#__content_types', $facility, 'type_id');
 			}
 			else
 			{
-				$clinic_Inserted = $db->insertObject('#__content_types', $clinic);
+				$facility_Inserted = $db->insertObject('#__content_types', $facility);
 			}
 
-			// Create the location content type object.
-			$location = new stdClass();
-			$location->type_title = 'Supportgroups Location';
-			$location->type_alias = 'com_supportgroups.location';
-			$location->table = '{"special": {"dbtable": "#__supportgroups_location","key": "id","type": "Location","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$location->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","region":"region","area":"area"}}';
-			$location->router = 'SupportgroupsHelperRoute::getLocationRoute';
-			$location->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/location.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","area"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","region"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "region","targetTable": "#__supportgroups_region","targetColumn": "id","displayColumn": "name"}]}';
+			// Create the facility_type content type object.
+			$facility_type = new stdClass();
+			$facility_type->type_title = 'Supportgroups Facility_type';
+			$facility_type->type_alias = 'com_supportgroups.facility_type';
+			$facility_type->table = '{"special": {"dbtable": "#__supportgroups_facility_type","key": "id","type": "Facility_type","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$facility_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","alias":"alias"}}';
+			$facility_type->router = 'SupportgroupsHelperRoute::getFacility_typeRoute';
+			$facility_type->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/facility_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
-			// Check if location type is already in content_type DB.
-			$location_id = null;
+			// Check if facility_type type is already in content_type DB.
+			$facility_type_id = null;
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName(array('type_id')));
 			$query->from($db->quoteName('#__content_types'));
-			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($location->type_alias));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($facility_type->type_alias));
 			$db->setQuery($query);
 			$db->execute();
 
 			// Set the object into the content types table.
 			if ($db->getNumRows())
 			{
-				$location->type_id = $db->loadResult();
-				$location_Updated = $db->updateObject('#__content_types', $location, 'type_id');
+				$facility_type->type_id = $db->loadResult();
+				$facility_type_Updated = $db->updateObject('#__content_types', $facility_type, 'type_id');
 			}
 			else
 			{
-				$location_Inserted = $db->insertObject('#__content_types', $location);
+				$facility_type_Inserted = $db->insertObject('#__content_types', $facility_type);
+			}
+
+			// Create the additional_info content type object.
+			$additional_info = new stdClass();
+			$additional_info->type_title = 'Supportgroups Additional_info';
+			$additional_info->type_alias = 'com_supportgroups.additional_info';
+			$additional_info->table = '{"special": {"dbtable": "#__supportgroups_additional_info","key": "id","type": "Additional_info","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$additional_info->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "details","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","info_type":"info_type","details":"details","alias":"alias"}}';
+			$additional_info->router = 'SupportgroupsHelperRoute::getAdditional_infoRoute';
+			$additional_info->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/additional_info.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","info_type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "info_type","targetTable": "#__supportgroups_info_type","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if additional_info type is already in content_type DB.
+			$additional_info_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($additional_info->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$additional_info->type_id = $db->loadResult();
+				$additional_info_Updated = $db->updateObject('#__content_types', $additional_info, 'type_id');
+			}
+			else
+			{
+				$additional_info_Inserted = $db->insertObject('#__content_types', $additional_info);
+			}
+
+			// Create the info_type content type object.
+			$info_type = new stdClass();
+			$info_type->type_title = 'Supportgroups Info_type';
+			$info_type->type_alias = 'com_supportgroups.info_type';
+			$info_type->table = '{"special": {"dbtable": "#__supportgroups_info_type","key": "id","type": "Info_type","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$info_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","alias":"alias"}}';
+			$info_type->router = 'SupportgroupsHelperRoute::getInfo_typeRoute';
+			$info_type->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/info_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if info_type type is already in content_type DB.
+			$info_type_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($info_type->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$info_type->type_id = $db->loadResult();
+				$info_type_Updated = $db->updateObject('#__content_types', $info_type, 'type_id');
+			}
+			else
+			{
+				$info_type_Inserted = $db->insertObject('#__content_types', $info_type);
+			}
+
+			// Create the area content type object.
+			$area = new stdClass();
+			$area->type_title = 'Supportgroups Area';
+			$area->type_alias = 'com_supportgroups.area';
+			$area->table = '{"special": {"dbtable": "#__supportgroups_area","key": "id","type": "Area","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$area->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "details","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","area_type":"area_type","region":"region","details":"details","color":"color","alias":"alias"}}';
+			$area->router = 'SupportgroupsHelperRoute::getAreaRoute';
+			$area->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/area.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","area_type","region"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "area_type","targetTable": "#__supportgroups_area_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "region","targetTable": "#__supportgroups_region","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if area type is already in content_type DB.
+			$area_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($area->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$area->type_id = $db->loadResult();
+				$area_Updated = $db->updateObject('#__content_types', $area, 'type_id');
+			}
+			else
+			{
+				$area_Inserted = $db->insertObject('#__content_types', $area);
+			}
+
+			// Create the area_type content type object.
+			$area_type = new stdClass();
+			$area_type->type_title = 'Supportgroups Area_type';
+			$area_type->type_alias = 'com_supportgroups.area_type';
+			$area_type->table = '{"special": {"dbtable": "#__supportgroups_area_type","key": "id","type": "Area_type","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$area_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","alias":"alias"}}';
+			$area_type->router = 'SupportgroupsHelperRoute::getArea_typeRoute';
+			$area_type->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/area_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if area_type type is already in content_type DB.
+			$area_type_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($area_type->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$area_type->type_id = $db->loadResult();
+				$area_type_Updated = $db->updateObject('#__content_types', $area_type, 'type_id');
+			}
+			else
+			{
+				$area_type_Inserted = $db->insertObject('#__content_types', $area_type);
 			}
 
 			// Create the region content type object.
@@ -1064,7 +1581,7 @@ class com_supportgroupsInstallerScript
 			$region->type_title = 'Supportgroups Region';
 			$region->type_alias = 'com_supportgroups.region';
 			$region->table = '{"special": {"dbtable": "#__supportgroups_region","key": "id","type": "Region","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$region->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","country":"country"}}';
+			$region->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","country":"country","alias":"alias"}}';
 			$region->router = 'SupportgroupsHelperRoute::getRegionRoute';
 			$region->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/region.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","country"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "country","targetTable": "#__supportgroups_country","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -1122,7 +1639,7 @@ class com_supportgroupsInstallerScript
 			$currency->type_title = 'Supportgroups Currency';
 			$currency->type_alias = 'com_supportgroups.currency';
 			$currency->table = '{"special": {"dbtable": "#__supportgroups_currency","key": "id","type": "Currency","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$currency->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","codethree":"codethree","numericcode":"numericcode","symbol":"symbol","alias":"alias","positivestyle":"positivestyle","thousands":"thousands","decimalsymbol":"decimalsymbol","decimalplace":"decimalplace","negativestyle":"negativestyle"}}';
+			$currency->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","codethree":"codethree","numericcode":"numericcode","symbol":"symbol","alias":"alias","negativestyle":"negativestyle","positivestyle":"positivestyle","decimalsymbol":"decimalsymbol","decimalplace":"decimalplace","thousands":"thousands"}}';
 			$currency->router = 'SupportgroupsHelperRoute::getCurrencyRoute';
 			$currency->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/currency.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","numericcode","decimalplace"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
@@ -1151,9 +1668,9 @@ class com_supportgroupsInstallerScript
 			$help_document->type_title = 'Supportgroups Help_document';
 			$help_document->type_alias = 'com_supportgroups.help_document';
 			$help_document->table = '{"special": {"dbtable": "#__supportgroups_help_document","key": "id","type": "Help_document","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","target":"target","content":"content","alias":"alias","article":"article","url":"url","not_required":"not_required"}}';
+			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","not_required":"not_required","content":"content","article":"article","url":"url","target":"target","alias":"alias"}}';
 			$help_document->router = 'SupportgroupsHelperRoute::getHelp_documentRoute';
-			$help_document->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","target","article","not_required"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
+			$help_document->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","not_required","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
 
 			// Check if help_document type is already in content_type DB.
 			$help_document_id = null;
@@ -1177,9 +1694,9 @@ class com_supportgroupsInstallerScript
 
 
 			echo '<a target="_blank" href="http://www.vdm.io" title="Support Groups">
-				<img src="components/com_supportgroups/assets/images/component-300.jpg"/>
+				<img src="components/com_supportgroups/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 1.0.3 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 1.0.8 Was Successful! Let us know if anything is not working as expected.</h3>';
 		}
 	}
 }

@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 5 of this MVC
+	@build			27th April, 2016
+	@created		6th March, 2016
 	@package		Support Groups
 	@subpackage		payments.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -147,7 +147,7 @@ class SupportgroupsModelPayments extends JModelList
 				$item->year = $this->selectionTranslation($item->year, 'year');
 			}
 		}
-
+ 
         
 		// return items
 		return $items;
@@ -161,7 +161,7 @@ class SupportgroupsModelPayments extends JModelList
 	public function selectionTranslation($value,$name)
 	{
 		// Array of year language strings
-		if ($name == 'year')
+		if ($name === 'year')
 		{
 			$yearArray = array(
 				0 => 'COM_SUPPORTGROUPS_PAYMENT_SELECT_A_YEAR',
@@ -254,7 +254,7 @@ class SupportgroupsModelPayments extends JModelList
 			}
 			else
 			{
-				$search = $db->quote('%' . $db->escape($search, true) . '%');
+				$search = $db->quote('%' . $db->escape($search) . '%');
 				$query->where('(a.support_group LIKE '.$search.' OR g.name LIKE '.$search.' OR a.year LIKE '.$search.' OR a.amount LIKE '.$search.')');
 			}
 		}
@@ -262,12 +262,12 @@ class SupportgroupsModelPayments extends JModelList
 		// Filter by support_group.
 		if ($support_group = $this->getState('filter.support_group'))
 		{
-			$query->where('a.support_group = ' . $db->quote($db->escape($support_group, true)));
+			$query->where('a.support_group = ' . $db->quote($db->escape($support_group)));
 		}
 		// Filter by Year.
 		if ($year = $this->getState('filter.year'))
 		{
-			$query->where('a.year = ' . $db->quote($db->escape($year, true)));
+			$query->where('a.year = ' . $db->quote($db->escape($year)));
 		}
 
 		// Add the list ordering clause.
@@ -291,6 +291,8 @@ class SupportgroupsModelPayments extends JModelList
 		// setup the query
 		if (SupportgroupsHelper::checkArray($pks))
 		{
+			// Set a value to know this is exporting method.
+			$_export = true;
 			// Get the user object.
 			$user = JFactory::getUser();
 			// Create a new query object.

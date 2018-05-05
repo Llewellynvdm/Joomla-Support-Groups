@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 4 of this MVC
+	@build			25th October, 2017
+	@created		5th March, 2016
 	@package		Support Groups
 	@subpackage		edit.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -33,10 +33,33 @@ JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 $componentParams = JComponentHelper::getParams('com_supportgroups');
 ?>
-
+<script type="text/javascript">
+	// waiting spinner
+	var outerDiv = jQuery('body');
+	jQuery('<div id="loading"></div>')
+		.css("background", "rgba(255, 255, 255, .8) url('components/com_supportgroups/assets/images/import.gif') 50% 15% no-repeat")
+		.css("top", outerDiv.position().top - jQuery(window).scrollTop())
+		.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
+		.css("width", outerDiv.width())
+		.css("height", outerDiv.height())
+		.css("position", "fixed")
+		.css("opacity", "0.80")
+		.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
+		.css("filter", "alpha(opacity = 80)")
+		.css("display", "none")
+		.appendTo(outerDiv);
+	jQuery('#loading').show();
+	// when page is ready remove and show
+	jQuery(window).load(function() {
+		jQuery('#supportgroups_loader').fadeIn('fast');
+		jQuery('#loading').hide();
+	});
+</script>
+<div id="supportgroups_loader" style="display: none;">
 <form action="<?php echo JRoute::_('index.php?option=com_supportgroups&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('country.settings_above', $this); ?><div class="form-horizontal">
+	<?php echo JLayoutHelper::render('country.settings_above', $this); ?>
+<div class="form-horizontal">
 
 	<?php echo JHtml::_('bootstrap.startTabSet', 'countryTab', array('active' => 'settings')); ?>
 
@@ -101,5 +124,7 @@ $componentParams = JComponentHelper::getParams('com_supportgroups');
 		<input type="hidden" name="task" value="country.edit" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
+	</div>
 </div>
 </form>
+</div>

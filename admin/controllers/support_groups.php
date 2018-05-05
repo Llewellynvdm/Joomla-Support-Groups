@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 36 of this MVC
+	@build			25th October, 2017
+	@created		4th March, 2016
 	@package		Support Groups
 	@subpackage		support_groups.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -107,5 +107,35 @@ class SupportgroupsControllerSupport_groups extends JControllerAdmin
 		$message = JText::_('COM_SUPPORTGROUPS_IMPORT_FAILED');
 		$this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view=support_groups', false), $message, 'error');
 		return;
-	} 
+	}  
+
+	public function smartExport()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		// check if export is allowed for this user.
+		$user = JFactory::getUser();
+		if ($user->authorise('support_group.smart_export', 'com_supportgroups') && $user->authorise('core.export', 'com_supportgroups'))
+		{
+			// Get the input
+			$input = JFactory::getApplication()->input;
+			$pks = $input->post->get('cid', array(), 'array');
+			// Sanitize the input
+			JArrayHelper::toInteger($pks);
+			// Get the model
+			$model = $this->getModel('Support_groups');
+			// get the data to export
+			$data = $model->getSmartExport($pks);
+			if (SupportgroupsHelper::checkArray($data))
+			{
+				// now set the data to the spreadsheet
+				$date = JFactory::getDate();
+				SupportgroupsHelper::xls($data,'Support_groups_'.$date->format('jS_F_Y'),'Support groups exported ('.$date->format('jS F, Y').')','support groups');
+			}
+		}
+		// Redirect to the list screen with error.
+		$message = JText::_('COM_SUPPORTGROUPS_EXPORT_FAILED');
+		$this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view=support_groups', false), $message, 'error');
+		return;
+	}
 }

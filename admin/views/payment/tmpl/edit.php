@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 5 of this MVC
+	@build			27th April, 2016
+	@created		6th March, 2016
 	@package		Support Groups
 	@subpackage		edit.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -33,10 +33,11 @@ JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 $componentParams = JComponentHelper::getParams('com_supportgroups');
 ?>
-
+<div id="supportgroups_loader">
 <form action="<?php echo JRoute::_('index.php?option=com_supportgroups&layout=edit&id='.(int) $this->item->id.$this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('payment.details_above', $this); ?><div class="form-horizontal">
+	<?php echo JLayoutHelper::render('payment.details_above', $this); ?>
+<div class="form-horizontal">
 
 	<?php echo JHtml::_('bootstrap.startTabSet', 'paymentTab', array('active' => 'details')); ?>
 
@@ -89,5 +90,7 @@ $componentParams = JComponentHelper::getParams('com_supportgroups');
 		<input type="hidden" name="task" value="payment.edit" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
+	</div>
 </div>
 </form>
+</div>

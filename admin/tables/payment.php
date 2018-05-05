@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 5 of this MVC
+	@build			27th April, 2016
+	@created		6th March, 2016
 	@package		Support Groups
 	@subpackage		payment.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -265,7 +265,7 @@ class SupportgroupsTablePayment extends JTable
 						}
 					}
 					// check if there are any view values remaining
-					if (count($_result))
+					if (count( (array) $_result))
 					{
 						$_result = json_encode($_result);
 						$_result = array($_result);
@@ -326,26 +326,13 @@ class SupportgroupsTablePayment extends JTable
 	}
 
 	/**
-	 * Generate a valid alias from title / date.
-	 * Remains public to be able to check for duplicated alias before saving
-	 *
-	 * @return  string
-	 */
+	* This view does not actually have an alias
+	*
+	* @return  bool
+	*/
 	public function generateAlias()
 	{
-		if (empty($this->alias))
-		{
-			$this->alias = $this->name;
-		}
-
-		$this->alias = JApplication::stringURLSafe($this->alias);
-
-		if (trim(str_replace('-', '', $this->alias)) == '')
-		{
-			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
-		}
-
-		return $this->alias;
+		return false;
 	}
 
 }

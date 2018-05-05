@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -32,8 +32,8 @@ $document->addStyleSheet('components/com_supportgroups/assets/css/site.css');
 $document->addScript('components/com_supportgroups/assets/js/site.js');
 
 // Require helper files
-JLoader::register('SupportgroupsHelper', dirname(__FILE__) . '/helpers/supportgroups.php');
-JLoader::register('SupportgroupsHelperRoute', dirname(__FILE__) . '/helpers/route.php'); ###SITE_GLOBAL_EVENT###
+JLoader::register('SupportgroupsHelper', dirname(__FILE__) . '/helpers/supportgroups.php'); 
+JLoader::register('SupportgroupsHelperRoute', dirname(__FILE__) . '/helpers/route.php'); 
 
 // import joomla controller library
 jimport('joomla.application.component.controller');

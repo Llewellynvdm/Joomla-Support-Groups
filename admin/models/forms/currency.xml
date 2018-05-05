@@ -44,11 +44,12 @@
 		</field>
 		<!-- Date Modified Field. Type: Calendar (joomla) -->
 		<field name="modified" type="calendar" class="readonly"
-			label="JGLOBAL_FIELD_MODIFIED_LABEL" description="COM_CONTENT_FIELD_MODIFIED_DESC"
+			label="COM_SUPPORTGROUPS_CURRENCY_MODIFIED_DATE_LABEL" description="COM_SUPPORTGROUPS_CURRENCY_MODIFIED_DATE_DESC"
 			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
 		<!-- User Modified Field. Type: User (joomla) -->
 		<field name="modified_by" type="user"
-			label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+			label="COM_SUPPORTGROUPS_CURRENCY_MODIFIED_BY_LABEL"
+			description="COM_SUPPORTGROUPS_CURRENCY_MODIFIED_BY_DESC"
 			class="readonly"
 			readonly="true"
 			filter="unset"
@@ -115,7 +116,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_SUPPORTGROUPS_CURRENCY_NAME_MESSAGE"
 			hint="COM_SUPPORTGROUPS_CURRENCY_NAME_HINT"
 		/>
 		<!-- Codethree Field. Type: Text. (joomla) -->
@@ -129,7 +130,7 @@
 			class="text_area"
 			required="true"
 			filter="WORD"
-			message="Error! Please add three-letter currency code here."
+			message="COM_SUPPORTGROUPS_CURRENCY_CODETHREE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_CURRENCY_CODETHREE_HINT"
 		/>
 		<!-- Numericcode Field. Type: Text. (joomla) -->
@@ -143,7 +144,7 @@
 			class="text_area"
 			required="true"
 			filter="INT"
-			message="Error! Please add numeric code here."
+			message="COM_SUPPORTGROUPS_CURRENCY_NUMERICCODE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_CURRENCY_NUMERICCODE_HINT"
 		/>
 		<!-- Symbol Field. Type: Text. (joomla) -->
@@ -157,17 +158,30 @@
 			class="text_area"
 			required="true"
 			filter="STRING"
-			message="Error! Please add currency symbol here."
+			message="COM_SUPPORTGROUPS_CURRENCY_SYMBOL_MESSAGE"
 			hint="COM_SUPPORTGROUPS_CURRENCY_SYMBOL_HINT"
 		/>
 		<!-- Alias Field. Type: Text. (joomla) -->
 		<field
 			type="text"
 			name="alias"
-			label="JFIELD_ALIAS_LABEL"
+			label="COM_SUPPORTGROUPS_CURRENCY_ALIAS_LABEL"
 			description="JFIELD_ALIAS_DESC"
 			filter="STRING"
 			hint="COM_SUPPORTGROUPS_CURRENCY_ALIAS_HINT"
+		/>
+		<!-- Negativestyle Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="negativestyle"
+			label="COM_SUPPORTGROUPS_CURRENCY_NEGATIVESTYLE_LABEL"
+			size="40"
+			description="COM_SUPPORTGROUPS_CURRENCY_NEGATIVESTYLE_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="STRING"
+			message="COM_SUPPORTGROUPS_CURRENCY_NEGATIVESTYLE_MESSAGE"
+			hint="COM_SUPPORTGROUPS_CURRENCY_NEGATIVESTYLE_HINT"
 		/>
 		<!-- Positivestyle Field. Type: Text. (joomla) -->
 		<field
@@ -179,20 +193,8 @@
 			class="text_area"
 			required="true"
 			filter="STRING"
-			message="Error! Please add currency positive style here."
+			message="COM_SUPPORTGROUPS_CURRENCY_POSITIVESTYLE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_CURRENCY_POSITIVESTYLE_HINT"
-		/>
-		<!-- Thousands Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="thousands"
-			label="COM_SUPPORTGROUPS_CURRENCY_THOUSANDS_LABEL"
-			size="40"
-			class="text_area"
-			required="true"
-			filter="STRING"
-			message="Error! Please add currency thousands separator here."
-			hint="COM_SUPPORTGROUPS_CURRENCY_THOUSANDS_HINT"
 		/>
 		<!-- Decimalsymbol Field. Type: Text. (joomla) -->
 		<field
@@ -206,7 +208,7 @@
 			class="text_area"
 			required="true"
 			filter="STRING"
-			message="Error! Please add currency decimal symbol here."
+			message="COM_SUPPORTGROUPS_CURRENCY_DECIMALSYMBOL_MESSAGE"
 			hint="COM_SUPPORTGROUPS_CURRENCY_DECIMALSYMBOL_HINT"
 		/>
 		<!-- Decimalplace Field. Type: Text. (joomla) -->
@@ -221,21 +223,20 @@
 			class="text_area"
 			required="true"
 			filter="INT"
-			message="Error! Please add currency decimal place here."
+			message="COM_SUPPORTGROUPS_CURRENCY_DECIMALPLACE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_CURRENCY_DECIMALPLACE_HINT"
 		/>
-		<!-- Negativestyle Field. Type: Text. (joomla) -->
+		<!-- Thousands Field. Type: Text. (joomla) -->
 		<field
 			type="text"
-			name="negativestyle"
-			label="COM_SUPPORTGROUPS_CURRENCY_NEGATIVESTYLE_LABEL"
+			name="thousands"
+			label="COM_SUPPORTGROUPS_CURRENCY_THOUSANDS_LABEL"
 			size="40"
-			description="COM_SUPPORTGROUPS_CURRENCY_NEGATIVESTYLE_DESCRIPTION"
 			class="text_area"
 			required="true"
 			filter="STRING"
-			message="Error! Please add currency negative style here."
-			hint="COM_SUPPORTGROUPS_CURRENCY_NEGATIVESTYLE_HINT"
+			message="COM_SUPPORTGROUPS_CURRENCY_THOUSANDS_MESSAGE"
+			hint="COM_SUPPORTGROUPS_CURRENCY_THOUSANDS_HINT"
 		/>
 	</fieldset>
 

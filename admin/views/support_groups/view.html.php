@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 36 of this MVC
+	@build			25th October, 2017
+	@created		4th March, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -46,39 +46,38 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 			SupportgroupsHelper::addSubmenu('support_groups');
 		}
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		// Assign data to the view
-		$this->items 		= $this->get('Items');
-		$this->pagination 	= $this->get('Pagination');
-		$this->state		= $this->get('State');
-		$this->user 		= JFactory::getUser();
-		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
-		$this->listDirn		= $this->escape($this->state->get('list.direction'));
-		$this->saveOrder	= $this->listOrder == 'ordering';
-                // get global action permissions
-		$this->canDo		= SupportgroupsHelper::getActions('support_group');
-		$this->canEdit		= $this->canDo->get('support_group.edit');
-		$this->canState		= $this->canDo->get('support_group.edit.state');
-		$this->canCreate	= $this->canDo->get('support_group.create');
-		$this->canDelete	= $this->canDo->get('support_group.delete');
-		$this->canBatch	= $this->canDo->get('core.batch');
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->state = $this->get('State');
+		$this->user = JFactory::getUser();
+		$this->listOrder = $this->escape($this->state->get('list.ordering'));
+		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		$this->saveOrder = $this->listOrder == 'ordering';
+		// get global action permissions
+		$this->canDo = SupportgroupsHelper::getActions('support_group');
+		$this->canEdit = $this->canDo->get('support_group.edit');
+		$this->canState = $this->canDo->get('support_group.edit.state');
+		$this->canCreate = $this->canDo->get('support_group.create');
+		$this->canDelete = $this->canDo->get('support_group.delete');
+		$this->canBatch = $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
 		{
 			$this->addToolbar();
 			$this->sidebar = JHtmlSidebar::render();
-                        // load the batch html
-                        if ($this->canCreate && $this->canEdit && $this->canState)
-                        {
-                                $this->batchDisplay = JHtmlBatch_::render();
-                        }
+			// load the batch html
+			if ($this->canCreate && $this->canEdit && $this->canState)
+			{
+				$this->batchDisplay = JHtmlBatch_::render();
+			}
+		}
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
 		}
 
 		// Display the template
@@ -95,96 +94,101 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 	{
 		JToolBarHelper::title(JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUPS'), 'eye-open');
 		JHtmlSidebar::setAction('index.php?option=com_supportgroups&view=support_groups');
-                JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		if ($this->canCreate)
-                {
+		{
 			JToolBarHelper::addNew('support_group.add');
 		}
 
-                // Only load if there are items
-                if (SupportgroupsHelper::checkArray($this->items))
+		// Only load if there are items
+		if (SupportgroupsHelper::checkArray($this->items))
 		{
-                        if ($this->canEdit)
-                        {
-                            JToolBarHelper::editList('support_group.edit');
-                        }
+			if ($this->canEdit)
+			{
+				JToolBarHelper::editList('support_group.edit');
+			}
 
-                        if ($this->canState)
-                        {
-                            JToolBarHelper::publishList('support_groups.publish');
-                            JToolBarHelper::unpublishList('support_groups.unpublish');
-                            JToolBarHelper::archiveList('support_groups.archive');
+			if ($this->canState)
+			{
+				JToolBarHelper::publishList('support_groups.publish');
+				JToolBarHelper::unpublishList('support_groups.unpublish');
+				JToolBarHelper::archiveList('support_groups.archive');
 
-                            if ($this->canDo->get('core.admin'))
-                            {
-                                JToolBarHelper::checkin('support_groups.checkin');
-                            }
-                        }
+				if ($this->canDo->get('core.admin'))
+				{
+					JToolBarHelper::checkin('support_groups.checkin');
+				}
+			}
 
-                        // Add a batch button
-                        if ($this->canBatch && $this->canCreate && $this->canEdit && $this->canState)
-                        {
-                                // Get the toolbar object instance
-                                $bar = JToolBar::getInstance('toolbar');
-                                // set the batch button name
-                                $title = JText::_('JTOOLBAR_BATCH');
-                                // Instantiate a new JLayoutFile instance and render the batch button
-                                $layout = new JLayoutFile('joomla.toolbar.batch');
-                                // add the button to the page
-                                $dhtml = $layout->render(array('title' => $title));
-                                $bar->appendButton('Custom', $dhtml, 'batch');
-                        } 
+			// Add a batch button
+			if ($this->canBatch && $this->canCreate && $this->canEdit && $this->canState)
+			{
+				// Get the toolbar object instance
+				$bar = JToolBar::getInstance('toolbar');
+				// set the batch button name
+				$title = JText::_('JTOOLBAR_BATCH');
+				// Instantiate a new JLayoutFile instance and render the batch button
+				$layout = new JLayoutFile('joomla.toolbar.batch');
+				// add the button to the page
+				$dhtml = $layout->render(array('title' => $title));
+				$bar->appendButton('Custom', $dhtml, 'batch');
+			} 
+			if ($this->user->authorise('support_group.smart_export', 'com_supportgroups'))
+			{
+				// add Smart Export button.
+				JToolBarHelper::custom('support_groups.smartExport', 'download', '', 'COM_SUPPORTGROUPS_SMART_EXPORT', false);
+			}
 
-                        if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
-                        {
-                            JToolbarHelper::deleteList('', 'support_groups.delete', 'JTOOLBAR_EMPTY_TRASH');
-                        }
-                        elseif ($this->canState && $this->canDelete)
-                        {
-                                JToolbarHelper::trash('support_groups.trash');
-                        }
+			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
+			{
+				JToolbarHelper::deleteList('', 'support_groups.delete', 'JTOOLBAR_EMPTY_TRASH');
+			}
+			elseif ($this->canState && $this->canDelete)
+			{
+				JToolbarHelper::trash('support_groups.trash');
+			}
 
 			if ($this->canDo->get('core.export') && $this->canDo->get('support_group.export'))
 			{
 				JToolBarHelper::custom('support_groups.exportData', 'download', '', 'COM_SUPPORTGROUPS_EXPORT_DATA', true);
 			}
-                }
+		} 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('support_group.import'))
 		{
 			JToolBarHelper::custom('support_groups.importData', 'upload', '', 'COM_SUPPORTGROUPS_IMPORT_DATA', false);
 		}
 
-                // set help url for this view if found
-                $help_url = SupportgroupsHelper::getHelpUrl('support_groups');
-                if (SupportgroupsHelper::checkString($help_url))
-                {
-                        JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
-                }
+		// set help url for this view if found
+		$help_url = SupportgroupsHelper::getHelpUrl('support_groups');
+		if (SupportgroupsHelper::checkString($help_url))
+		{
+				JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
+		}
 
-                // add the options comp button
-                if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
-                {
-                        JToolBarHelper::preferences('com_supportgroups');
-                }
+		// add the options comp button
+		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
+		{
+			JToolBarHelper::preferences('com_supportgroups');
+		}
 
-                if ($this->canState)
-                {
+		if ($this->canState)
+		{
 			JHtmlSidebar::addFilter(
 				JText::_('JOPTION_SELECT_PUBLISHED'),
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-                        // only load if batch allowed
-                        if ($this->canBatch)
-                        {
-                            JHtmlBatch_::addListSelection(
-                                JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
-                                'batch[published]',
-                                JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-                            );
-                        }
+			// only load if batch allowed
+			if ($this->canBatch)
+			{
+				JHtmlBatch_::addListSelection(
+					JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
+					'batch[published]',
+					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+				);
+			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -196,52 +200,52 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			JHtmlBatch_::addListSelection(
-                                JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
-                                'batch[access]',
-                                JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-                }  
+		} 
 
-		// Set Location Name Selection
-		$this->locationNameOptions = JFormHelper::loadFieldType('Locations')->getOptions();
-		if ($this->locationNameOptions)
+		// Set Area Name Selection
+		$this->areaNameOptions = JFormHelper::loadFieldType('Areas')->getOptions();
+		if ($this->areaNameOptions)
 		{
-			// Location Name Filter
+			// Area Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL').' -',
-				'filter_location',
-				JHtml::_('select.options', $this->locationNameOptions, 'value', 'text', $this->state->get('filter.location'))
+				'- Select '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL').' -',
+				'filter_area',
+				JHtml::_('select.options', $this->areaNameOptions, 'value', 'text', $this->state->get('filter.area'))
 			);
 
 			if ($this->canBatch && $this->canCreate && $this->canEdit)
 			{
-				// Location Name Batch Selection
+				// Area Name Batch Selection
 				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL').' -',
-					'batch[location]',
-					JHtml::_('select.options', $this->locationNameOptions, 'value', 'text')
+					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL').' -',
+					'batch[area]',
+					JHtml::_('select.options', $this->areaNameOptions, 'value', 'text')
 				);
 			}
 		}
 
-		// Set Clinic Name Selection
-		$this->clinicNameOptions = JFormHelper::loadFieldType('Clinics')->getOptions();
-		if ($this->clinicNameOptions)
+		// Set Facility Name Selection
+		$this->facilityNameOptions = JFormHelper::loadFieldType('Facilities')->getOptions();
+		if ($this->facilityNameOptions)
 		{
-			// Clinic Name Filter
+			// Facility Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL').' -',
-				'filter_clinic',
-				JHtml::_('select.options', $this->clinicNameOptions, 'value', 'text', $this->state->get('filter.clinic'))
+				'- Select '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL').' -',
+				'filter_facility',
+				JHtml::_('select.options', $this->facilityNameOptions, 'value', 'text', $this->state->get('filter.facility'))
 			);
 
 			if ($this->canBatch && $this->canCreate && $this->canEdit)
 			{
-				// Clinic Name Batch Selection
+				// Facility Name Batch Selection
 				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL').' -',
-					'batch[clinic]',
-					JHtml::_('select.options', $this->clinicNameOptions, 'value', 'text')
+					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL').' -',
+					'batch[facility]',
+					JHtml::_('select.options', $this->facilityNameOptions, 'value', 'text')
 				);
 			}
 		}
@@ -254,12 +258,15 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUPS'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_supportgroups/assets/css/support_groups.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUPS'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_supportgroups/assets/css/support_groups.css", (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 	}
 
-        /**
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var  The output to escape.
@@ -270,10 +277,10 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 	{
 		if(strlen($var) > 50)
 		{
-                        // use the helper htmlEscape method instead and shorten the string
+			// use the helper htmlEscape method instead and shorten the string
 			return SupportgroupsHelper::htmlEscape($var, $this->_charset, true);
 		}
-                // use the helper htmlEscape method instead.
+		// use the helper htmlEscape method instead.
 		return SupportgroupsHelper::htmlEscape($var, $this->_charset);
 	}
 
@@ -289,11 +296,11 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_LABEL'),
 			'a.phone' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_LABEL'),
-			'g.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_LOCATION_LABEL'),
-			'h.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_CLINIC_LABEL'),
+			'g.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL'),
+			'h.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL'),
 			'a.male' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_MALE_LABEL'),
 			'a.female' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FEMALE_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	} 
+	}
 }

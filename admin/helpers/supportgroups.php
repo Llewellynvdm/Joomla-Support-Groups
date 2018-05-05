@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -32,6 +32,11 @@ defined('_JEXEC') or die('Restricted access');
 abstract class SupportgroupsHelper
 { 
 
+	/**
+	* 	The global params
+	**/
+	protected static $params = false;
+
 	public static function setCurrency($amount,$support_group)
 	{
 		// get the currency id
@@ -47,9 +52,9 @@ abstract class SupportgroupsHelper
 		if (!isset(self::$currency[$support_group]))
 		{
 			// get the location
-			$location = self::getVar('support_group', $support_group, 'id', 'location');
+			$area = self::getVar('support_group', $support_group, 'id', 'area');
 			// get the Region
-			$region = self::getVar('location', $location, 'id', 'region');
+			$region = self::getVar('area', $area, 'id', 'region');
 			// get the Country
 			$country = self::getVar('region', $region, 'id', 'country');
 			// get the Currency Codethree
@@ -62,42 +67,58 @@ abstract class SupportgroupsHelper
 
 	protected static $currencyDetails = array();
 
-	public static function getCurrencyDetails($id = false)
+	public static function getCurrencyDetails($codethree = false)
 	{
-		if(is_numeric($id))
+		// return cached data if set
+		if ($codethree && !isset(self::$currencyDetails[$codethree]))
 		{
-			if (!isset(self::$currencyDetails[$id]))
+			// Get a db connection.
+			$db = JFactory::getDbo();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(
+				array(	'a.id','a.name','a.codethree','a.numericcode','a.symbol','a.thousands','a.decimalplace',
+					'a.decimalsymbol','a.positivestyle','a.negativestyle'),
+				array(	'currency_id','currency_name','currency_codethree','currency_numericcode','currency_symbol',
+					'currency_thousands','currency_decimalplace','currency_decimalsymbol','currency_positivestyle',
+					'currency_negativestyle')));
+			$query->from($db->quoteName('#__supportgroups_currency', 'a'));
+			if (is_numeric($codethree))
 			{
-				// Get a db connection.
-				$db = JFactory::getDbo();
-				// Create a new query object.
-				$query = $db->getQuery(true);
-
-				$query->select($db->quoteName(
-					array(	'a.id','a.name','a.codethree','a.numericcode','a.symbol','a.thousands','a.decimalplace',
-						'a.decimalsymbol','a.positivestyle','a.negativestyle'),
-					array(	'currency_id','currency_name','currency_codethree','currency_numericcode','currency_symbol',
-						'currency_thousands','currency_decimalplace','currency_decimalsymbol','currency_positivestyle',
-						'currency_negativestyle')));
-				$query->from($db->quoteName('#__supportgroups_currency', 'a'));
-				$query->where($db->quoteName('id') . ' = '.(int) $id);
-				$db->setQuery($query);
-				$db->execute();
-				if ($db->getNumRows())
-				{
-					self::$currencyDetails[$id] = $db->loadObject();
-				}
-				else
-				{
-					self::$currencyDetails[$id] = false;
-				}
+				$query->where($db->quoteName('a.id') . ' = '. (int) $codethree);
 			}
-			return self::$currencyDetails[$id];
+			elseif (strlen($codethree) == 3)
+			{
+				$query->where($db->quoteName('a.codethree') . ' = '.$db->quote($codethree));
+			}
+			else
+			{
+				$query->where($db->quoteName('a.codethree') . ' = '.$db->quote('NONE'));
+			}
+			$db->setQuery($query);
+			$db->execute();
+			if ($db->getNumRows())
+			{
+				self::$currencyDetails[$codethree] = $db->loadObject();
+			}
+		}
+		// make sure it has been set
+		if (isset(self::$currencyDetails[$codethree]))
+		{
+			return self::$currencyDetails[$codethree];
 		}
 		return false;
 	}
-	
-	public static function makeMoney($number,$currency = false)
+
+	/**
+	 * The Method used to turn numbers into (money) currency strings
+	 *
+	 * @param in/float/string    $number
+	 * @param bool/string/int   $currency
+	 *
+	 * @return mixed|number
+	 */
+	public static function makeMoney($number, $currency = false)
 	{
 		// first check if we have a number
 		if (is_numeric($number))
@@ -105,15 +126,37 @@ abstract class SupportgroupsHelper
 			// make sure to include the negative finder file
 			include_once 'negativefinder.php';
 			// check if the number is negative
-			$negativeFinderObj = new NegativeFinder(new Expression("$number"));
+			$negativeFinderObj = new SupportgroupsNegativeFinder(new SupportgroupsExpression("$number"));
 			$negative = $negativeFinderObj->isItNegative() ? TRUE : FALSE;
 		}
 		else
 		{
-			throw new Exception('ERROR! ('.$number.') is not a number!');
+			// just return the string
+			return $number;
 		}
-		// setup the currency
-		$currency = self::getCurrencyDetails($currency);
+		// not setup the currency
+		if (self::checkObject($currency))
+		{
+			if(!isset($currency->currency_positivestyle) || !isset($currency->currency_negativestyle) || !isset($currency->currency_decimalplace) || !isset($currency->currency_decimalsymbol) || !isset($currency->currency_symbol))
+			{
+				if (isset($currency->currency_id))
+				{
+					$currency = self::getCurrencyDetails($currency->currency_id);
+				}
+				elseif (isset($currency->id))
+				{
+					$currency = self::getCurrencyDetails($currency->id);
+				}
+				else
+				{
+					$currency = self::getCurrencyDetails();
+				}
+			}
+		}
+		else
+		{
+			$currency = self::getCurrencyDetails($currency);
+		}
 		// set the number to currency
 		if (self::checkObject($currency))
 		{
@@ -122,7 +165,7 @@ abstract class SupportgroupsHelper
 				$format = $currency->currency_positivestyle;
 				$sign = '+';
 			}
-			else 
+			else
 			{
 				$format = $currency->currency_negativestyle;
 				$sign = '-';
@@ -137,13 +180,102 @@ abstract class SupportgroupsHelper
 		}
 		return $number;
 	}
+
+	/**
+	* Get the file path or url
+	*
+	* @param  string   $type              The (url/path) type to return
+	* @param  string   $target            The Params Target name (if set)
+	* @param  string   $fileType          The kind of filename to generate (if not set no file name is generated)
+	* @param  string   $key               The key to adjust the filename (if not set ignored)
+	* @param  string   $default           The default path if not set in Params (fallback path)
+	* @param  bool     $createIfNotSet    The switch to create the folder if not found
+	*
+	* @return  string    On success the path or url is returned based on the type requested
+	*
+	*/
+	public static function getFilePath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = JPATH_SITE . '/images/', $createIfNotSet = true)
+	{
+		// get the global settings
+		if (!self::checkObject(self::$params))
+		{
+			self::$params = JComponentHelper::getParams('com_supportgroups');
+		}
+		$filePath = self::$params->get($target, $default);
+		// check the file path (revert to default only of not a hidden file path)
+		if ('hiddenfilepath' !== $target && strpos($filePath, JPATH_SITE) === false)
+		{
+			$filePath = $default;
+		}
+		jimport('joomla.filesystem.folder');
+		// create the folder if it does not exist
+		if ($createIfNotSet && !JFolder::exists($filePath))
+		{
+			JFolder::create($filePath);
+		}
+		// setup the file name
+		$fileName = '';
+		// Get basic key
+		$basickey = 'Th!s_iS_n0t_sAfe_buT_b3tter_then_n0thiug';
+		if (method_exists(get_called_class(), "getCryptKey")) 
+		{
+			$basickey = self::getCryptKey('basic', $basickey);
+		}
+		// check the key
+		if (!self::checkString($key))
+		{
+			$key = 'vDm';
+		}
+		// set the file name
+		if (self::checkString($fileType))
+		{
+			// set the name
+			$fileName = trim(md5($type.$target.$basickey.$key) . '.' . trim($fileType, '.'));
+		}
+		else
+		{
+			$fileName = trim(md5($type.$target.$basickey.$key)) . '.txt';
+		}
+		// return the url
+		if ('url' === $type)
+		{
+			if (strpos($filePath, JPATH_SITE) !== false)
+			{
+				$filePath = trim( str_replace( JPATH_SITE, '', $filePath), '/');
+				return JURI::root() . $filePath . '/' . $fileName;
+			}
+			// since the path is behind the root folder of the site, return only the root url (may be used to build the link)
+			return JURI::root();
+		}
+		// sanitize the path
+		return '/' . trim( $filePath, '/' ) . '/' . $fileName;
+	}
+ 
 	/**
 	*	Load the Component xml manifest.
 	**/
-        public static function manifest()
+	public static function manifest()
 	{
-                $manifestUrl = JPATH_ADMINISTRATOR."/components/com_supportgroups/supportgroups.xml";
-                return simplexml_load_file($manifestUrl);
+		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_supportgroups/supportgroups.xml";
+		return simplexml_load_file($manifestUrl);
+	}
+
+	/**
+	*	Joomla version object
+	**/	
+	protected static $JVersion;
+
+	/**
+	*	set/get Joomla version
+	**/
+	public static function jVersion()
+	{
+		// check if set
+		if (!self::checkObject(self::$JVersion))
+		{
+			self::$JVersion = new JVersion();
+		}
+		return self::$JVersion;
 	}
 
 	/**
@@ -158,22 +290,22 @@ abstract class SupportgroupsHelper
 		// get all Contributors (max 20)
 		$searchArray = range('0','20');
 		foreach($searchArray as $nr)
-                {
+ 		{
 			if ((NULL !== $params->get("showContributor".$nr)) && ($params->get("showContributor".$nr) == 1 || $params->get("showContributor".$nr) == 3))
-                        {
+			{
 				// set link based of selected option
 				if($params->get("useContributor".$nr) == 1)
-                                {
+         		{
 					$link_front = '<a href="mailto:'.$params->get("emailContributor".$nr).'" target="_blank">';
 					$link_back = '</a>';
 				}
-                                elseif($params->get("useContributor".$nr) == 2)
-                                {
+				elseif($params->get("useContributor".$nr) == 2)
+				{
 					$link_front = '<a href="'.$params->get("linkContributor".$nr).'" target="_blank">';
 					$link_back = '</a>';
 				}
-                                else
-                                {
+				else
+				{
 					$link_front = '';
 					$link_back = '';
 				}
@@ -261,41 +393,45 @@ abstract class SupportgroupsHelper
 	**/
 	public static function addSubmenu($submenu)
 	{
-                // load user for access menus
-                $user = JFactory::getUser();
-                // load the submenus to sidebar
-                JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_DASHBOARD'), 'index.php?option=com_supportgroups&view=supportgroups', $submenu == 'supportgroups');
+		// load user for access menus
+		$user = JFactory::getUser();
+		// load the submenus to sidebar
+		JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_DASHBOARD'), 'index.php?option=com_supportgroups&view=supportgroups', $submenu === 'supportgroups');
 		if ($user->authorise('support_group.access', 'com_supportgroups') && $user->authorise('support_group.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_SUPPORT_GROUPS'), 'index.php?option=com_supportgroups&view=support_groups', $submenu == 'support_groups');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_SUPPORT_GROUPS'), 'index.php?option=com_supportgroups&view=support_groups', $submenu === 'support_groups');
 		}
 		if ($user->authorise('payment.access', 'com_supportgroups') && $user->authorise('payment.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_PAYMENTS'), 'index.php?option=com_supportgroups&view=payments', $submenu == 'payments');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_PAYMENTS'), 'index.php?option=com_supportgroups&view=payments', $submenu === 'payments');
 		}
-		if ($user->authorise('clinic.access', 'com_supportgroups') && $user->authorise('clinic.submenu', 'com_supportgroups'))
+		if ($user->authorise('facility.access', 'com_supportgroups') && $user->authorise('facility.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_CLINICS'), 'index.php?option=com_supportgroups&view=clinics', $submenu == 'clinics');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_FACILITIES'), 'index.php?option=com_supportgroups&view=facilities', $submenu === 'facilities');
 		}
-		if ($user->authorise('location.access', 'com_supportgroups') && $user->authorise('location.submenu', 'com_supportgroups'))
+		if ($user->authorise('additional_info.access', 'com_supportgroups') && $user->authorise('additional_info.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_LOCATIONS'), 'index.php?option=com_supportgroups&view=locations', $submenu == 'locations');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_ADDITIONAL_INFORMATION'), 'index.php?option=com_supportgroups&view=additional_information', $submenu === 'additional_information');
+		}
+		if ($user->authorise('area.access', 'com_supportgroups') && $user->authorise('area.submenu', 'com_supportgroups'))
+		{
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_AREAS'), 'index.php?option=com_supportgroups&view=areas', $submenu === 'areas');
 		}
 		if ($user->authorise('region.access', 'com_supportgroups') && $user->authorise('region.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_REGIONS'), 'index.php?option=com_supportgroups&view=regions', $submenu == 'regions');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_REGIONS'), 'index.php?option=com_supportgroups&view=regions', $submenu === 'regions');
 		}
 		if ($user->authorise('country.access', 'com_supportgroups') && $user->authorise('country.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_COUNTRIES'), 'index.php?option=com_supportgroups&view=countries', $submenu == 'countries');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_COUNTRIES'), 'index.php?option=com_supportgroups&view=countries', $submenu === 'countries');
 		}
 		if ($user->authorise('currency.access', 'com_supportgroups') && $user->authorise('currency.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_CURRENCIES'), 'index.php?option=com_supportgroups&view=currencies', $submenu == 'currencies');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_CURRENCIES'), 'index.php?option=com_supportgroups&view=currencies', $submenu === 'currencies');
 		}
 		if ($user->authorise('help_document.access', 'com_supportgroups') && $user->authorise('help_document.submenu', 'com_supportgroups'))
 		{
-			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_supportgroups&view=help_documents', $submenu == 'help_documents');
+			JHtmlSidebar::addEntry(JText::_('COM_SUPPORTGROUPS_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_supportgroups&view=help_documents', $submenu === 'help_documents');
 		}
 	} 
 
@@ -489,7 +625,7 @@ abstract class SupportgroupsHelper
 						$objPHPExcel->getActiveSheet()->getColumnDimension($a)->setAutoSize(true);
 						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($headerStyles);
 						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-					} elseif ($a == 'A'){
+					} elseif ($a === 'A'){
 						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($sideStyles);
 					} else {
 						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($normalStyles);
@@ -533,18 +669,27 @@ abstract class SupportgroupsHelper
 	*/
 	public static function getFileHeaders($dataType)
 	{		
-		// make sure the file is loaded		
+		// make sure these files are loaded		
 		JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');
+		JLoader::import('ChunkReadFilter', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/PHPExcel/Reader');
 		// get session object
-		$session 	= JFactory::getSession();
+		$session	= JFactory::getSession();
 		$package	= $session->get('package', null);
 		$package	= json_decode($package, true);
 		// set the headers
 		if(isset($package['dir']))
 		{
+			$chunkFilter = new PHPExcel_Reader_chunkReadFilter();
+			// only load first three rows
+			$chunkFilter->setRows(2,1);
+			// identify the file type
 			$inputFileType = PHPExcel_IOFactory::identify($package['dir']);
+			// create the reader for this file type
 			$excelReader = PHPExcel_IOFactory::createReader($inputFileType);
+			// load the limiting filter
+			$excelReader->setReadFilter($chunkFilter);
 			$excelReader->setReadDataOnly(true);
+			// load the rows (only first three)
 			$excelObj = $excelReader->load($package['dir']);
 			$headers = array();
 			foreach ($excelObj->getActiveSheet()->getRowIterator() as $row)
@@ -570,6 +715,19 @@ abstract class SupportgroupsHelper
 		return false;
 	}
 
+	/**
+	 * Get a Variable 
+	 *
+	 * @param   string   $table        The table from which to get the variable
+	 * @param   string   $where        The value where
+	 * @param   string   $whereString  The target/field string where/name
+	 * @param   string   $what         The return field
+	 * @param   string   $operator     The operator between $whereString/field and $where/value
+	 * @param   string   $main         The component in which the table is found
+	 *
+	 * @return  mix string/int/float
+	 *
+	 */
 	public static function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = 'supportgroups')
 	{
 		if(!$where)
@@ -580,9 +738,15 @@ abstract class SupportgroupsHelper
 		$db = JFactory::getDbo();
 		// Create a new query object.
 		$query = $db->getQuery(true);
-
 		$query->select($db->quoteName(array($what)));
-		$query->from($db->quoteName('#__'.$main.'_'.$table));
+		if (empty($table))
+		{
+			$query->from($db->quoteName('#__'.$main));
+		}
+		else
+		{
+			$query->from($db->quoteName('#__'.$main.'_'.$table));
+		}
 		if (is_numeric($where))
 		{
 			$query->where($db->quoteName($whereString) . ' '.$operator.' '.(int) $where);
@@ -604,6 +768,20 @@ abstract class SupportgroupsHelper
 		return false;
 	}
 
+	/**
+	 * Get array of variables
+	 *
+	 * @param   string   $table        The table from which to get the variables
+	 * @param   string   $where        The value where
+	 * @param   string   $whereString  The target/field string where/name
+	 * @param   string   $what         The return field
+	 * @param   string   $operator     The operator between $whereString/field and $where/value
+	 * @param   string   $main         The component in which the table is found
+	 * @param   bool     $unique       The switch to return a unique array
+	 *
+	 * @return  array
+	 *
+	 */
 	public static function getVars($table, $where = null, $whereString = 'user', $what = 'id', $operator = 'IN', $main = 'supportgroups', $unique = true)
 	{
 		if(!$where)
@@ -618,13 +796,25 @@ abstract class SupportgroupsHelper
 
 		if (self::checkArray($where))
 		{
+			// prep main <-- why? well if $main='' is empty then $table can be categories or users
+			if (self::checkString($main))
+			{
+				$main = '_'.ltrim($main, '_');
+			}
 			// Get a db connection.
 			$db = JFactory::getDbo();
 			// Create a new query object.
 			$query = $db->getQuery(true);
 
 			$query->select($db->quoteName(array($what)));
-			$query->from($db->quoteName('#__'.$main.'_'.$table));
+			if (empty($table))
+			{
+				$query->from($db->quoteName('#__'.$main));
+			}
+			else
+			{
+				$query->from($db->quoteName('#_'.$main.'_'.$table));
+			}
 			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
 			$db->setQuery($query);
 			$db->execute();
@@ -640,52 +830,71 @@ abstract class SupportgroupsHelper
 		return false;
 	}
 
-	public static function jsonToString($value, $sperator = ", ")
+	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
-                // check if string is JSON
-                $result = json_decode($value, true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                // is JSON
+		// do some table foot work
+		$external = false;
+		if (strpos($table, '#__') !== false)
+		{
+			$external = true;
+			$table = str_replace('#__', '', $table);
+		}
+		// check if string is JSON
+		$result = json_decode($value, true);
+		if (json_last_error() === JSON_ERROR_NONE)
+		{
+			// is JSON
 			if (self::checkArray($result))
 			{
-				$value = '';
-				$counter = 0;
-				foreach ($result as $string)
+				if (self::checkString($table))
 				{
-					if ($counter)
+					$names = array();
+					foreach ($result as $val)
 					{
-						$value .= $sperator.$string;
+						if ($external)
+						{
+							if ($name = self::getVar(null, $val, $id, $name, '=', $table))
+							{
+								$names[] = $name;
+							}
+						}
+						else
+						{
+							if ($name = self::getVar($table, $val, $id, $name))
+							{
+								$names[] = $name;
+							}
+						}
 					}
-					else
+					if (self::checkArray($names))
 					{
-						$value .= $string;
-					}
-					$counter++;
+						return (string) implode($sperator,$names);
+					}	
 				}
-				return $value;
+				return (string) implode($sperator,$result);
 			}
-                        return json_decode($value);
-                }
-                return $value;
-        }
+			return (string) json_decode($value);
+		}
+		return $value;
+	}
 
 	public static function isPublished($id,$type)
 	{
 		if ($type == 'raw')
-                {
+		{
 			$type = 'item';
 		}
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select(array('a.published'));
 		$query->from('#__supportgroups_'.$type.' AS a');
-		$query->where('a.id = '.$id);
+		$query->where('a.id = '. (int) $id);
 		$query->where('a.published = 1');
 		$db->setQuery($query);
 		$db->execute();
 		$found = $db->getNumRows();
 		if($found)
-                {
+		{
 			return true;
 		}
 		return false;
@@ -697,45 +906,45 @@ abstract class SupportgroupsHelper
 		$query = $db->getQuery(true);
 		$query->select(array('a.title'));
 		$query->from('#__usergroups AS a');
-		$query->where('a.id = '.$id);
+		$query->where('a.id = '. (int) $id);
 		$db->setQuery($query);
 		$db->execute();
 		$found = $db->getNumRows();
 		if($found)
-                {
+  		{
 			return $db->loadResult();
 		}
 		return $id;
 	}
 
-        /**
+	/**
 	*	Get the actions permissions
 	**/
-        public static function getActions($view,&$record = null,$views = null)
+	public static function getActions($view,&$record = null,$views = null)
 	{
 		jimport('joomla.access.access');
 
 		$user	= JFactory::getUser();
 		$result	= new JObject;
 		$view	= self::safeString($view);
-                if (self::checkString($views))
-                {
+		if (self::checkString($views))
+		{
 			$views = self::safeString($views);
-                }
+ 		}
 		// get all actions from component
 		$actions = JAccess::getActions('com_supportgroups', 'component');
-                // set acctions only set in component settiongs
-                $componentActions = array('core.admin','core.manage','core.options','core.export');
+		// set acctions only set in component settiongs
+		$componentActions = array('core.admin','core.manage','core.options','core.export');
 		// loop the actions and set the permissions
 		foreach ($actions as $action)
-                {
+		{
 			// set to use component default
 			$fallback= true;
 			if (self::checkObject($record) && isset($record->id) && $record->id > 0 && !in_array($action->name,$componentActions))
 			{
 				// The record has been set. Check the record permissions.
 				$permission = $user->authorise($action->name, 'com_supportgroups.'.$view.'.' . (int) $record->id);
-				if (!$permission && !is_null($permission))
+				if (!$permission) // TODO removed && !is_null($permission)
 				{
 					if ($action->name == 'core.edit' || $action->name == $view.'.edit')
 					{
@@ -807,17 +1016,17 @@ abstract class SupportgroupsHelper
 				}
 				elseif (self::checkString($views) && isset($record->catid) && $record->catid > 0)
 				{
-                                        // make sure we use the core. action check for the categories
-                                        if (strpos($action->name,$view) !== false && strpos($action->name,'core.') === false ) {
-                                                $coreCheck		= explode('.',$action->name);
-                                                $coreCheck[0]	= 'core';
-                                                $categoryCheck	= implode('.',$coreCheck);
-                                        }
-                                        else
-                                        {
-                                                $categoryCheck = $action->name;
-                                        }
-                                        // The record has a category. Check the category permissions.
+					// make sure we use the core. action check for the categories
+					if (strpos($action->name,$view) !== false && strpos($action->name,'core.') === false ) {
+						$coreCheck		= explode('.',$action->name);
+						$coreCheck[0]	= 'core';
+						$categoryCheck	= implode('.',$coreCheck);
+					}
+					else
+					{
+						$categoryCheck = $action->name;
+					}
+					// The record has a category. Check the category permissions.
 					$catpermission = $user->authorise($categoryCheck, 'com_supportgroups.'.$views.'.category.' . (int) $record->catid);
 					if (!$catpermission && !is_null($catpermission))
 					{
@@ -903,16 +1112,47 @@ abstract class SupportgroupsHelper
 	/**
 	*	Get any component's model
 	**/
-	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $component = 'supportgroups')
+	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $component = 'Supportgroups', $config = array())
 	{
-		// load some joomla helpers
-		JLoader::import('joomla.application.component.model');
+		// fix the name
+		$name = self::safeString($name);
+		// full path
+		$fullPath = $path . '/models';
+		// set prefix
+		$prefix = $component.'Model';
 		// load the model file
-		JLoader::import( $name, $path . '/models' );
-		// return instance
-		return JModelLegacy::getInstance( $name, $component.'Model' );
+		JModelLegacy::addIncludePath($fullPath, $prefix);
+		// get instance
+		$model = JModelLegacy::getInstance($name, $prefix, $config);
+		// if model not found (strange)
+		if ($model == false)
+		{
+			jimport('joomla.filesystem.file');
+			// get file path
+			$filePath = $path.'/'.$name.'.php';
+			$fullPath = $fullPath.'/'.$name.'.php';
+			// check if it exists
+			if (JFile::exists($filePath))
+			{
+				// get the file
+				require_once $filePath;
+			}
+			elseif (JFile::exists($fullPath))
+			{
+				// get the file
+				require_once $fullPath;
+			}
+			// build class names
+			$modelClass = $prefix.$name;
+			if (class_exists($modelClass))
+			{
+				// initialize the model
+				return new $modelClass($config);
+			}
+		}
+		return $model;
 	}
-	
+
 	/**
 	*	Add to asset Table
 	*/
@@ -956,7 +1196,7 @@ abstract class SupportgroupsHelper
 
 			if (!$asset->check() || !$asset->store())
 			{
-				JError::raiseWarning(500, $asset->getError());
+				JFactory::getApplication()->enqueueMessage($asset->getError(), 'warning');
 				return false;
 			}
 			else
@@ -974,7 +1214,7 @@ abstract class SupportgroupsHelper
 		}
 		return false;
 	}
-	
+
 	/**
 	 *	Gets the default asset Rules for a component/view.
 	 */
@@ -1027,48 +1267,211 @@ abstract class SupportgroupsHelper
 		return JAccess::getAssetRules(0);
 	}
 
+	/**
+	 * xmlAppend
+	 *
+	 * @param   SimpleXMLElement   $xml      The XML element reference in which to inject a comment
+	 * @param   mixed              $node     A SimpleXMLElement node to append to the XML element reference, or a stdClass object containing a comment attribute to be injected before the XML node and a fieldXML attribute containing a SimpleXMLElement
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlAppend(&$xml, $node)
+	{
+		if (!$node)
+		{
+			// element was not returned
+			return;
+		}
+		switch (get_class($node))
+		{
+			case 'stdClass':
+				if (property_exists($node, 'comment'))
+				{
+					self::xmlComment($xml, $node->comment);
+				}
+				if (property_exists($node, 'fieldXML'))
+				{
+					self::xmlAppend($xml, $node->fieldXML);
+				}
+				break;
+			case 'SimpleXMLElement':
+				$domXML = dom_import_simplexml($xml);
+				$domNode = dom_import_simplexml($node);
+				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
+				$xml = simplexml_import_dom($domXML);
+				break;
+		}
+	}
+
+	/**
+	 * xmlComment
+	 *
+	 * @param   SimpleXMLElement   $xml        The XML element reference in which to inject a comment
+	 * @param   string             $comment    The comment to inject
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlComment(&$xml, $comment)
+	{
+		$domXML = dom_import_simplexml($xml);
+		$domComment = new DOMComment($comment);
+		$nodeTarget = $domXML->ownerDocument->importNode($domComment, true);
+		$domXML->appendChild($nodeTarget);
+		$xml = simplexml_import_dom($domXML);
+	}
+
+	/**
+	 * xmlAddAttributes
+	 *
+	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
+	 * @param   array              $attributes   The attributes to apply to the XML element
+	 *
+	 * @return  null
+	 *
+	 */
+	public static function xmlAddAttributes(&$xml, $attributes = array())
+	{
+		foreach ($attributes as $key => $value)
+		{
+			$xml->addAttribute($key, $value);
+		}
+	}
+
+	/**
+	 * xmlAddOptions
+	 *
+	 * @param   SimpleXMLElement   $xml          The XML element reference in which to inject a comment
+	 * @param   array              $options      The options to apply to the XML element
+	 *
+	 * @return  void
+	 *
+	 */
+	public static function xmlAddOptions(&$xml, $options = array())
+	{
+		foreach ($options as $key => $value)
+		{
+			$addOption = $xml->addChild('option');
+			$addOption->addAttribute('value', $key);
+			$addOption[] = $value;
+		}
+	}
+
+	/**
+	 * Render Bool Button
+	 *
+	 * @param   array   $args   All the args for the button
+	 *                             0) name
+	 *                             1) additional (options class) // not used at this time
+	 *                             2) default
+	 *                             3) yes (name)
+	 *                             4) no (name)
+	 *
+	 * @return  string    The input html of the button
+	 *
+	 */
 	public static function renderBoolButton()
 	{
 		$args = func_get_args();
+		// check if there is additional button class
+		$additional = isset($args[1]) ? (string) $args[1] : ''; // not used at this time
+		// start the xml
+		$buttonXML = new SimpleXMLElement('<field/>');
+		// button attributes
+		$buttonAttributes = array(
+			'type' => 'radio',
+			'name' => isset($args[0]) ? self::htmlEscape($args[0]) : 'bool_button',
+			'label' => isset($args[0]) ? self::safeString(self::htmlEscape($args[0]), 'Ww') : 'Bool Button', // not seen anyway
+			'class' => 'btn-group',
+			'filter' => 'INT',
+			'default' => isset($args[2]) ? (int) $args[2] : 0);
+		// load the haskey attributes
+		self::xmlAddAttributes($buttonXML, $buttonAttributes);
+		// set the button options
+		$buttonOptions = array(
+			'1' => isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES',
+			'0' => isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO');
+		// load the button options
+		self::xmlAddOptions($buttonXML, $buttonOptions);
 
 		// get the radio element
 		$button = JFormHelper::loadFieldType('radio');
 
-		// setup the properties
-		$name	 	= self::htmlEscape($args[0]);
-		$additional = isset($args[1]) ? (string) $args[1] : '';
-		$value		= $args[2];
-		$yes 	 	= isset($args[3]) ? self::htmlEscape($args[3]) : 'JYES';
-		$no 	 	= isset($args[4]) ? self::htmlEscape($args[4]) : 'JNO';
-
-		// prepare the xml
-		$element = new SimpleXMLElement('<field name="'.$name.'" type="radio" class="btn-group"><option '.$additional.' value="0">'.$no.'</option><option '.$additional.' value="1">'.$yes.'</option></field>');
-
 		// run
-		$button->setup($element, $value);
+		$button->setup($buttonXML, $buttonAttributes['default']);
 
 		return $button->input;
-
 	}
 
-	public static function checkObject($object)
+	/**
+	*	Check if have an json string
+	*
+	*	@input	string   The json string to check
+	*
+	*	@returns bool true on success
+	**/
+	public static function checkJson($string)
 	{
-		if (isset($object) && is_object($object) && count($object) > 0)
+		if (self::checkString($string))
 		{
-			return true;
+			json_decode($string);
+			return (json_last_error() === JSON_ERROR_NONE);
 		}
 		return false;
 	}
 
-	public static function checkArray($array)
+	/**
+	*	Check if have an object with a length
+	*
+	*	@input	object   The object to check
+	*
+	*	@returns bool true on success
+	**/
+	public static function checkObject($object)
+	{
+		if (isset($object) && is_object($object))
+		{
+			return count((array)$object) > 0;
+		}
+		return false;
+	}
+
+	/**
+	*	Check if have an array with a length
+	*
+	*	@input	array   The array to check
+	*
+	*	@returns bool true on success
+	**/
+	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && count($array) > 0)
 		{
+			// also make sure the empty strings are removed
+			if ($removeEmptyString)
+			{
+				foreach ($array as $key => $string)
+				{
+					if (empty($string))
+					{
+						unset($array[$key]);
+					}
+				}
+				return self::checkArray($array, false);
+			}
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	*	Check if have a string with a length
+	*
+	*	@input	string   The string to check
+	*
+	*	@returns bool true on success
+	**/
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -1078,6 +1481,38 @@ abstract class SupportgroupsHelper
 		return false;
 	}
 
+	/**
+	*	Check if we are connected
+	*	Thanks https://stackoverflow.com/a/4860432/1429677
+	*
+	*	@returns bool true on success
+	**/
+	public static function isConnected()
+	{
+		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
+		$connected = @fsockopen("www.example.com", 80); 
+                // website, port  (try 80 or 443)
+		if ($connected)
+		{
+			//action when connected
+			$is_conn = true;
+			fclose($connected);
+		}
+		else
+		{
+			//action in connection failure
+			$is_conn = false;
+		}
+		return $is_conn;
+	}
+
+	/**
+	*	Merge an array of array's
+	*
+	*	@input	array   The arrays you would like to merge
+	*
+	*	@returns array on success
+	**/
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -1095,10 +1530,23 @@ abstract class SupportgroupsHelper
 		return false;
 	}
 
+	// typo sorry!
 	public static function sorten($string, $length = 40, $addTip = true)
 	{
+		return self::shorten($string, $length, $addTip);
+	}
+
+	/**
+	*	Shorten a string
+	*
+	*	@input	string   The you would like to shorten
+	*
+	*	@returns string on success
+	**/
+	public static function shorten($string, $length = 40, $addTip = true)
+	{
 		if (self::checkString($string))
-        {
+		{
 			$initial = strlen($string);
 			$words = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
 			$words_count = count($words);
@@ -1118,7 +1566,7 @@ abstract class SupportgroupsHelper
 			$final	= strlen($newString);
 			if ($initial != $final && $addTip)
 			{
-				$title = self::sorten($string, 400 , false);
+				$title = self::shorten($string, 400 , false);
 				return '<span class="hasTip" title="'.$title.'" style="cursor:help">'.trim($newString).'...</span>';
 			}
 			elseif ($initial != $final && !$addTip)
@@ -1129,80 +1577,117 @@ abstract class SupportgroupsHelper
 		return $string;
 	}
 
-	public static function safeString($string, $type = 'L', $spacer = '_')
+	/**
+	*	Making strings safe (various ways)
+	*
+	*	@input	string   The you would like to make safe
+	*
+	*	@returns string on success
+	**/
+	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true)
 	{
-		// remove all numbers and replace with english text version (works well only up to a thousand)
-                $string = self::replaceNumbers($string);
-
-                if (self::checkString($string))
-                {
-                        // remove all other characters
-                        $string = trim($string);
-                        $string = preg_replace('/'.$spacer.'+/', ' ', $string);
-                        $string = preg_replace('/\s+/', ' ', $string);
-                        $string = preg_replace("/[^A-Za-z ]/", '', $string);
-                        // return a string with all first letter of each word uppercase(no undersocre)
-                        if ($type == 'W')
-                                    {
-                            return ucwords(strtolower($string));
-                        }
-                        elseif ($type == 'w')
-                        {
-                            return strtolower($string);
-                        }
-                        elseif ($type == 'Ww')
-                        {
-                            return ucfirst(strtolower($string));
-                        }
-                        elseif ($type == 'WW')
-                        {
-                            return strtoupper($string);
-                        }
-                        elseif ($type == 'U')
-                        {
-                                // replace white space with underscore
-                                $string = preg_replace('/\s+/', $spacer, $string);
-                                // return all upper
-                                return strtoupper($string);
-                        }
-                        elseif ($type == 'F')
-                        {
-                                // replace white space with underscore
-                                $string = preg_replace('/\s+/', $spacer, $string);
-                                // return with first caracter to upper
-                                return ucfirst(strtolower($string));
-                        }
-                        elseif ($type == 'L')
-                        {
-                                // replace white space with underscore
-                                $string = preg_replace('/\s+/', $spacer, $string);
-                                // default is to return lower
-                                return strtolower($string);
-                        }
-
-                        // return string
-                        return $string;
-                }
-                // not a string
-                return '';
+		if ($replaceNumbers === true)
+		{
+			// remove all numbers and replace with english text version (works well only up to millions)
+			$string = self::replaceNumbers($string);
+		}
+		// 0nly continue if we have a string
+		if (self::checkString($string))
+		{
+			// create file name without the extention that is safe
+			if ($type === 'filename')
+			{
+				// make sure VDM is not in the string
+				$string = str_replace('VDM', 'vDm', $string);
+				// Remove anything which isn't a word, whitespace, number
+				// or any of the following caracters -_()
+				// If you don't need to handle multi-byte characters
+				// you can use preg_replace rather than mb_ereg_replace
+				// Thanks @Łukasz Rysiak!
+				// $string = mb_ereg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				$string = preg_replace("([^\w\s\d\-_\(\)])", '', $string);
+				// http://stackoverflow.com/a/2021729/1429677
+				return preg_replace('/\s+/', ' ', $string);
+			}
+			// remove all other characters
+			$string = trim($string);
+			$string = preg_replace('/'.$spacer.'+/', ' ', $string);
+			$string = preg_replace('/\s+/', ' ', $string);
+			$string = preg_replace("/[^A-Za-z ]/", '', $string);
+			// select final adaptations
+			if ($type === 'L' || $type === 'strtolower')
+			{
+				// replace white space with underscore
+				$string = preg_replace('/\s+/', $spacer, $string);
+				// default is to return lower
+				return strtolower($string);
+			}
+			elseif ($type === 'W')
+			{
+				// return a string with all first letter of each word uppercase(no undersocre)
+				return ucwords(strtolower($string));
+			}
+			elseif ($type === 'w' || $type === 'word')
+			{
+				// return a string with all lowercase(no undersocre)
+				return strtolower($string);
+			}
+			elseif ($type === 'Ww' || $type === 'Word')
+			{
+				// return a string with first letter of the first word uppercase and all the rest lowercase(no undersocre)
+				return ucfirst(strtolower($string));
+			}
+			elseif ($type === 'WW' || $type === 'WORD')
+			{
+				// return a string with all the uppercase(no undersocre)
+				return strtoupper($string);
+			}
+			elseif ($type === 'U' || $type === 'strtoupper')
+			{
+					// replace white space with underscore
+					$string = preg_replace('/\s+/', $spacer, $string);
+					// return all upper
+					return strtoupper($string);
+			}
+			elseif ($type === 'F' || $type === 'ucfirst')
+			{
+					// replace white space with underscore
+					$string = preg_replace('/\s+/', $spacer, $string);
+					// return with first caracter to upper
+					return ucfirst(strtolower($string));
+			}
+			elseif ($type === 'cA' || $type === 'cAmel' || $type === 'camelcase')
+			{
+				// convert all words to first letter uppercase
+				$string = ucwords(strtolower($string));
+				// remove white space
+				$string = preg_replace('/\s+/', '', $string);
+				// now return first letter lowercase
+				return lcfirst($string);
+			}
+			// return string
+			return $string;
+		}
+		// not a string
+		return '';
 	}
 
-        public static function htmlEscape($var, $charset = 'UTF-8', $sorten = false, $length = 40)
+	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
 		if (self::checkString($var))
 		{
 			$filter = new JFilterInput();
 			$string = $filter->clean(html_entity_decode(htmlentities($var, ENT_COMPAT, $charset)), 'HTML');
-			if ($sorten)
+			if ($shorten)
 			{
-                                return self::sorten($string,$length);
+                                return self::shorten($string,$length);
 			}
 			return $string;
-                }
+		}
 		else
 		{
 			return '';
-                }
+		}
 	}
 
 	public static function replaceNumbers($string)
@@ -1226,7 +1711,7 @@ abstract class SupportgroupsHelper
 		// return the string with no numbers remaining.
 		return $string;
 	}
-	
+
 	/**
 	*	Convert an integer into an English word string
 	*	Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
@@ -1309,7 +1794,7 @@ abstract class SupportgroupsHelper
 					$w .= ' ';
 					if($r < 100)
 					{
-						$word .= 'and ';
+						$w .= 'and ';
 					}
 					$w .= self::numberToString($r);
 				}

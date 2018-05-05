@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		help.php
@@ -48,7 +48,8 @@ class SupportgroupsControllerHelp extends JControllerLegacy
 		// Check Token!
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
-		if($token == $call_token){
+		if($token == $call_token)
+		{
 			$task = $this->getTask();
 			switch($task){
 				case 'getText':
@@ -64,25 +65,25 @@ class SupportgroupsControllerHelp extends JControllerLegacy
 							$result = '';
 						}
 						echo $result;
-                                                // stop execution gracefully
-                                                jexit();
+						// stop execution gracefully
+						jexit();
 					}
 					catch(Exception $e)
 					{
-                                                // stop execution gracefully
+						// stop execution gracefully
 						jexit();
 					}
 				break;
 			}
 		}
-                else
-                {
-                        // stop execution gracefully
+		else
+		{
+			// stop execution gracefully
 			jexit();
 		}
 	}
 
-        protected function getHelpDocumentText($id)
+	protected function getHelpDocumentText($id)
 	{
 		$db	= JFactory::getDbo();
 		$query	= $db->getQuery(true);

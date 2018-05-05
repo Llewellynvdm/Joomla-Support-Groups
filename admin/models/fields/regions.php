@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		regions.php
@@ -40,7 +40,8 @@ class JFormFieldRegions extends JFormFieldList
 	 *
 	 * @var		string
 	 */
-	public $type = 'regions'; 
+	public $type = 'regions';
+
 	/**
 	 * Override to add new button
 	 *
@@ -57,30 +58,86 @@ class JFormFieldRegions extends JFormFieldList
 		// if true set button
 		if ($setButton === 'true')
 		{
+			$button = array();
+			$script = array();
+			$buttonName = $this->getAttribute('name');
+			// get the input from url
+			$app = JFactory::getApplication();
+			$jinput = $app->input;
+			// get the view name & id
+			$values = $jinput->getArray(array(
+				'id' => 'int',
+				'view' => 'word'
+			));
+			// check if new item
+			$ref = '';
+			$refJ = '';
+			if (!is_null($values['id']) && strlen($values['view']))
+			{
+				// only load referal if not new item.
+				$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
+				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
+			}
 			$user = JFactory::getUser();
 			// only add if user allowed to create region
-			if ($user->authorise('region.create', 'com_supportgroups'))
+			if ($user->authorise('region.create', 'com_supportgroups') && $app->isAdmin()) // TODO for now only in admin area.
 			{
-				// get the input from url
-				$jinput = JFactory::getApplication()->input;
-				// get the view name & id
-				$values = $jinput->getArray(array(
-					'id' => 'int',
-					'view' => 'word'
-				));
-				// check if new item
-				$ref = '';
-				if (!is_null($values['id']) && strlen($values['view']))
-				{
-					// only load referal if not new item.
-					$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
-				}
-				// build the button
-				$button = '<a class="btn btn-small btn-success"
+				// build Create button
+				$buttonNamee = trim($buttonName);
+				$buttonNamee = preg_replace('/_+/', ' ', $buttonNamee);
+				$buttonNamee = preg_replace('/\s+/', ' ', $buttonNamee);
+				$buttonNamee = preg_replace("/[^A-Za-z ]/", '', $buttonNamee);
+				$buttonNamee = ucfirst(strtolower($buttonNamee));
+				$button[] = '<a id="'.$buttonName.'Create" class="btn btn-small btn-success hasTooltip" title="'.JText::sprintf('COM_SUPPORTGROUPS_CREATE_NEW_S', $buttonNamee).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
 					href="index.php?option=com_supportgroups&amp;view=region&amp;layout=edit'.$ref.'" >
-					<span class="icon-new icon-white"></span>' . JText::_('COM_SUPPORTGROUPS_NEW') . '</a>';
-				// return the button attached to input field
-				return $html . $button;
+					<span class="icon-new icon-white"></span></a>';
+			}
+			// only add if user allowed to edit region
+			if (($buttonName === 'region' || $buttonName === 'regions') && $user->authorise('region.edit', 'com_supportgroups') && $app->isAdmin()) // TODO for now only in admin area.
+			{
+				// build edit button
+				$buttonNamee = trim($buttonName);
+				$buttonNamee = preg_replace('/_+/', ' ', $buttonNamee);
+				$buttonNamee = preg_replace('/\s+/', ' ', $buttonNamee);
+				$buttonNamee = preg_replace("/[^A-Za-z ]/", '', $buttonNamee);
+				$buttonNamee = ucfirst(strtolower($buttonNamee));
+				$button[] = '<a id="'.$buttonName.'Edit" class="btn btn-small hasTooltip" title="'.JText::sprintf('COM_SUPPORTGROUPS_EDIT_S', $buttonNamee).'" style="display: none; padding: 4px 4px 4px 7px;" href="#" >
+					<span class="icon-edit"></span></a>';
+				// build script
+				$script[] = "
+					jQuery(document).ready(function() {
+						jQuery('#adminForm').on('change', '#jform_".$buttonName."',function (e) {
+							e.preventDefault();
+							var ".$buttonName."Value = jQuery('#jform_".$buttonName."').val();
+							".$buttonName."Button(".$buttonName."Value);
+						});
+						var ".$buttonName."Value = jQuery('#jform_".$buttonName."').val();
+						".$buttonName."Button(".$buttonName."Value);
+					});
+					function ".$buttonName."Button(value) {
+						if (value > 0) {
+							// hide the create button
+							jQuery('#".$buttonName."Create').hide();
+							// show edit button
+							jQuery('#".$buttonName."Edit').show();
+							var url = 'index.php?option=com_supportgroups&view=regions&task=region.edit&id='+value+'".$refJ."';
+							jQuery('#".$buttonName."Edit').attr('href', url);
+						} else {
+							// show the create button
+							jQuery('#".$buttonName."Create').show();
+							// hide edit button
+							jQuery('#".$buttonName."Edit').hide();
+						}
+					}";
+			}
+			// check if button was created for region field.
+			if (is_array($button) && count($button) > 0)
+			{
+				// Load the needed script.
+				$document = JFactory::getDocument();
+				$document->addScriptDeclaration(implode(' ',$script));
+				// return the button attached to input field.
+				return '<div class="input-append">' .$html . implode('',$button).'</div>';
 			}
 		}
 		return $html;

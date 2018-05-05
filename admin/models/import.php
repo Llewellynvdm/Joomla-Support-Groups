@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		import.php
@@ -31,6 +31,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class SupportgroupsModelImport extends JModelLegacy
 {
+	// set uploading values
+	protected $use_streams = false;
+	protected $allow_unsafe = false;
+	protected $safeFileOptions = array();
+	
 	/**
 	 * @var object JTable object
 	 */
@@ -52,7 +57,7 @@ class SupportgroupsModelImport extends JModelLegacy
 	 * Import Settings
 	 */
 	protected $getType 	= NULL;
-	protected $dataType = NULL;
+	protected $dataType	= NULL;
 	
 	/**
 	 * Method to auto-populate the model state.
@@ -72,10 +77,6 @@ class SupportgroupsModelImport extends JModelLegacy
 		// Recall the 'Import from Directory' path.
 		$path = $app->getUserStateFromRequest($this->_context . '.import_directory', 'import_directory', $app->get('tmp_path'));
 		$this->setState('import.directory', $path);
-		// set uploading values
-		$this->use_streams = false;
-		$this->allow_unsafe = false;
-		$this->safeFileOptions = array();
 		parent::populateState();
 	}
 
@@ -88,10 +89,10 @@ class SupportgroupsModelImport extends JModelLegacy
 	public function import()
 	{
 		$this->setState('action', 'import');
-		$app 		= JFactory::getApplication();
-		$session 	= JFactory::getSession();
-		$package 	= null;
-		$continue	= false;
+		$app = JFactory::getApplication();
+		$session = JFactory::getSession();
+		$package = null;
+		$continue = false;
 		// get import type
 		$this->getType = $app->input->getString('gettype', NULL);
 		// get import type
@@ -146,7 +147,7 @@ class SupportgroupsModelImport extends JModelLegacy
 		
 		// first link data to table headers
 		if(!$continue){
-			$package	= json_encode($package);
+			$package = json_encode($package);
 			$session->set('package', $package);
 			$session->set('dataType', $this->dataType);
 			$session->set('hasPackage', true);
@@ -198,7 +199,8 @@ class SupportgroupsModelImport extends JModelLegacy
 	protected function _getPackageFromUpload()
 	{		
 		// Get the uploaded file information
-		$input    = JFactory::getApplication()->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See JInputFiles::get.
 		$userfile = $input->files->get('import_package', null, 'raw');
@@ -206,28 +208,28 @@ class SupportgroupsModelImport extends JModelLegacy
 		// Make sure that file uploads are enabled in php
 		if (!(bool) ini_get('file_uploads'))
 		{
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_WARNIMPORTFILE'));
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_WARNIMPORTFILE'), 'warning');
 			return false;
 		}
 
 		// If there is no uploaded file, we have a problem...
 		if (!is_array($userfile))
 		{
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_NO_FILE_SELECTED'));
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_NO_FILE_SELECTED'), 'warning');
 			return false;
 		}
 
 		// Check if there was a problem uploading the file.
 		if ($userfile['error'] || $userfile['size'] < 1)
 		{
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_WARNIMPORTUPLOADERROR'));
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_WARNIMPORTUPLOADERROR'), 'warning');
 			return false;
 		}
 
 		// Build the appropriate paths
-		$config		= JFactory::getConfig();
-		$tmp_dest	= $config->get('tmp_path') . '/' . $userfile['name'];
-		$tmp_src	= $userfile['tmp_name'];
+		$config = JFactory::getConfig();
+		$tmp_dest = $config->get('tmp_path') . '/' . $userfile['name'];
+		$tmp_src = $userfile['tmp_name'];
 
 		// Move uploaded file
 		jimport('joomla.filesystem.file');
@@ -258,7 +260,8 @@ class SupportgroupsModelImport extends JModelLegacy
 	 */
 	protected function _getPackageFromFolder()
 	{
-		$input = JFactory::getApplication()->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Get the path to the package to import
 		$p_dir = $input->getString('import_directory');
@@ -266,7 +269,7 @@ class SupportgroupsModelImport extends JModelLegacy
 		// Did you give us a valid path?
 		if (!file_exists($p_dir))
 		{
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'));
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'), 'warning');
 			return false;
 		}
 
@@ -276,25 +279,20 @@ class SupportgroupsModelImport extends JModelLegacy
 		// Did you give us a valid package?
 		if (!$type)
 		{
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'));
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'), 'warning');
 		}
 		
 		// check the extention
-		switch(strtolower(pathinfo($p_dir, PATHINFO_EXTENSION))){
-			case 'xls':
-			case 'ods':
-			case 'csv':
-			break;
-			
-			default:
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'));
+		if(!$this->checkExtension($p_dir))
+		{
+			// set error message
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
-			break;
 		}
 		
 		$package['packagename'] = null;
-		$package['dir'] 		= $p_dir;
-		$package['type'] 		= $type;
+		$package['dir'] = $p_dir;
+		$package['type'] = $type;
 
 		return $package;
 	}
@@ -307,15 +305,16 @@ class SupportgroupsModelImport extends JModelLegacy
 	 */
 	protected function _getPackageFromUrl()
 	{
-		$input = JFactory::getApplication()->input;
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		
 		// Get the URL of the package to import
 		$url = $input->getString('import_url');
 
 		// Did you give us a URL?
 		if (!$url)
 		{
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_ENTER_A_URL'));
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_ENTER_A_URL'), 'warning');
 			return false;
 		}
 
@@ -325,7 +324,7 @@ class SupportgroupsModelImport extends JModelLegacy
 		// Was the package downloaded?
 		if (!$p_file)
 		{
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_INVALID_URL'));
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_INVALID_URL'), 'warning');
 			return false;
 		}
 
@@ -346,35 +345,52 @@ class SupportgroupsModelImport extends JModelLegacy
 	 */
 	protected function check($archivename)
 	{
+		$app = JFactory::getApplication();
 		// Clean the name
 		$archivename = JPath::clean($archivename);
 		
 		// check the extention
-		switch(strtolower(pathinfo($archivename, PATHINFO_EXTENSION))){
+		if(!$this->checkExtension($archivename))
+		{
+			// Cleanup the import files
+			$this->remove($archivename);
+			$app->enqueueMessage(JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
+			return false;
+		}
+		
+		$config = JFactory::getConfig();
+		// set Package Name
+		$check['packagename'] = $archivename;
+		
+		// set directory
+		$check['dir'] = $config->get('tmp_path'). '/' .$archivename;
+		
+		// set type
+		$check['type'] = $this->getType;
+		
+		return $check;
+	}
+	
+	/**
+	 * Check the extension 
+	 *
+	 * @param   string  $file    Name of the uploaded file
+	 *
+	 * @return  boolean  True on success
+	 *
+	 */
+	protected function checkExtension($file)
+	{		
+		// check the extention
+		switch(strtolower(pathinfo($file, PATHINFO_EXTENSION)))
+		{
 			case 'xls':
 			case 'ods':
 			case 'csv':
+			return true;
 			break;
-			
-			default:
-			// Cleanup the import files
-			$this->remove($archivename);
-			JError::raiseWarning('', JText::_('COM_SUPPORTGROUPS_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'));
-			return false;
-			break;
-		}	
-		
-		$config					= JFactory::getConfig();
-		// set Package Name
-		$check['packagename']	= $archivename;
-		
-		// set directory
-		$check['dir']		= $config->get('tmp_path'). '/' .$archivename;
-		
-		// set type
-		$check['type']		= $this->getType;
-		
-		return $check;
+		}
+		return false;
 	}
 	
 	/**
@@ -389,8 +405,8 @@ class SupportgroupsModelImport extends JModelLegacy
 	{
 		jimport('joomla.filesystem.file');
 		
-		$config		= JFactory::getConfig();
-		$package	= $config->get('tmp_path'). '/' .$package;
+		$config = JFactory::getConfig();
+		$package = $config->get('tmp_path'). '/' .$package;
 
 		// Is the package file a valid file?
 		if (is_file($package))
@@ -453,11 +469,11 @@ class SupportgroupsModelImport extends JModelLegacy
 		if(SupportgroupsHelper::checkArray($data['array']))
 		{
 			// get user object
-			$user  		= JFactory::getUser();
+			$user = JFactory::getUser();
 			// remove header if it has headers
-			$id_key 	= $data['target_headers']['id'];
-			$published_key 	= $data['target_headers']['published'];
-			$ordering_key 	= $data['target_headers']['ordering'];
+			$id_key = $data['target_headers']['id'];
+			$published_key = $data['target_headers']['published'];
+			$ordering_key = $data['target_headers']['ordering'];
 			// get the first array set
 			$firstSet = reset($data['array']);
             
@@ -475,13 +491,13 @@ class SupportgroupsModelImport extends JModelLegacy
 				// Get a db connection.
 				$db = JFactory::getDbo();
 				// set some defaults
-				$todayDate		= JFactory::getDate()->toSql();
+				$todayDate = JFactory::getDate()->toSql();
 				// get global action permissions
-				$canDo			= SupportgroupsHelper::getActions($table);
-				$canEdit		= $canDo->get('core.edit');
-				$canState		= $canDo->get('core.edit.state');
-				$canCreate		= $canDo->get('core.create');
-				$hasAlias		= $this->getAliasesUsed($table);
+				$canDo = SupportgroupsHelper::getActions($table);
+				$canEdit = $canDo->get('core.edit');
+				$canState = $canDo->get('core.edit.state');
+				$canCreate = $canDo->get('core.create');
+				$hasAlias = $this->getAliasesUsed($table);
 				// prosses the data
 				foreach($data['array'] as $row)
 				{
@@ -503,12 +519,11 @@ class SupportgroupsModelImport extends JModelLegacy
 					if($found && $canEdit)
 					{
 						// update item
-						$id 		= $row[$id_key];
-						$version	= $db->loadResult();
+						$id = $row[$id_key];
+						$version = $db->loadResult();
 						// reset all buckets
-						$query 		= $db->getQuery(true);
-						$fields 	= array();
-						$version	= false;
+						$query = $db->getQuery(true);
+						$fields = array();
 						// Fields to update.
 						foreach($row as $key => $cell)
 						{
@@ -531,7 +546,6 @@ class SupportgroupsModelImport extends JModelLegacy
 							if ('version' == $target[$key])
 							{
 								$cell = (int) $version + 1;
-								$version = true;
 							}
 							// verify publish authority
 							if ('published' == $target[$key] && !$canState)
@@ -554,12 +568,8 @@ class SupportgroupsModelImport extends JModelLegacy
 							}
 						}
 						// load the defaults
-						$fields[]	= $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
-						$fields[]	= $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
-						if (!$version)
-						{
-							$fields[] = $db->quoteName('version') . " = " . (int) $version + 1;
-						}
+						$fields[] = $db->quoteName('modified_by') . ' = ' . $db->quote($user->id);
+						$fields[] = $db->quoteName('modified') . ' = ' . $db->quote($todayDate);
 						// Conditions for which records should be updated.
 						$conditions = array(
 							$db->quoteName('id') . ' = ' . $id
@@ -574,9 +584,9 @@ class SupportgroupsModelImport extends JModelLegacy
 						// insert item
 						$query = $db->getQuery(true);
 						// reset all buckets
-						$columns 	= array();
-						$values 	= array();
-						$version	= false;
+						$columns = array();
+						$values = array();
+						$version = false;
 						// Insert columns. Insert values.
 						foreach($row as $key => $cell)
 						{
@@ -614,30 +624,30 @@ class SupportgroupsModelImport extends JModelLegacy
 							// set to insert array
 							if(in_array($key, $data['target_headers']) && is_numeric($cell))
 							{
-								$columns[] 	= $target[$key];
-								$values[] 	= $cell;
+								$columns[] = $target[$key];
+								$values[] = $cell;
 							}
 							elseif(in_array($key, $data['target_headers']) && is_string($cell))
 							{
-								$columns[] 	= $target[$key];
-								$values[] 	= $db->quote($cell);
+								$columns[] = $target[$key];
+								$values[] = $db->quote($cell);
 							}
 							elseif(in_array($key, $data['target_headers']) && is_null($cell))
 							{
 								// if import data is null then set empty
-								$columns[] 	= $target[$key];
-								$values[] 	= "''";
+								$columns[] = $target[$key];
+								$values[] = "''";
 							}
 						}
 						// load the defaults
-						$columns[] 	= 'created_by';
-						$values[] 	= $db->quote($user->id);
-						$columns[] 	= 'created';
-						$values[] 	= $db->quote($todayDate);
+						$columns[] = 'created_by';
+						$values[] = $db->quote($user->id);
+						$columns[] = 'created';
+						$values[] = $db->quote($todayDate);
 						if (!$version)
 						{
-							$columns[] 	= 'version';
-							$values[] 	= 1;
+							$columns[] = 'version';
+							$values[] = 1;
 						}
 						// Prepare the insert query.
 						$query

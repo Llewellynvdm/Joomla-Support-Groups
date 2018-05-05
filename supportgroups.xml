@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.2" method="upgrade">
 	<name>COM_SUPPORTGROUPS</name>
-	<creationDate>6th March, 2016</creationDate>
+	<creationDate>5th May, 2018</creationDate>
 	<author>Llewellyn van der Merwe</author>
-	<authorEmail>llewellyn@vdm.io</authorEmail>
+	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>http://www.vdm.io</authorUrl>
 	<copyright>Copyright (C) 2015. All Rights Reserved</copyright>
 	<license>GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html</license>
-	<version>1.0.3</version>
+	<version>1.0.8</version>
 	<description><![CDATA[
-		<h1>Support Groups (v.1.0.3)</h1>
+		<h1>Support Groups (v.1.0.8)</h1>
 		<div style="clear: both;"></div>
-		<p>Support Groups</p>
+		<p>Support Groups component adds the ability to your Joomla website to manage various support groups and their related details. Integration with Google Maps is one of its main features.</p>
 		<p>Created by <a href="http://www.vdm.io" target="_blank">Llewellyn van der Merwe</a><br /><small>Development started 24th February, 2016</small></p>
 	]]></description>
 
@@ -37,8 +37,9 @@
 		<folder>js</folder>
 		<folder>css</folder>
 		<folder>images</folder>
-		<folder>uikit</folder>
-		<folder>footable</folder>
+		<folder>js-marker-cluster</folder>
+		<folder>uikit-v2</folder>
+		<folder>footable-v3</folder>
 	</media>
 
 	<!-- Update Schema; New in Joomla 2.5 -->
@@ -72,16 +73,17 @@
 			<!-- Instead of link you can specify individual link attributes -->
 			<menu option="com_supportgroups" view="support_groups">COM_SUPPORTGROUPS_MENU_SUPPORT_GROUPS</menu>
 			<menu option="com_supportgroups" view="payments">COM_SUPPORTGROUPS_MENU_PAYMENTS</menu>
-			<menu option="com_supportgroups" view="clinics">COM_SUPPORTGROUPS_MENU_CLINICS</menu>
-			<menu option="com_supportgroups" view="locations">COM_SUPPORTGROUPS_MENU_LOCATIONS</menu>
+			<menu option="com_supportgroups" view="facilities">COM_SUPPORTGROUPS_MENU_FACILITIES</menu>
+			<menu option="com_supportgroups" view="areas">COM_SUPPORTGROUPS_MENU_AREAS</menu>
 			<menu option="com_supportgroups" view="regions">COM_SUPPORTGROUPS_MENU_REGIONS</menu>
 		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
-			<filename>controller.php</filename>
+			<filename>controller.php</filename>###WHMCS_ENCRYPT_FILE###
 			<filename>index.html</filename>
 			<filename>supportgroups.php</filename>
+			<filename>README.txt</filename>
 			<folder>assets</folder>
 			<folder>controllers</folder>
 			<folder>helpers</folder>
@@ -99,6 +101,6 @@
 
 	</administration>
 	<updateservers>
-		<server type="extension" enabled="1" element="com_supportgroups" name="Support Groups">https://www.vdm.io/updates/supportgroups_update_server.xml</server>
+		<server type="extension" enabled="1" element="com_supportgroups" name="Support Groups">https://raw.githubusercontent.com/namibia/Joomla-Support-Groups/master/supportgroups_update_server.xml</server>
 	</updateservers>
 </extension>

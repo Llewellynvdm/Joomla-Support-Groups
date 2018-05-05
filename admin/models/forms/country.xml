@@ -44,11 +44,12 @@
 		</field>
 		<!-- Date Modified Field. Type: Calendar (joomla) -->
 		<field name="modified" type="calendar" class="readonly"
-			label="JGLOBAL_FIELD_MODIFIED_LABEL" description="COM_CONTENT_FIELD_MODIFIED_DESC"
+			label="COM_SUPPORTGROUPS_COUNTRY_MODIFIED_DATE_LABEL" description="COM_SUPPORTGROUPS_COUNTRY_MODIFIED_DATE_DESC"
 			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
 		<!-- User Modified Field. Type: User (joomla) -->
 		<field name="modified_by" type="user"
-			label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+			label="COM_SUPPORTGROUPS_COUNTRY_MODIFIED_BY_LABEL"
+			description="COM_SUPPORTGROUPS_COUNTRY_MODIFIED_BY_DESC"
 			class="readonly"
 			readonly="true"
 			filter="unset"
@@ -115,7 +116,7 @@
 			disabled="false"
 			required="true"
 			filter="STRING"
-			message="Error! Please add name here."
+			message="COM_SUPPORTGROUPS_COUNTRY_NAME_MESSAGE"
 			hint="COM_SUPPORTGROUPS_COUNTRY_NAME_HINT"
 		/>
 		<!-- Currency Field. Type: Currency. (custom) -->
@@ -139,7 +140,7 @@
 			class="text_area"
 			required="false"
 			filter="INT"
-			message="Error! Please add zone code here."
+			message="COM_SUPPORTGROUPS_COUNTRY_WORLDZONE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_COUNTRY_WORLDZONE_HINT"
 		/>
 		<!-- Codethree Field. Type: Text. (joomla) -->
@@ -153,7 +154,7 @@
 			class="text_area"
 			required="true"
 			filter="WORD"
-			message="Error! Please add three-letter country code here."
+			message="COM_SUPPORTGROUPS_COUNTRY_CODETHREE_MESSAGE"
 			hint="COM_SUPPORTGROUPS_COUNTRY_CODETHREE_HINT"
 		/>
 		<!-- Codetwo Field. Type: Text. (joomla) -->
@@ -167,14 +168,14 @@
 			class="text_area"
 			required="true"
 			filter="WORD"
-			message="Error! Please add two-letter country code here."
+			message="COM_SUPPORTGROUPS_COUNTRY_CODETWO_MESSAGE"
 			hint="COM_SUPPORTGROUPS_COUNTRY_CODETWO_HINT"
 		/>
 		<!-- Alias Field. Type: Text. (joomla) -->
 		<field
 			type="text"
 			name="alias"
-			label="JFIELD_ALIAS_LABEL"
+			label="COM_SUPPORTGROUPS_COUNTRY_ALIAS_LABEL"
 			description="JFIELD_ALIAS_DESC"
 			filter="STRING"
 			hint="COM_SUPPORTGROUPS_COUNTRY_ALIAS_HINT"

@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 11 of this MVC
+	@build			25th October, 2017
+	@created		15th May, 2016
 	@package		Support Groups
 	@subpackage		region.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -79,7 +79,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params))
+			if (!empty($item->params) && !is_array($item->params))
 			{
 				// Convert the params field to an array.
 				$registry = new Registry;
@@ -101,93 +101,8 @@ class SupportgroupsModelRegion extends JModelAdmin
 				$item->tags->getTagIds($item->id, 'com_supportgroups.region');
 			}
 		}
-		$this->regionvvvx = $item->id;
 
 		return $item;
-	}
-
-	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getVvxlocations()
-	{
-		// Get the user object.
-		$user = JFactory::getUser();
-		// Create a new query object.
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-
-		// Select some fields
-		$query->select('a.*');
-
-		// From the supportgroups_location table
-		$query->from($db->quoteName('#__supportgroups_location', 'a'));
-
-		// From the supportgroups_region table.
-		$query->select($db->quoteName('g.name','region_name'));
-		$query->join('LEFT', $db->quoteName('#__supportgroups_region', 'g') . ' ON (' . $db->quoteName('a.region') . ' = ' . $db->quoteName('g.id') . ')');
-
-		// Filter by regionvvvx global.
-		$regionvvvx = $this->regionvvvx;
-		if (is_numeric($regionvvvx ))
-		{
-			$query->where('a.region = ' . (int) $regionvvvx );
-		}
-		elseif (is_string($regionvvvx))
-		{
-			$query->where('a.region = ' . $db->quote($regionvvvx));
-		}
-		else
-		{
-			$query->where('a.region = -5');
-		}
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_supportgroups'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
-
-		// Order the results by ordering
-		$query->order('a.ordering  ASC');
-
-		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$items = $db->loadObjectList();
-
-			// set values to display correctly.
-			if (SupportgroupsHelper::checkArray($items))
-			{
-				// get user object.
-				$user = JFactory::getUser();
-				foreach ($items as $nr => &$item)
-				{
-					$access = ($user->authorise('location.access', 'com_supportgroups.location.' . (int) $item->id) && $user->authorise('location.access', 'com_supportgroups'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-			return $items;
-		}
-		return false;
 	} 
 
 	/**
@@ -201,7 +116,8 @@ class SupportgroupsModelRegion extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_supportgroups.region', 'region', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
@@ -292,6 +208,22 @@ class SupportgroupsModelRegion extends JModelAdmin
 				$form->setFieldAttribute('country', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('country', 'required', 'false');
+			}
+		}
+		// Modify the form based on Edit Alias access controls.
+		if ($id != 0 && (!$user->authorise('region.edit.alias', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.edit.alias', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('alias', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('alias', 'readonly', 'true');
+			if (!$form->getValue('alias'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'required', 'false');
 			}
 		}
 		// Only load these values if no id is found
@@ -498,6 +430,26 @@ class SupportgroupsModelRegion extends JModelAdmin
 		
 		return true;
 	}
+
+	/**
+	 * Method to change the published state of one or more records.
+	 *
+	 * @param   array    &$pks   A list of the primary keys to change.
+	 * @param   integer  $value  The value of the published state.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   12.2
+	 */
+	public function publish(&$pks, $value = 1)
+	{
+		if (!parent::publish($pks, $value))
+		{
+			return false;
+		}
+		
+		return true;
+        }
     
 	/**
 	 * Method to perform batch operations on an item or a set of items.
@@ -614,8 +566,6 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= SupportgroupsHelper::getActions('region');
 		}
 
@@ -640,7 +590,6 @@ class SupportgroupsModelRegion extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -650,17 +599,11 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('region.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -670,7 +613,6 @@ class SupportgroupsModelRegion extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -680,8 +622,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 					continue;
 				}
 			}
-
-			$this->table->name = $this->generateUniqe('name',$this->table->name);
+			list($this->table->name, $this->table->alias) = $this->_generateNewTitle($this->table->alias, $this->table->name);
 
 			// insert all set values
 			if (SupportgroupsHelper::checkArray($values))
@@ -763,8 +704,6 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= SupportgroupsHelper::getActions('region');
 		}
 
@@ -788,7 +727,6 @@ class SupportgroupsModelRegion extends JModelAdmin
 			if (!$this->user->authorise('region.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -799,7 +737,6 @@ class SupportgroupsModelRegion extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -816,7 +753,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 				foreach ($values as $key => $value)
 				{
 					// Do special action for access.
-					if ('access' == $key && strlen($value) > 0)
+					if ('access' === $key && strlen($value) > 0)
 					{
 						$this->table->$key = $value;
 					}
@@ -888,8 +825,61 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$data['params'] = (string) $params;
 		}
 
+		// Alter the name for save as copy
+		if ($input->get('task') === 'save2copy')
+		{
+			$origTable = clone $this->getTable();
+			$origTable->load($input->getInt('id'));
+
+			if ($data['name'] == $origTable->name)
+			{
+				list($name, $alias) = $this->_generateNewTitle($data['alias'], $data['name']);
+				$data['name'] = $name;
+				$data['alias'] = $alias;
+			}
+			else
+			{
+				if ($data['alias'] == $origTable->alias)
+				{
+					$data['alias'] = '';
+				}
+			}
+
+			$data['published'] = 0;
+		}
+
+		// Automatic handling of alias for empty fields
+		if (in_array($input->get('task'), array('apply', 'save', 'save2new')) && (int) $input->get('id') == 0)
+		{
+			if ($data['alias'] == null || empty($data['alias']))
+			{
+				if (JFactory::getConfig()->get('unicodeslugs') == 1)
+				{
+					$data['alias'] = JFilterOutput::stringURLUnicodeSlug($data['name']);
+				}
+				else
+				{
+					$data['alias'] = JFilterOutput::stringURLSafe($data['name']);
+				}
+
+				$table = JTable::getInstance('region', 'supportgroupsTable');
+
+				if ($table->load(array('alias' => $data['alias'])) && ($table->id != $data['id'] || $data['id'] == 0))
+				{
+					$msg = JText::_('COM_SUPPORTGROUPS_REGION_SAVE_WARNING');
+				}
+
+				$data['alias'] = $this->_generateNewTitle($data['alias']);
+
+				if (isset($msg))
+				{
+					JFactory::getApplication()->enqueueMessage($msg, 'warning');
+				}
+			}
+		}
+
 		// Alter the uniqe field for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			// Automatic handling of other uniqe fields
 			$uniqeFields = $this->getUniqeFields();
@@ -934,24 +924,49 @@ class SupportgroupsModelRegion extends JModelAdmin
 	}
 
 	/**
-	* Method to change the title & alias.
+	* Method to change the title/s & alias.
 	*
-	* @param   string   $title        The title.
+	* @param   string         $alias        The alias.
+	* @param   string/array   $title        The title.
 	*
-	* @return	array  Contains the modified title and alias.
+	* @return	array/string  Contains the modified title/s and/or alias.
 	*
 	*/
-	protected function _generateNewTitle($title)
+	protected function _generateNewTitle($alias, $title = null)
 	{
 
-		// Alter the title
+		// Alter the title/s & alias
 		$table = $this->getTable();
 
-		while ($table->load(array('title' => $title)))
+		while ($table->load(array('alias' => $alias)))
 		{
-			$title = JString::increment($title);
+			// Check if this is an array of titles
+			if (SupportgroupsHelper::checkArray($title))
+			{
+				foreach($title as $nr => &$_title)
+				{
+					$_title = JString::increment($_title);
+				}
+			}
+			// Make sure we have a title
+			elseif ($title)
+			{
+				$title = JString::increment($title);
+			}
+			$alias = JString::increment($alias, 'dash');
 		}
-
-		return $title;
+		// Check if this is an array of titles
+		if (SupportgroupsHelper::checkArray($title))
+		{
+			$title[] = $alias;
+			return $title;
+		}
+		// Make sure we have a title
+		elseif ($title)
+		{
+			return array($title, $alias);
+		}
+		// We only had an alias
+		return $alias;
 	}
 }

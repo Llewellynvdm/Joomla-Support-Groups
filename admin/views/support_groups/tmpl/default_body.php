@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 36 of this MVC
+	@build			25th October, 2017
+	@created		4th March, 2016
 	@package		Support Groups
 	@subpackage		default_body.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -90,21 +90,21 @@ $edit = "index.php?option=com_supportgroups&view=support_groups&task=support_gro
 			<?php echo $this->escape($item->phone); ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($this->user->authorise('location.edit', 'com_supportgroups.location.' . (int)$item->location)): ?>
+			<?php if ($this->user->authorise('area.edit', 'com_supportgroups.area.' . (int)$item->area)): ?>
 				<div class="name">
-					<a href="index.php?option=com_supportgroups&view=locations&task=location.edit&id=<?php echo $item->location; ?>&ref=support_groups"><?php echo $this->escape($item->location_name); ?></a>
+					<a href="index.php?option=com_supportgroups&view=areas&task=area.edit&id=<?php echo $item->area; ?>&ref=support_groups"><?php echo $this->escape($item->area_name); ?></a>
 				</div>
 			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->location_name); ?></div>
+				<div class="name"><?php echo $this->escape($item->area_name); ?></div>
 			<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($this->user->authorise('clinic.edit', 'com_supportgroups.clinic.' . (int)$item->clinic)): ?>
+			<?php if ($this->user->authorise('facility.edit', 'com_supportgroups.facility.' . (int)$item->facility)): ?>
 				<div class="name">
-					<a href="index.php?option=com_supportgroups&view=clinics&task=clinic.edit&id=<?php echo $item->clinic; ?>&ref=support_groups"><?php echo $this->escape($item->clinic_name); ?></a>
+					<a href="index.php?option=com_supportgroups&view=facilities&task=facility.edit&id=<?php echo $item->facility; ?>&ref=support_groups"><?php echo $this->escape($item->facility_name); ?></a>
 				</div>
 			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->clinic_name); ?></div>
+				<div class="name"><?php echo $this->escape($item->facility_name); ?></div>
 			<?php endif; ?>
 		</td>
 		<td class="hidden-phone">

@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 11 of this MVC
+	@build			25th October, 2017
+	@created		15th May, 2016
 	@package		Support Groups
 	@subpackage		regions.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -122,7 +122,7 @@ class SupportgroupsModelRegions extends JModelList
 				}
 
 			}
-		} 
+		}  
         
 		// return items
 		return $items;
@@ -186,7 +186,7 @@ class SupportgroupsModelRegions extends JModelList
 			}
 			else
 			{
-				$search = $db->quote('%' . $db->escape($search, true) . '%');
+				$search = $db->quote('%' . $db->escape($search) . '%');
 				$query->where('(a.name LIKE '.$search.' OR a.country LIKE '.$search.' OR g.name LIKE '.$search.')');
 			}
 		}
@@ -194,7 +194,7 @@ class SupportgroupsModelRegions extends JModelList
 		// Filter by country.
 		if ($country = $this->getState('filter.country'))
 		{
-			$query->where('a.country = ' . $db->quote($db->escape($country, true)));
+			$query->where('a.country = ' . $db->quote($db->escape($country)));
 		}
 
 		// Add the list ordering clause.
@@ -218,6 +218,8 @@ class SupportgroupsModelRegions extends JModelList
 		// setup the query
 		if (SupportgroupsHelper::checkArray($pks))
 		{
+			// Set a value to know this is exporting method.
+			$_export = true;
 			// Get the user object.
 			$user = JFactory::getUser();
 			// Create a new query object.

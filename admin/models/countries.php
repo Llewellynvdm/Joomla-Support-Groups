@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 4 of this MVC
+	@build			25th October, 2017
+	@created		5th March, 2016
 	@package		Support Groups
 	@subpackage		countries.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -134,7 +134,7 @@ class SupportgroupsModelCountries extends JModelList
 				}
 
 			}
-		} 
+		}  
         
 		// return items
 		return $items;
@@ -198,7 +198,7 @@ class SupportgroupsModelCountries extends JModelList
 			}
 			else
 			{
-				$search = $db->quote('%' . $db->escape($search, true) . '%');
+				$search = $db->quote('%' . $db->escape($search) . '%');
 				$query->where('(a.name LIKE '.$search.' OR a.currency LIKE '.$search.' OR g.name LIKE '.$search.' OR a.codethree LIKE '.$search.' OR a.codetwo LIKE '.$search.' OR a.alias LIKE '.$search.')');
 			}
 		}
@@ -206,12 +206,12 @@ class SupportgroupsModelCountries extends JModelList
 		// Filter by currency.
 		if ($currency = $this->getState('filter.currency'))
 		{
-			$query->where('a.currency = ' . $db->quote($db->escape($currency, true)));
+			$query->where('a.currency = ' . $db->quote($db->escape($currency)));
 		}
 		// Filter by Worldzone.
 		if ($worldzone = $this->getState('filter.worldzone'))
 		{
-			$query->where('a.worldzone = ' . $db->quote($db->escape($worldzone, true)));
+			$query->where('a.worldzone = ' . $db->quote($db->escape($worldzone)));
 		}
 
 		// Add the list ordering clause.
@@ -235,6 +235,8 @@ class SupportgroupsModelCountries extends JModelList
 		// setup the query
 		if (SupportgroupsHelper::checkArray($pks))
 		{
+			// Set a value to know this is exporting method.
+			$_export = true;
 			// Get the user object.
 			$user = JFactory::getUser();
 			// Create a new query object.

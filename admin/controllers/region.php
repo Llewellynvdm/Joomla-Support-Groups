@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 11 of this MVC
+	@build			25th October, 2017
+	@created		15th May, 2016
 	@package		Support Groups
 	@subpackage		region.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -99,7 +99,7 @@ class SupportgroupsControllerRegion extends JControllerForm
 		{
 			// The record has been set. Check the record permissions.
 			$permission = $user->authorise('region.edit', 'com_supportgroups.region.' . (int) $recordId);
-			if (!$permission && !is_null($permission))
+			if (!$permission)
 			{
 				if ($user->authorise('region.edit.own', 'com_supportgroups.region.' . $recordId))
 				{
@@ -159,10 +159,10 @@ class SupportgroupsControllerRegion extends JControllerForm
                 {
 			$append .= '&ref='.(string)$ref.'&refid='.(int)$refid;
 		}
-                elseif ($ref)
-                {
+		elseif ($ref)
+		{
 			$append .= '&ref='.(string)$ref;
-                }
+		}
 
 		if ($tmpl)
 		{
@@ -274,11 +274,11 @@ class SupportgroupsControllerRegion extends JControllerForm
 		$this->ref 		= $this->input->get('ref', 0, 'word');
 		$this->refid 	= $this->input->get('refid', 0, 'int');
 
-                if ($this->ref || $this->refid)
-                {
-                        // to make sure the item is checkedin on redirect
-                        $this->task = 'save';
-                }
+		if ($this->ref || $this->refid)
+		{
+			// to make sure the item is checkedin on redirect
+			$this->task = 'save';
+		}
 
 		$saved = parent::save($key, $urlVar);
 

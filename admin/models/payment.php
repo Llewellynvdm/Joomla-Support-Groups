@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 5 of this MVC
+	@build			27th April, 2016
+	@created		6th March, 2016
 	@package		Support Groups
 	@subpackage		payment.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -79,7 +79,7 @@ class SupportgroupsModelPayment extends JModelAdmin
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params))
+			if (!empty($item->params) && !is_array($item->params))
 			{
 				// Convert the params field to an array.
 				$registry = new Registry;
@@ -116,7 +116,8 @@ class SupportgroupsModelPayment extends JModelAdmin
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
-	{		// Get the form.
+	{
+		// Get the form.
 		$form = $this->loadForm('com_supportgroups.payment', 'payment', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
@@ -429,6 +430,26 @@ class SupportgroupsModelPayment extends JModelAdmin
 		
 		return true;
 	}
+
+	/**
+	 * Method to change the published state of one or more records.
+	 *
+	 * @param   array    &$pks   A list of the primary keys to change.
+	 * @param   integer  $value  The value of the published state.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   12.2
+	 */
+	public function publish(&$pks, $value = 1)
+	{
+		if (!parent::publish($pks, $value))
+		{
+			return false;
+		}
+		
+		return true;
+        }
     
 	/**
 	 * Method to perform batch operations on an item or a set of items.
@@ -545,8 +566,6 @@ class SupportgroupsModelPayment extends JModelAdmin
 			$this->user 		= JFactory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= SupportgroupsHelper::getActions('payment');
 		}
 
@@ -571,7 +590,6 @@ class SupportgroupsModelPayment extends JModelAdmin
 		}
 
 		$newIds = array();
-
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -581,17 +599,11 @@ class SupportgroupsModelPayment extends JModelAdmin
 			$this->table->reset();
 
 			// only allow copy if user may edit this item.
-
 			if (!$this->user->authorise('payment.edit', $contexts[$pk]))
-
 			{
-
 				// Not fatal error
-
 				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-
 				continue;
-
 			}
 
 			// Check that the row actually exists
@@ -601,7 +613,6 @@ class SupportgroupsModelPayment extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -612,7 +623,11 @@ class SupportgroupsModelPayment extends JModelAdmin
 				}
 			}
 
-			$this->table->support_group = $this->generateUniqe('support_group',$this->table->support_group);
+			// Only for strings
+			if (SupportgroupsHelper::checkString($this->table->support_group) && !is_numeric($this->table->support_group))
+			{
+				$this->table->support_group = $this->generateUniqe('support_group',$this->table->support_group);
+			}
 
 			// insert all set values
 			if (SupportgroupsHelper::checkArray($values))
@@ -694,8 +709,6 @@ class SupportgroupsModelPayment extends JModelAdmin
 			$this->user		= JFactory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->contentType	= new JUcmType;
-			$this->type		= $this->contentType->getTypeByTable($this->tableClassName);
 			$this->canDo		= SupportgroupsHelper::getActions('payment');
 		}
 
@@ -719,7 +732,6 @@ class SupportgroupsModelPayment extends JModelAdmin
 			if (!$this->user->authorise('payment.edit', $contexts[$pk]))
 			{
 				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-
 				return false;
 			}
 
@@ -730,7 +742,6 @@ class SupportgroupsModelPayment extends JModelAdmin
 				{
 					// Fatal error
 					$this->setError($error);
-
 					return false;
 				}
 				else
@@ -747,7 +758,7 @@ class SupportgroupsModelPayment extends JModelAdmin
 				foreach ($values as $key => $value)
 				{
 					// Do special action for access.
-					if ('access' == $key && strlen($value) > 0)
+					if ('access' === $key && strlen($value) > 0)
 					{
 						$this->table->$key = $value;
 					}
@@ -820,7 +831,7 @@ class SupportgroupsModelPayment extends JModelAdmin
 		}
 
 		// Alter the uniqe field for save as copy
-		if ($input->get('task') == 'save2copy')
+		if ($input->get('task') === 'save2copy')
 		{
 			// Automatic handling of other uniqe fields
 			$uniqeFields = $this->getUniqeFields();
@@ -865,9 +876,9 @@ class SupportgroupsModelPayment extends JModelAdmin
 	}
 
 	/**
-	* Method to change the title & alias.
+	* Method to change the title
 	*
-	* @param   string   $title        The title.
+	* @param   string   $title   The title.
 	*
 	* @return	array  Contains the modified title and alias.
 	*

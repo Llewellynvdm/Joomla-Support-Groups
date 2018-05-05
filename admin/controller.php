@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		controller.php
@@ -35,79 +35,104 @@ jimport('joomla.application.component.controller');
 class SupportgroupsController extends JControllerLegacy
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 * Recognized key values include 'name', 'default_task', 'model_path', and
+	 * 'view_path' (this list is not meant to be comprehensive).
+	 *
+	 * @since   3.0
+	 */
+	public function __construct($config = array())
+	{
+		// set the default view
+		$config['default_view'] = 'supportgroups';
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * display task
 	 *
 	 * @return void
 	 */
-        function display($cachable = false, $urlparams = false)
+	function display($cachable = false, $urlparams = false)
 	{
 		// set default view if not set
-		$view   = $this->input->getCmd('view', 'Supportgroups');
+		$view   = $this->input->getCmd('view', 'supportgroups');
 		$data	= $this->getViewRelation($view);
 		$layout	= $this->input->get('layout', null, 'WORD');
 		$id    	= $this->input->getInt('id');
 
 		// Check for edit form.
-                if(SupportgroupsHelper::checkArray($data))
-                {
-                    if ($data['edit'] && $layout == 'edit' && !$this->checkEditId('com_supportgroups.edit.'.$data['view'], $id))
-                    {
-                        // Somehow the person just went to the form - we don't allow that.
-                        $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
-                        $this->setMessage($this->getError(), 'error');
-                        // check if item was opend from other then its own list view
-                        $ref 	= $this->input->getCmd('ref', 0);
-                        $refid 	= $this->input->getInt('refid', 0);
-                        // set redirect
-                        if ($refid > 0 && SupportgroupsHelper::checkString($ref))
-                        {
-                            // redirect to item of ref
-                            $this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view='.(string)$ref.'&layout=edit&id='.(int)$refid, false));
-                        }
-                        elseif (SupportgroupsHelper::checkString($ref))
-                        {
+		if(SupportgroupsHelper::checkArray($data))
+		{
+			if ($data['edit'] && $layout == 'edit' && !$this->checkEditId('com_supportgroups.edit.'.$data['view'], $id))
+			{
+				// Somehow the person just went to the form - we don't allow that.
+				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+				$this->setMessage($this->getError(), 'error');
+				// check if item was opend from other then its own list view
+				$ref 	= $this->input->getCmd('ref', 0);
+				$refid 	= $this->input->getInt('refid', 0);
+				// set redirect
+				if ($refid > 0 && SupportgroupsHelper::checkString($ref))
+				{
+					// redirect to item of ref
+					$this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view='.(string)$ref.'&layout=edit&id='.(int)$refid, false));
+				}
+				elseif (SupportgroupsHelper::checkString($ref))
+				{
 
-                            // redirect to ref
-                            $this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view='.(string)$ref, false));
-                        }
-                        else
-                        {
-                            // normal redirect back to the list view
-                            $this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view='.$data['views'], false));
-                        }
+					// redirect to ref
+					$this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view='.(string)$ref, false));
+				}
+				else
+				{
+					// normal redirect back to the list view
+					$this->setRedirect(JRoute::_('index.php?option=com_supportgroups&view='.$data['views'], false));
+				}
 
-                        return false;
-                    }
-                }
+				return false;
+			}
+		}
 
 		return parent::display($cachable, $urlparams);
 	}
 
 	protected function getViewRelation($view)
 	{
-                if (SupportgroupsHelper::checkString($view))
-                {
-                        $views = array(
+		// check the we have a value
+		if (SupportgroupsHelper::checkString($view))
+		{
+			// the view relationships
+			$views = array(
 				'support_group' => 'support_groups',
 				'payment' => 'payments',
-				'clinic' => 'clinics',
-				'location' => 'locations',
+				'facility' => 'facilities',
+				'facility_type' => 'facility_types',
+				'additional_info' => 'additional_information',
+				'info_type' => 'info_types',
+				'area' => 'areas',
+				'area_type' => 'area_types',
 				'region' => 'regions',
 				'country' => 'countries',
 				'currency' => 'currencies',
 				'help_document' => 'help_documents'
-                                );
-                        // check if this is a list view
-                        if (in_array($view,$views))
-                        {
-                            return array('edit' => false, 'view' => array_search($view,$views), 'views' => $view);
-                        }
-                        // check if it is an edit view
-                        elseif (array_key_exists($view,$views))
-                        {
-                                return array('edit' => true, 'view' => $view, 'views' => $views[$view]);
-                        }
-                }
+					);
+			// check if this is a list view
+			if (in_array($view, $views))
+			{
+				// this is a list view
+				return array('edit' => false, 'view' => array_search($view,$views), 'views' => $view);
+			}
+			// check if it is an edit view
+			elseif (array_key_exists($view, $views))
+			{
+				// this is a edit view
+				return array('edit' => true, 'view' => $view, 'views' => $views[$view]);
+			}
+		}
 		return false;
 	}
 }

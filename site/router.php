@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		router.php
@@ -82,11 +82,11 @@ class SupportgroupsRouter extends JComponentRouterBase
 			return $segments;
 		}
 
-		if (isset($view) && isset($query['id']) && 0)
+		if (isset($view) && isset($query['id']) && ($view === 'map' || $view === 'supportgroups'))
 		{
 			if ($mId != (int) $query['id'] || $mView != $view)
 			{
-				if (0)
+				if (($view === 'map' || $view === 'supportgroups'))
 				{
 					$segments[] = $view;
 					$id = explode(':', $query['id']);
@@ -124,29 +124,53 @@ class SupportgroupsRouter extends JComponentRouterBase
 	 * @since   3.3
 	 */
 	public function parse(&$segments)
-	{
-		//var_dump($segments);
-		//$app = JFactory::getApplication();
-		//$menu = $app->getMenu();
-		//$item = $menu->getActive();
-		
+	{		
 		$count = count($segments);
 		$vars = array();
-				
-		//var_dump($item->query['view']);
+		
 		//Handle View and Identifier
 		switch($segments[0])
 		{
+			case 'map':
+				$vars['view'] = 'map';
+				if (is_numeric($segments[$count-1]))
+				{
+					$vars['id'] = (int) $segments[$count-1];
+				}
+				elseif ($segments[$count-1])
+				{
+					$id = $this->getVar('support_group', $segments[$count-1], 'alias', 'id');
+					if($id)
+					{
+						$vars['id'] = $id;
+					}
+				}
+				break;
+			case 'supportgroups':
+				$vars['view'] = 'supportgroups';
+				if (is_numeric($segments[$count-1]))
+				{
+					$vars['id'] = (int) $segments[$count-1];
+				}
+				elseif ($segments[$count-1])
+				{
+					$id = $this->getVar('support_group', $segments[$count-1], 'alias', 'id');
+					if($id)
+					{
+						$vars['id'] = $id;
+					}
+				}
+				break;
 		}
 
 		return $vars;
 	} 
 
-	protected function getVar($table, $where = null, $whereString = 'user', $what = 'id', $operator = '=', $main = 'supportgroups')
+	protected function getVar($table, $where = null, $whereString = null, $what = null, $category = false, $operator = '=', $main = 'supportgroups')
 	{
-		if(!$where)
+		if(!$where || !$what || !$whereString)
 		{
-			$where = JFactory::getUser()->id;
+			return false;
 		}
 		// Get a db connection.
 		$db = JFactory::getDbo();
@@ -154,21 +178,44 @@ class SupportgroupsRouter extends JComponentRouterBase
 		$query = $db->getQuery(true);
 
 		$query->select($db->quoteName(array($what)));
-		if ('categories' == $table || 'category' == $table)
+		if ('categories' == $table || 'category' == $table || $category)
 		{
-			$query->from($db->quoteName('#__categories'));
+			$getTable = '#__categories';
+			$query->from($db->quoteName($getTable));
 		}
 		else
 		{
-			$query->from($db->quoteName('#__'.$main.'_'.$table));
+			// we must check if the table exist (TODO not ideal)
+			$tables = $db->getTableList();
+			$app = JFactory::getApplication();
+			$prefix = $app->get('dbprefix');
+			$check = $prefix.$main.'_'.$table;
+			if (in_array($check, $tables))
+			{
+				$getTable = '#__'.$main.'_'.$table;
+				$query->from($db->quoteName($getTable));
+			}
+			else
+			{
+				return false;
+			}
 		}
 		if (is_numeric($where))
 		{
-			$query->where($db->quoteName($whereString) . ' '.$operator.' '.(int) $where);
+			return false;
 		}
-		elseif (is_string($where))
+		elseif ($this->checkString($where))
 		{
-			$query->where($db->quoteName($whereString) . ' '.$operator.' '. $db->quote((string)$where));
+			// we must first check if this table has the column
+			$columns = $db->getTableColumns($getTable);
+			if (isset($columns[$whereString]))
+			{
+				$query->where($db->quoteName($whereString) . ' '.$operator.' '. $db->quote((string)$where));
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
@@ -179,6 +226,15 @@ class SupportgroupsRouter extends JComponentRouterBase
 		if ($db->getNumRows())
 		{
 			return $db->loadResult();
+		}
+		return false;
+	}
+	
+	protected function checkString($string)
+	{
+		if (isset($string) && is_string($string) && strlen($string) > 0)
+		{
+			return true;
 		}
 		return false;
 	}
@@ -193,7 +249,7 @@ function SupportgroupsBuildRoute(&$query)
 
 function SupportgroupsParseRoute($segments)
 {
-	$router = new ContentRouter;
+	$router = new SupportgroupsRouter;
 
 	return $router->parse($segments);
 }

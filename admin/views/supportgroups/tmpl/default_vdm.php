@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default_vdm.php
@@ -26,30 +26,27 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-$manifest = SupportgroupsHelper::manifest();
-JHtml::_('bootstrap.loadCss');
-
 ?>
-<img alt="<?php echo JText::_('COM_SUPPORTGROUPS'); ?>" src="components/com_supportgroups/assets/images/component-300.jpg">
+<img alt="<?php echo JText::_('COM_SUPPORTGROUPS'); ?>" src="components/com_supportgroups/assets/images/vdm-component.jpg">
 <ul class="list-striped">
-<li><b><?php echo JText::_('COM_SUPPORTGROUPS_VERSION'); ?>:</b> <?php echo $manifest->version; ?></li>
-<li><b><?php echo JText::_('COM_SUPPORTGROUPS_DATE'); ?>:</b> <?php echo $manifest->creationDate; ?></li>
-<li><b><?php echo JText::_('COM_SUPPORTGROUPS_AUTHOR'); ?>:</b> <a href="mailto:<?php echo $manifest->authorEmail; ?>"><?php echo $manifest->author; ?></a></li>
-<li><b><?php echo JText::_('COM_SUPPORTGROUPS_WEBSITE'); ?>:</b> <a href="<?php echo $manifest->authorUrl; ?>" target="_blank"><?php echo $manifest->authorUrl; ?></a></li>
-<li><b><?php echo JText::_('COM_SUPPORTGROUPS_LICENSE'); ?>:</b> <?php echo $manifest->license; ?></li>
-<li><b><?php echo $manifest->copyright; ?></b></li>
+	<li><b><?php echo JText::_('COM_SUPPORTGROUPS_VERSION'); ?>:</b> <?php echo $this->manifest->version; ?>&nbsp;&nbsp;<span class="update-notice"></span></li>
+	<li><b><?php echo JText::_('COM_SUPPORTGROUPS_DATE'); ?>:</b> <?php echo $this->manifest->creationDate; ?></li>
+	<li><b><?php echo JText::_('COM_SUPPORTGROUPS_AUTHOR'); ?>:</b> <a href="mailto:<?php echo $this->manifest->authorEmail; ?>"><?php echo $this->manifest->author; ?></a></li>
+	<li><b><?php echo JText::_('COM_SUPPORTGROUPS_WEBSITE'); ?>:</b> <a href="<?php echo $this->manifest->authorUrl; ?>" target="_blank"><?php echo $this->manifest->authorUrl; ?></a></li>
+	<li><b><?php echo JText::_('COM_SUPPORTGROUPS_LICENSE'); ?>:</b> <?php echo $this->manifest->license; ?></li>
+	<li><b><?php echo $this->manifest->copyright; ?></b></li>
 </ul>
 <div class="clearfix"></div>
 <?php if(SupportgroupsHelper::checkArray($this->contributors)): ?>
-<?php if(count($this->contributors) > 1): ?>
-<h3><?php echo JText::_('COM_SUPPORTGROUPS_CONTRIBUTORS'); ?></h3>
-<?php else: ?>
-<h3><?php echo JText::_('COM_SUPPORTGROUPS_CONTRIBUTOR'); ?></h3>
-<?php endif; ?>
-<ul class="list-striped">
-	<?php foreach($this->contributors as $contributor): ?>
-    <li><b><?php echo $contributor['title']; ?>:</b> <?php echo $contributor['name']; ?></li>
-    <?php endforeach; ?>
-</ul>
-<div class="clearfix"></div>
+	<?php if(count($this->contributors) > 1): ?>
+		<h3><?php echo JText::_('COM_SUPPORTGROUPS_CONTRIBUTORS'); ?></h3>
+	<?php else: ?>
+		<h3><?php echo JText::_('COM_SUPPORTGROUPS_CONTRIBUTOR'); ?></h3>
+	<?php endif; ?>
+	<ul class="list-striped">
+		<?php foreach($this->contributors as $contributor): ?>
+		<li><b><?php echo $contributor['title']; ?>:</b> <?php echo $contributor['name']; ?></li>
+		<?php endforeach; ?>
+	</ul>
+	<div class="clearfix"></div>
 <?php endif; ?>

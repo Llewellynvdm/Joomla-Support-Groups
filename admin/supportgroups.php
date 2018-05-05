@@ -10,8 +10,8 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
+	@version		1.0.8
+	@build			5th May, 2018
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -29,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_supportgroups'))
 {
-	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+	return JError::raiseWaring(404, JText::_('JERROR_ALERTNOAUTHOR'));
 };
 
 // Load cms libraries
@@ -43,7 +43,7 @@ $document->addStyleSheet('components/com_supportgroups/assets/css/admin.css');
 $document->addScript('components/com_supportgroups/assets/js/admin.js');
 
 // require helper files
-JLoader::register('SupportgroupsHelper', dirname(__FILE__) . '/helpers/supportgroups.php');
+JLoader::register('SupportgroupsHelper', dirname(__FILE__) . '/helpers/supportgroups.php'); 
 JLoader::register('JHtmlBatch_', dirname(__FILE__) . '/helpers/html/batch_.php'); 
 
 // import joomla controller library

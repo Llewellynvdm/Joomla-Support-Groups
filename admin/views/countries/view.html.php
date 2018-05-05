@@ -10,9 +10,9 @@
                                                         |_| 				
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.3
-	@build			6th March, 2016
-	@created		24th February, 2016
+	@version		@update number 4 of this MVC
+	@build			25th October, 2017
+	@created		5th March, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
 	@author			Llewellyn van der Merwe <http://www.vdm.io>	
@@ -46,39 +46,38 @@ class SupportgroupsViewCountries extends JViewLegacy
 			SupportgroupsHelper::addSubmenu('countries');
 		}
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-                {
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-
 		// Assign data to the view
-		$this->items 		= $this->get('Items');
-		$this->pagination 	= $this->get('Pagination');
-		$this->state		= $this->get('State');
-		$this->user 		= JFactory::getUser();
-		$this->listOrder	= $this->escape($this->state->get('list.ordering'));
-		$this->listDirn		= $this->escape($this->state->get('list.direction'));
-		$this->saveOrder	= $this->listOrder == 'ordering';
-                // get global action permissions
-		$this->canDo		= SupportgroupsHelper::getActions('country');
-		$this->canEdit		= $this->canDo->get('country.edit');
-		$this->canState		= $this->canDo->get('country.edit.state');
-		$this->canCreate	= $this->canDo->get('country.create');
-		$this->canDelete	= $this->canDo->get('country.delete');
-		$this->canBatch	= $this->canDo->get('core.batch');
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->state = $this->get('State');
+		$this->user = JFactory::getUser();
+		$this->listOrder = $this->escape($this->state->get('list.ordering'));
+		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		$this->saveOrder = $this->listOrder == 'ordering';
+		// get global action permissions
+		$this->canDo = SupportgroupsHelper::getActions('country');
+		$this->canEdit = $this->canDo->get('country.edit');
+		$this->canState = $this->canDo->get('country.edit.state');
+		$this->canCreate = $this->canDo->get('country.create');
+		$this->canDelete = $this->canDo->get('country.delete');
+		$this->canBatch = $this->canDo->get('core.batch');
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
 		{
 			$this->addToolbar();
 			$this->sidebar = JHtmlSidebar::render();
-                        // load the batch html
-                        if ($this->canCreate && $this->canEdit && $this->canState)
-                        {
-                                $this->batchDisplay = JHtmlBatch_::render();
-                        }
+			// load the batch html
+			if ($this->canCreate && $this->canEdit && $this->canState)
+			{
+				$this->batchDisplay = JHtmlBatch_::render();
+			}
+		}
+		
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors), 500);
 		}
 
 		// Display the template
@@ -95,96 +94,96 @@ class SupportgroupsViewCountries extends JViewLegacy
 	{
 		JToolBarHelper::title(JText::_('COM_SUPPORTGROUPS_COUNTRIES'), 'flag');
 		JHtmlSidebar::setAction('index.php?option=com_supportgroups&view=countries');
-                JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		if ($this->canCreate)
-                {
+		{
 			JToolBarHelper::addNew('country.add');
 		}
 
-                // Only load if there are items
-                if (SupportgroupsHelper::checkArray($this->items))
+		// Only load if there are items
+		if (SupportgroupsHelper::checkArray($this->items))
 		{
-                        if ($this->canEdit)
-                        {
-                            JToolBarHelper::editList('country.edit');
-                        }
+			if ($this->canEdit)
+			{
+				JToolBarHelper::editList('country.edit');
+			}
 
-                        if ($this->canState)
-                        {
-                            JToolBarHelper::publishList('countries.publish');
-                            JToolBarHelper::unpublishList('countries.unpublish');
-                            JToolBarHelper::archiveList('countries.archive');
+			if ($this->canState)
+			{
+				JToolBarHelper::publishList('countries.publish');
+				JToolBarHelper::unpublishList('countries.unpublish');
+				JToolBarHelper::archiveList('countries.archive');
 
-                            if ($this->canDo->get('core.admin'))
-                            {
-                                JToolBarHelper::checkin('countries.checkin');
-                            }
-                        }
+				if ($this->canDo->get('core.admin'))
+				{
+					JToolBarHelper::checkin('countries.checkin');
+				}
+			}
 
-                        // Add a batch button
-                        if ($this->canBatch && $this->canCreate && $this->canEdit && $this->canState)
-                        {
-                                // Get the toolbar object instance
-                                $bar = JToolBar::getInstance('toolbar');
-                                // set the batch button name
-                                $title = JText::_('JTOOLBAR_BATCH');
-                                // Instantiate a new JLayoutFile instance and render the batch button
-                                $layout = new JLayoutFile('joomla.toolbar.batch');
-                                // add the button to the page
-                                $dhtml = $layout->render(array('title' => $title));
-                                $bar->appendButton('Custom', $dhtml, 'batch');
-                        } 
+			// Add a batch button
+			if ($this->canBatch && $this->canCreate && $this->canEdit && $this->canState)
+			{
+				// Get the toolbar object instance
+				$bar = JToolBar::getInstance('toolbar');
+				// set the batch button name
+				$title = JText::_('JTOOLBAR_BATCH');
+				// Instantiate a new JLayoutFile instance and render the batch button
+				$layout = new JLayoutFile('joomla.toolbar.batch');
+				// add the button to the page
+				$dhtml = $layout->render(array('title' => $title));
+				$bar->appendButton('Custom', $dhtml, 'batch');
+			} 
 
-                        if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
-                        {
-                            JToolbarHelper::deleteList('', 'countries.delete', 'JTOOLBAR_EMPTY_TRASH');
-                        }
-                        elseif ($this->canState && $this->canDelete)
-                        {
-                                JToolbarHelper::trash('countries.trash');
-                        }
+			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
+			{
+				JToolbarHelper::deleteList('', 'countries.delete', 'JTOOLBAR_EMPTY_TRASH');
+			}
+			elseif ($this->canState && $this->canDelete)
+			{
+				JToolbarHelper::trash('countries.trash');
+			}
 
 			if ($this->canDo->get('core.export') && $this->canDo->get('country.export'))
 			{
 				JToolBarHelper::custom('countries.exportData', 'download', '', 'COM_SUPPORTGROUPS_EXPORT_DATA', true);
 			}
-                }
+		} 
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('country.import'))
 		{
 			JToolBarHelper::custom('countries.importData', 'upload', '', 'COM_SUPPORTGROUPS_IMPORT_DATA', false);
 		}
 
-                // set help url for this view if found
-                $help_url = SupportgroupsHelper::getHelpUrl('countries');
-                if (SupportgroupsHelper::checkString($help_url))
-                {
-                        JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
-                }
+		// set help url for this view if found
+		$help_url = SupportgroupsHelper::getHelpUrl('countries');
+		if (SupportgroupsHelper::checkString($help_url))
+		{
+				JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
+		}
 
-                // add the options comp button
-                if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
-                {
-                        JToolBarHelper::preferences('com_supportgroups');
-                }
+		// add the options comp button
+		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
+		{
+			JToolBarHelper::preferences('com_supportgroups');
+		}
 
-                if ($this->canState)
-                {
+		if ($this->canState)
+		{
 			JHtmlSidebar::addFilter(
 				JText::_('JOPTION_SELECT_PUBLISHED'),
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-                        // only load if batch allowed
-                        if ($this->canBatch)
-                        {
-                            JHtmlBatch_::addListSelection(
-                                JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
-                                'batch[published]',
-                                JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-                            );
-                        }
+			// only load if batch allowed
+			if ($this->canBatch)
+			{
+				JHtmlBatch_::addListSelection(
+					JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
+					'batch[published]',
+					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+				);
+			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -196,11 +195,11 @@ class SupportgroupsViewCountries extends JViewLegacy
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			JHtmlBatch_::addListSelection(
-                                JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
-                                'batch[access]',
-                                JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-                }  
+		} 
 
 		// Set Currency Name Selection
 		$this->currencyNameOptions = JFormHelper::loadFieldType('Currency')->getOptions();
@@ -254,12 +253,15 @@ class SupportgroupsViewCountries extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		$document->setTitle(JText::_('COM_SUPPORTGROUPS_COUNTRIES'));
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_supportgroups/assets/css/countries.css");
+		if (!isset($this->document))
+		{
+			$this->document = JFactory::getDocument();
+		}
+		$this->document->setTitle(JText::_('COM_SUPPORTGROUPS_COUNTRIES'));
+		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_supportgroups/assets/css/countries.css", (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 	}
 
-        /**
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var  The output to escape.
@@ -270,10 +272,10 @@ class SupportgroupsViewCountries extends JViewLegacy
 	{
 		if(strlen($var) > 50)
 		{
-                        // use the helper htmlEscape method instead and shorten the string
+			// use the helper htmlEscape method instead and shorten the string
 			return SupportgroupsHelper::htmlEscape($var, $this->_charset, true);
 		}
-                // use the helper htmlEscape method instead.
+		// use the helper htmlEscape method instead.
 		return SupportgroupsHelper::htmlEscape($var, $this->_charset);
 	}
 
@@ -294,7 +296,7 @@ class SupportgroupsViewCountries extends JViewLegacy
 			'a.codetwo' => JText::_('COM_SUPPORTGROUPS_COUNTRY_CODETWO_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	} 
+	}
 
 	protected function getTheWorldzoneSelections()
 	{
@@ -317,13 +319,13 @@ class SupportgroupsViewCountries extends JViewLegacy
 		if ($results)
 		{
 			$results = array_unique($results);
-			$filter = array();
+			$_filter = array();
 			foreach ($results as $worldzone)
 			{
 				// Now add the worldzone and its text to the options array
-				$filter[] = JHtml::_('select.option', $worldzone, $worldzone);
+				$_filter[] = JHtml::_('select.option', $worldzone, $worldzone);
 			}
-			return $filter;
+			return $_filter;
 		}
 		return false;
 	}
