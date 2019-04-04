@@ -6,28 +6,25 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 390 of this MVC
-	@build			1st April, 2017
-	@created		10th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-
-// import Joomla view library
-jimport('joomla.application.component.view');
 jimport('joomla.application.module.helper');
 
 /**
@@ -152,7 +149,7 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );
 		// Initialize the header checker.
-		$HeaderCheck = new supportgroupsHeaderCheck; 
+		$HeaderCheck = new supportgroupsHeaderCheck;
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -170,13 +167,13 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 		if ((!$HeaderCheck->js_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
 			$this->document->addScript(JURI::root(true) .'/media/com_supportgroups/uikit-v2/js/uikit'.$size.'.js', (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
-		}  
+		}
 
 		// Add the CSS for Footable
 		$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
 		$this->document->addStyleSheet(JURI::root() .'media/com_supportgroups/footable-v3/css/footable.standalone.min.css', (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
 		// Add the JavaScript for Footable (adding all funtions)
-		$this->document->addScript(JURI::root() .'media/com_supportgroups/footable-v3/js/footable.min.js', (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
+		$this->document->addScript(JURI::root() .'media/com_supportgroups/footable-v3/js/footable.min.js', (SupportgroupsHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
 		// load the meta description
 		if ($this->params->get('menu-meta_description'))
 		{
@@ -191,7 +188,7 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 		if ($this->params->get('robots'))
 		{
 			$this->document->setMetadata('robots', $this->params->get('robots'));
-		} 
+		}
 		// Add the JavaScript for JStore
 		$this->document->addScript(JURI::root() .'media/com_supportgroups/js/jquery.json.min.js');
 		$this->document->addScript(JURI::root() .'media/com_supportgroups/js/jstorage.min.js');
@@ -252,7 +249,7 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 			#global {
 			    height: 600px;
 			}
-		"); 
+		");
 		// Set the Custom JS script to view
 		$this->document->addScriptDeclaration("
 			// Get Totals from Server

@@ -127,6 +127,7 @@
 			description="COM_SUPPORTGROUPS_ADDITIONAL_INFO_INFO_TYPE_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			button="true"
 		/>
 		<!-- Details Field. Type: Editor. (joomla) -->

@@ -127,15 +127,17 @@
 			description="COM_SUPPORTGROUPS_FACILITY_FACILITY_TYPE_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			button="true"
 		/>
-		<!-- Phone Field. Type: Tel. (joomla) -->
+		<!-- Phone Field. Type: Text. (joomla) -->
 		<field
-			type="tel"
+			type="text"
 			name="phone"
 			label="COM_SUPPORTGROUPS_FACILITY_PHONE_LABEL"
 			size="60"
 			maxlength="150"
+			default=""
 			description="COM_SUPPORTGROUPS_FACILITY_PHONE_DESCRIPTION"
 			class="text_area"
 			required="false"

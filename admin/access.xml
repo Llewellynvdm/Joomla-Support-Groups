@@ -70,17 +70,35 @@
 		<action name="area.import" title="COM_SUPPORTGROUPS_AREAS_IMPORT" description="COM_SUPPORTGROUPS_AREAS_IMPORT_DESC" />
 		<action name="area.submenu" title="COM_SUPPORTGROUPS_AREAS_SUBMENU" description="COM_SUPPORTGROUPS_AREAS_SUBMENU_DESC" />
 		<action name="country.access" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_DESC" />
+		<action name="country.access.alias" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_ALIAS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_ALIAS_DESC" />
+		<action name="country.access.codethree" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CODETHREE" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CODETHREE_DESC" />
+		<action name="country.access.codetwo" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CODETWO" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CODETWO_DESC" />
+		<action name="country.access.currency" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CURRENCY" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CURRENCY_DESC" />
+		<action name="country.access.name" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_NAME" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_NAME_DESC" />
+		<action name="country.access.worldzone" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_WORLDZONE" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_WORLDZONE_DESC" />
 		<action name="country.batch" title="COM_SUPPORTGROUPS_COUNTRIES_BATCH_USE" description="COM_SUPPORTGROUPS_COUNTRIES_BATCH_USE_DESC" />
 		<action name="country.create" title="COM_SUPPORTGROUPS_COUNTRIES_CREATE" description="COM_SUPPORTGROUPS_COUNTRIES_CREATE_DESC" />
 		<action name="country.dashboard_list" title="COM_SUPPORTGROUPS_COUNTRIES_DASHBOARD_LIST" description="COM_SUPPORTGROUPS_COUNTRIES_DASHBOARD_LIST_DESC" />
 		<action name="country.delete" title="COM_SUPPORTGROUPS_COUNTRIES_DELETE" description="COM_SUPPORTGROUPS_COUNTRIES_DELETE_DESC" />
 		<action name="country.edit" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_DESC" />
+		<action name="country.edit.alias" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_ALIAS" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_ALIAS_DESC" />
+		<action name="country.edit.codethree" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CODETHREE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CODETHREE_DESC" />
+		<action name="country.edit.codetwo" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CODETWO" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CODETWO_DESC" />
+		<action name="country.edit.currency" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CURRENCY" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CURRENCY_DESC" />
+		<action name="country.edit.name" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_NAME" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_NAME_DESC" />
 		<action name="country.edit.own" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_OWN_DESC" />
 		<action name="country.edit.state" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_STATE_DESC" />
 		<action name="country.version" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION_DESC" />
+		<action name="country.edit.worldzone" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_WORLDZONE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_WORLDZONE_DESC" />
 		<action name="country.export" title="COM_SUPPORTGROUPS_COUNTRIES_EXPORT" description="COM_SUPPORTGROUPS_COUNTRIES_EXPORT_DESC" />
 		<action name="country.import" title="COM_SUPPORTGROUPS_COUNTRIES_IMPORT" description="COM_SUPPORTGROUPS_COUNTRIES_IMPORT_DESC" />
 		<action name="country.submenu" title="COM_SUPPORTGROUPS_COUNTRIES_SUBMENU" description="COM_SUPPORTGROUPS_COUNTRIES_SUBMENU_DESC" />
+		<action name="country.view.alias" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_ALIAS" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_ALIAS_DESC" />
+		<action name="country.view.codethree" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CODETHREE" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CODETHREE_DESC" />
+		<action name="country.view.codetwo" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CODETWO" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CODETWO_DESC" />
+		<action name="country.view.currency" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CURRENCY" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CURRENCY_DESC" />
+		<action name="country.view.name" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_NAME" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_NAME_DESC" />
+		<action name="country.view.worldzone" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_WORLDZONE" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_WORLDZONE_DESC" />
 		<action name="currency.access" title="COM_SUPPORTGROUPS_CURRENCIES_ACCESS" description="COM_SUPPORTGROUPS_CURRENCIES_ACCESS_DESC" />
 		<action name="currency.batch" title="COM_SUPPORTGROUPS_CURRENCIES_BATCH_USE" description="COM_SUPPORTGROUPS_CURRENCIES_BATCH_USE_DESC" />
 		<action name="currency.create" title="COM_SUPPORTGROUPS_CURRENCIES_CREATE" description="COM_SUPPORTGROUPS_CURRENCIES_CREATE_DESC" />
@@ -174,6 +192,9 @@
 		<action name="payment.import" title="COM_SUPPORTGROUPS_PAYMENTS_IMPORT" description="COM_SUPPORTGROUPS_PAYMENTS_IMPORT_DESC" />
 		<action name="payment.submenu" title="COM_SUPPORTGROUPS_PAYMENTS_SUBMENU" description="COM_SUPPORTGROUPS_PAYMENTS_SUBMENU_DESC" />
 		<action name="region.access" title="COM_SUPPORTGROUPS_REGIONS_ACCESS" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_DESC" />
+		<action name="region.access.alias" title="COM_SUPPORTGROUPS_REGIONS_ACCESS_ALIAS" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_ALIAS_DESC" />
+		<action name="region.access.country" title="COM_SUPPORTGROUPS_REGIONS_ACCESS_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_COUNTRY_DESC" />
+		<action name="region.access.name" title="COM_SUPPORTGROUPS_REGIONS_ACCESS_NAME" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_NAME_DESC" />
 		<action name="region.batch" title="COM_SUPPORTGROUPS_REGIONS_BATCH_USE" description="COM_SUPPORTGROUPS_REGIONS_BATCH_USE_DESC" />
 		<action name="region.create" title="COM_SUPPORTGROUPS_REGIONS_CREATE" description="COM_SUPPORTGROUPS_REGIONS_CREATE_DESC" />
 		<action name="region.dashboard_add" title="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_ADD" description="COM_SUPPORTGROUPS_REGIONS_DASHBOARD_ADD_DESC" />
@@ -191,6 +212,9 @@
 		<action name="region.export" title="COM_SUPPORTGROUPS_REGIONS_EXPORT" description="COM_SUPPORTGROUPS_REGIONS_EXPORT_DESC" />
 		<action name="region.import" title="COM_SUPPORTGROUPS_REGIONS_IMPORT" description="COM_SUPPORTGROUPS_REGIONS_IMPORT_DESC" />
 		<action name="region.submenu" title="COM_SUPPORTGROUPS_REGIONS_SUBMENU" description="COM_SUPPORTGROUPS_REGIONS_SUBMENU_DESC" />
+		<action name="region.view.alias" title="COM_SUPPORTGROUPS_REGIONS_VIEW_ALIAS" description="COM_SUPPORTGROUPS_REGIONS_VIEW_ALIAS_DESC" />
+		<action name="region.view.country" title="COM_SUPPORTGROUPS_REGIONS_VIEW_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_VIEW_COUNTRY_DESC" />
+		<action name="region.view.name" title="COM_SUPPORTGROUPS_REGIONS_VIEW_NAME" description="COM_SUPPORTGROUPS_REGIONS_VIEW_NAME_DESC" />
 		<action name="support_group.smart_export" title="COM_SUPPORTGROUPS_SUPPORT_GROUP_SMART_EXPORT_BUTTON_ACCESS" description="COM_SUPPORTGROUPS_SUPPORT_GROUP_SMART_EXPORT_BUTTON_ACCESS_DESC" />
 		<action name="support_group.access" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_ACCESS" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_ACCESS_DESC" />
 		<action name="site.supportgroups.access" title="COM_SUPPORTGROUPS_SUPPORT_GROUPS_ACCESS_SITE" description="COM_SUPPORTGROUPS_SUPPORT_GROUPS_ACCESS_SITE_DESC" />
@@ -356,8 +380,14 @@
 		<action name="region.delete" title="COM_SUPPORTGROUPS_REGIONS_DELETE" description="COM_SUPPORTGROUPS_REGIONS_DELETE_DESC" />
 		<action name="region.access" title="COM_SUPPORTGROUPS_REGIONS_ACCESS" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_DESC" />
 		<action name="region.edit.name" title="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME" description="COM_SUPPORTGROUPS_REGIONS_EDIT_NAME_DESC" />
+		<action name="region.access.name" title="COM_SUPPORTGROUPS_REGIONS_ACCESS_NAME" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_NAME_DESC" />
+		<action name="region.view.name" title="COM_SUPPORTGROUPS_REGIONS_VIEW_NAME" description="COM_SUPPORTGROUPS_REGIONS_VIEW_NAME_DESC" />
 		<action name="region.edit.country" title="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_EDIT_COUNTRY_DESC" />
+		<action name="region.access.country" title="COM_SUPPORTGROUPS_REGIONS_ACCESS_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_COUNTRY_DESC" />
+		<action name="region.view.country" title="COM_SUPPORTGROUPS_REGIONS_VIEW_COUNTRY" description="COM_SUPPORTGROUPS_REGIONS_VIEW_COUNTRY_DESC" />
 		<action name="region.edit.alias" title="COM_SUPPORTGROUPS_REGIONS_EDIT_ALIAS" description="COM_SUPPORTGROUPS_REGIONS_EDIT_ALIAS_DESC" />
+		<action name="region.access.alias" title="COM_SUPPORTGROUPS_REGIONS_ACCESS_ALIAS" description="COM_SUPPORTGROUPS_REGIONS_ACCESS_ALIAS_DESC" />
+		<action name="region.view.alias" title="COM_SUPPORTGROUPS_REGIONS_VIEW_ALIAS" description="COM_SUPPORTGROUPS_REGIONS_VIEW_ALIAS_DESC" />
 		<action name="region.version" title="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION" description="COM_SUPPORTGROUPS_REGIONS_EDIT_VERSION_DESC" />
 	</section>
 	<section name="country">
@@ -367,6 +397,24 @@
 		<action name="country.create" title="COM_SUPPORTGROUPS_COUNTRIES_CREATE" description="COM_SUPPORTGROUPS_COUNTRIES_CREATE_DESC" />
 		<action name="country.delete" title="COM_SUPPORTGROUPS_COUNTRIES_DELETE" description="COM_SUPPORTGROUPS_COUNTRIES_DELETE_DESC" />
 		<action name="country.access" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_DESC" />
+		<action name="country.edit.name" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_NAME" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_NAME_DESC" />
+		<action name="country.access.name" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_NAME" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_NAME_DESC" />
+		<action name="country.view.name" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_NAME" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_NAME_DESC" />
+		<action name="country.edit.currency" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CURRENCY" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CURRENCY_DESC" />
+		<action name="country.access.currency" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CURRENCY" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CURRENCY_DESC" />
+		<action name="country.view.currency" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CURRENCY" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CURRENCY_DESC" />
+		<action name="country.edit.worldzone" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_WORLDZONE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_WORLDZONE_DESC" />
+		<action name="country.access.worldzone" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_WORLDZONE" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_WORLDZONE_DESC" />
+		<action name="country.view.worldzone" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_WORLDZONE" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_WORLDZONE_DESC" />
+		<action name="country.edit.codethree" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CODETHREE" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CODETHREE_DESC" />
+		<action name="country.access.codethree" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CODETHREE" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CODETHREE_DESC" />
+		<action name="country.view.codethree" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CODETHREE" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CODETHREE_DESC" />
+		<action name="country.edit.codetwo" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CODETWO" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_CODETWO_DESC" />
+		<action name="country.access.codetwo" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CODETWO" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_CODETWO_DESC" />
+		<action name="country.view.codetwo" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CODETWO" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_CODETWO_DESC" />
+		<action name="country.edit.alias" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_ALIAS" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_ALIAS_DESC" />
+		<action name="country.access.alias" title="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_ALIAS" description="COM_SUPPORTGROUPS_COUNTRIES_ACCESS_ALIAS_DESC" />
+		<action name="country.view.alias" title="COM_SUPPORTGROUPS_COUNTRIES_VIEW_ALIAS" description="COM_SUPPORTGROUPS_COUNTRIES_VIEW_ALIAS_DESC" />
 		<action name="country.version" title="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION" description="COM_SUPPORTGROUPS_COUNTRIES_EDIT_VERSION_DESC" />
 	</section>
 	<section name="currency">

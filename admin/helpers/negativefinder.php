@@ -14,54 +14,54 @@ defined('_JEXEC') or die;
 *	Detecting negative numbers
 **/
 
-class Expression
+class SupportgroupsExpression
 {
-    protected $expression;
-    protected $result;
+	protected $expression;
+	protected $result;
 
-    public function __construct($expression)
+	public function __construct($expression)
 	{
-        $this->expression = $expression;
-    }
+		$this->expression = $expression;
+	}
 
-    public function evaluate()
+	public function evaluate()
 	{
-        $this->result = eval("return ".$this->expression.";");
-        return $this;
-    }
+		$this->result = eval("return ".$this->expression.";");
+		return $this;
+	}
 
-    public function getResult()
+	public function getResult()
 	{
-        return $this->result;
-    }
+		return $this->result;
+	}
 }
 
-class NegativeFinder
+class SupportgroupsNegativeFinder
 {
-    protected $expressionObj;
+	protected $expressionObj;
 
-    public function __construct(Expression $expressionObj)
+	public function __construct(SupportgroupsExpression $expressionObj)
 	{
-        $this->expressionObj = $expressionObj;
-    }
+		$this->expressionObj = $expressionObj;
+	}
 
 
-    public function isItNegative()
+	public function isItNegative()
 	{
-        $result = $this->expressionObj->evaluate()->getResult();
-
-        if($this->hasMinusSign($result))
+		$result = $this->expressionObj->evaluate()->getResult();
+		
+		if($this->hasMinusSign($result))
 		{
-            return true;
-        }
+			return true;
+		}
 		else
 		{
-            return false;
-        }
-    }
+			return false;
+		}
+	}
 
-    protected function hasMinusSign($value) 
+	protected function hasMinusSign($value) 
 	{
-        return (substr(strval($value), 0, 1) == "-");
-    }
+		return (substr(strval($value), 0, 1) == "-");
+	}
 }

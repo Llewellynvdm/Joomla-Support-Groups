@@ -183,6 +183,7 @@
 			label="COM_SUPPORTGROUPS_CONFIG_API_KEY_LABEL"
 			size="60"
 			maxlength="150"
+			default=""
 			description="COM_SUPPORTGROUPS_CONFIG_API_KEY_DESCRIPTION"
 			class="text_area"
 			filter="STRING"

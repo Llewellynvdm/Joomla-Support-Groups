@@ -6,30 +6,27 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 11 of this MVC
-	@build			25th October, 2017
-	@created		15th May, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		region.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
-
-// import Joomla modelform library
-jimport('joomla.application.component.modeladmin');
 
 /**
  * Supportgroups Region Model
@@ -63,6 +60,9 @@ class SupportgroupsModelRegion extends JModelAdmin
 	 */
 	public function getTable($type = 'region', $prefix = 'SupportgroupsTable', $config = array())
 	{
+		// add table path for when model gets used from other component
+		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_supportgroups/tables');
+		// get instance of the table
 		return JTable::getInstance($type, $prefix, $config);
 	}
     
@@ -103,22 +103,25 @@ class SupportgroupsModelRegion extends JModelAdmin
 		}
 
 		return $item;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
 	 *
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array    $options   Optional array of options for the form creation.
 	 *
 	 * @return  mixed  A JForm object on success, false on failure
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true)
+	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
 	{
+		// set load data option
+		$options['load_data'] = $loadData;
 		// Get the form.
-		$form = $this->loadForm('com_supportgroups.region', 'region', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_supportgroups.region', 'region', $options);
 
 		if (empty($form))
 		{
@@ -186,12 +189,44 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$form->setFieldAttribute('name', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('name', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('name'))
 			{
 				// Disable fields while saving.
 				$form->setFieldAttribute('name', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('name', 'required', 'false');
+			}
+		}
+		// Modify the from the form based on Name access controls.
+		if ($id != 0 && (!$user->authorise('region.access.name', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.access.name', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('name');
+		}
+		// Modify the form based on View Name access controls.
+		if ($id != 0 && (!$user->authorise('region.view.name', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.view.name', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('name', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('name')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'required', 'false');
+				// Make sure
+				$form->setValue('name', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('name');
 			}
 		}
 		// Modify the form based on Edit Country access controls.
@@ -202,12 +237,44 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$form->setFieldAttribute('country', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('country', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('country'))
 			{
 				// Disable fields while saving.
 				$form->setFieldAttribute('country', 'filter', 'unset');
 				// Disable fields while saving.
 				$form->setFieldAttribute('country', 'required', 'false');
+			}
+		}
+		// Modify the from the form based on Country access controls.
+		if ($id != 0 && (!$user->authorise('region.access.country', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.access.country', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('country');
+		}
+		// Modify the form based on View Country access controls.
+		if ($id != 0 && (!$user->authorise('region.view.country', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.view.country', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('country', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('country')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('country', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('country', 'required', 'false');
+				// Make sure
+				$form->setValue('country', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('country');
 			}
 		}
 		// Modify the form based on Edit Alias access controls.
@@ -218,6 +285,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$form->setFieldAttribute('alias', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('alias', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('alias'))
 			{
 				// Disable fields while saving.
@@ -226,20 +294,54 @@ class SupportgroupsModelRegion extends JModelAdmin
 				$form->setFieldAttribute('alias', 'required', 'false');
 			}
 		}
+		// Modify the from the form based on Alias access controls.
+		if ($id != 0 && (!$user->authorise('region.access.alias', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.access.alias', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('alias');
+		}
+		// Modify the form based on View Alias access controls.
+		if ($id != 0 && (!$user->authorise('region.view.alias', 'com_supportgroups.region.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('region.view.alias', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('alias', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('alias')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'required', 'false');
+				// Make sure
+				$form->setValue('alias', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('alias');
+			}
+		}
 		// Only load these values if no id is found
 		if (0 == $id)
 		{
-			// Set redirected field name
-			$redirectedField = $jinput->get('ref', null, 'STRING');
-			// Set redirected field value
-			$redirectedValue = $jinput->get('refid', 0, 'INT');
+			// Set redirected view name
+			$redirectedView = $jinput->get('ref', null, 'STRING');
+			// Set field name (or fall back to view name)
+			$redirectedField = $jinput->get('field', $redirectedView, 'STRING');
+			// Set redirected view id
+			$redirectedId = $jinput->get('refid', 0, 'INT');
+			// Set field id (or fall back to redirected view id)
+			$redirectedValue = $jinput->get('field_id', $redirectedId, 'INT');
 			if (0 != $redirectedValue && $redirectedField)
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 
@@ -290,7 +392,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 	protected function canEditState($record)
 	{
 		$user = JFactory::getUser();
-		$recordId	= (!empty($record->id)) ? $record->id : 0;
+		$recordId = (!empty($record->id)) ? $record->id : 0;
 
 		if ($recordId)
 		{
@@ -398,7 +500,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -556,7 +658,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 	 *
 	 * @return  mixed  An array of new IDs on success, boolean false on failure.
 	 *
-	 * @since	12.2
+	 * @since 12.2
 	 */
 	protected function batchCopy($values, $pks, $contexts)
 	{
@@ -649,7 +751,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$this->table->id = 0;
 
 			// TODO: Deal with ordering?
-			// $this->table->ordering	= 1;
+			// $this->table->ordering = 1;
 
 			// Check the row.
 			if (!$this->table->check())
@@ -683,7 +785,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -694,7 +796,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 	 *
 	 * @return  boolean  True if successful, false otherwise and internal error is set.
 	 *
-	 * @since	12.2
+	 * @since 12.2
 	 */
 	protected function batchMove($values, $pks, $contexts)
 	{
@@ -815,7 +917,7 @@ class SupportgroupsModelRegion extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
@@ -924,14 +1026,14 @@ class SupportgroupsModelRegion extends JModelAdmin
 	}
 
 	/**
-	* Method to change the title/s & alias.
-	*
-	* @param   string         $alias        The alias.
-	* @param   string/array   $title        The title.
-	*
-	* @return	array/string  Contains the modified title/s and/or alias.
-	*
-	*/
+	 * Method to change the title/s & alias.
+	 *
+	 * @param   string         $alias        The alias.
+	 * @param   string/array   $title        The title.
+	 *
+	 * @return	array/string  Contains the modified title/s and/or alias.
+	 *
+	 */
 	protected function _generateNewTitle($alias, $title = null)
 	{
 

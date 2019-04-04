@@ -6,28 +6,25 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 20 of this MVC
-	@build			13th April, 2018
-	@created		13th July, 2015
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-
-// import Joomla view library
-jimport('joomla.application.component.view');
 
 /**
  * Supportgroups View class for the Help_documents
@@ -54,6 +51,8 @@ class SupportgroupsViewHelp_documents extends JViewLegacy
 		$this->listOrder = $this->escape($this->state->get('list.ordering'));
 		$this->listDirn = $this->escape($this->state->get('list.direction'));
 		$this->saveOrder = $this->listOrder == 'ordering';
+		// set the return here value
+		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
 		// get global action permissions
 		$this->canDo = SupportgroupsHelper::getActions('help_document');
 		$this->canEdit = $this->canDo->get('help_document.edit');
@@ -133,7 +132,7 @@ class SupportgroupsViewHelp_documents extends JViewLegacy
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
-			} 
+			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -148,7 +147,7 @@ class SupportgroupsViewHelp_documents extends JViewLegacy
 			{
 				JToolBarHelper::custom('help_documents.exportData', 'download', '', 'COM_SUPPORTGROUPS_EXPORT_DATA', true);
 			}
-		} 
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('help_document.import'))
 		{
@@ -199,7 +198,7 @@ class SupportgroupsViewHelp_documents extends JViewLegacy
 				'batch[access]',
 				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
 			);
-		} 
+		}
 
 		// Set Type Selection
 		$this->typeOptions = $this->getTheTypeSelections();
@@ -246,7 +245,7 @@ class SupportgroupsViewHelp_documents extends JViewLegacy
 		}
 
 		// Set Admin View Selection
-		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->getOptions();
+		$this->admin_viewOptions = JFormHelper::loadFieldType('Adminviewfolderlist')->options;
 		if ($this->admin_viewOptions)
 		{
 			// Admin View Filter
@@ -268,7 +267,7 @@ class SupportgroupsViewHelp_documents extends JViewLegacy
 		}
 
 		// Set Site View Selection
-		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->getOptions();
+		$this->site_viewOptions = JFormHelper::loadFieldType('Siteviewfolderlist')->options;
 		if ($this->site_viewOptions)
 		{
 			// Site View Filter

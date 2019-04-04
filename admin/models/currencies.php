@@ -6,28 +6,25 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 19 of this MVC
-	@build			25th October, 2017
-	@created		8th July, 2015
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		currencies.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-
-// import the Joomla modellist library
-jimport('joomla.application.component.modellist');
 
 /**
  * Currencies Model
@@ -108,7 +105,7 @@ class SupportgroupsModelCurrencies extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -118,11 +115,9 @@ class SupportgroupsModelCurrencies extends JModelList
 		// set values to display correctly.
 		if (SupportgroupsHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('currency.access', 'com_supportgroups.currency.' . (int) $item->id) && $user->authorise('currency.access', 'com_supportgroups'));
+				$access = (JFactory::getUser()->authorise('currency.access', 'com_supportgroups.currency.' . (int) $item->id) && JFactory::getUser()->authorise('currency.access', 'com_supportgroups'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -130,7 +125,7 @@ class SupportgroupsModelCurrencies extends JModelList
 				}
 
 			}
-		}  
+		}
         
 		// return items
 		return $items;
@@ -208,10 +203,10 @@ class SupportgroupsModelCurrencies extends JModelList
 	}
 
 	/**
-	* Method to get list export data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list export data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getExportData($pks)
 	{
 		// setup the query
@@ -251,11 +246,9 @@ class SupportgroupsModelCurrencies extends JModelList
 				// set values to display correctly.
 				if (SupportgroupsHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('currency.access', 'com_supportgroups.currency.' . (int) $item->id) && $user->authorise('currency.access', 'com_supportgroups'));
+						$access = (JFactory::getUser()->authorise('currency.access', 'com_supportgroups.currency.' . (int) $item->id) && JFactory::getUser()->authorise('currency.access', 'com_supportgroups'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -305,7 +298,7 @@ class SupportgroupsModelCurrencies extends JModelList
 			return $headers;
 		}
 		return false;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.
@@ -331,16 +324,16 @@ class SupportgroupsModelCurrencies extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_supportgroups')->get('check_in');
-		
+
 		if ($time)
 		{
 

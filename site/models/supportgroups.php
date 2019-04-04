@@ -6,28 +6,25 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 390 of this MVC
-	@build			1st April, 2017
-	@created		10th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-
-// import the Joomla modellist library
-jimport('joomla.application.component.modellist');
 
 /**
  * Supportgroups Model for Supportgroups
@@ -140,7 +137,7 @@ class SupportgroupsModelSupportgroups extends JModelList
 			// redirect away to the home page if no access allowed.
 			$app->redirect(JURI::root());
 			return false;
-		}  
+		}
 
 
 		// Does not work on all servers
@@ -159,6 +156,7 @@ class SupportgroupsModelSupportgroups extends JModelList
 			{
 				// Always create a slug for sef URL's
 				$item->slug = (isset($item->alias) && isset($item->id)) ? $item->id.':'.$item->alias : $item->id;
+				// Check if we can decode info
 				if (SupportgroupsHelper::checkJson($item->info))
 				{
 					// Decode info
@@ -168,19 +166,18 @@ class SupportgroupsModelSupportgroups extends JModelList
 				$item->children = (int) $item->male_children + (int) $item->female_children;
 				$item->on_art = (int) $item->male_art + (int) $item->female_art;
 			}
-		} 
+		}
 
 		// return items
 		return $items;
-	} 
-
+	}
 
 	/**
-	* Get the uikit needed components
-	*
-	* @return mixed  An array of objects on success.
-	*
-	*/
+	 * Get the uikit needed components
+	 *
+	 * @return mixed  An array of objects on success.
+	 *
+	 */
 	public function getUikitComp()
 	{
 		if (isset($this->uikitComp) && SupportgroupsHelper::checkArray($this->uikitComp))
@@ -188,5 +185,5 @@ class SupportgroupsModelSupportgroups extends JModelList
 			return $this->uikitComp;
 		}
 		return false;
-	}  
+	}
 }

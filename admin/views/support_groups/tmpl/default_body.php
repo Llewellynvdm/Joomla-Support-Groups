@@ -6,21 +6,21 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 36 of this MVC
-	@build			25th October, 2017
-	@created		4th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default_body.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
@@ -75,37 +75,37 @@ $edit = "index.php?option=com_supportgroups&view=support_groups&task=support_gro
 		<?php endif; ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($canDo->get('support_group.edit')): ?>
-				<div class="name">
+			<div class="name">
+				<?php if ($canDo->get('support_group.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'support_groups.', $canCheckin); ?>
 					<?php endif; ?>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->name); ?></div>
-			<?php endif; ?>
+				<?php else: ?>
+					<?php echo $this->escape($item->name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->phone); ?>
 		</td>
 		<td class="nowrap">
-			<?php if ($this->user->authorise('area.edit', 'com_supportgroups.area.' . (int)$item->area)): ?>
-				<div class="name">
-					<a href="index.php?option=com_supportgroups&view=areas&task=area.edit&id=<?php echo $item->area; ?>&ref=support_groups"><?php echo $this->escape($item->area_name); ?></a>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->area_name); ?></div>
-			<?php endif; ?>
+			<div class="name">
+				<?php if ($this->user->authorise('area.edit', 'com_supportgroups.area.' . (int)$item->area)): ?>
+					<a href="index.php?option=com_supportgroups&view=areas&task=area.edit&id=<?php echo $item->area; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->area_name); ?></a>
+				<?php else: ?>
+					<?php echo $this->escape($item->area_name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="nowrap">
-			<?php if ($this->user->authorise('facility.edit', 'com_supportgroups.facility.' . (int)$item->facility)): ?>
-				<div class="name">
-					<a href="index.php?option=com_supportgroups&view=facilities&task=facility.edit&id=<?php echo $item->facility; ?>&ref=support_groups"><?php echo $this->escape($item->facility_name); ?></a>
-				</div>
-			<?php else: ?>
-				<div class="name"><?php echo $this->escape($item->facility_name); ?></div>
-			<?php endif; ?>
+			<div class="name">
+				<?php if ($this->user->authorise('facility.edit', 'com_supportgroups.facility.' . (int)$item->facility)): ?>
+					<a href="index.php?option=com_supportgroups&view=facilities&task=facility.edit&id=<?php echo $item->facility; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->facility_name); ?></a>
+				<?php else: ?>
+					<?php echo $this->escape($item->facility_name); ?>
+				<?php endif; ?>
+			</div>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $this->escape($item->male); ?>

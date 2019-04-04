@@ -6,31 +6,31 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 366 of this MVC
-	@build			5th July, 2016
-	@created		10th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
+defined('_JEXEC') or die('Restricted access');
 
 // get modules
 $model_behind_map = $this->getModules('behind-map','div','uk-panel');
 
 ?>
-<?php echo $this->toolbar->render(); ?> 
+<?php echo $this->toolbar->render(); ?>
 <?php echo $this->backToRef; ?>
 <div data-uk-grid-margin="" class="uk-grid">
 	<div class="uk-width-small-1-1 uk-width-medium-2-6">
@@ -92,4 +92,4 @@ function printMe(name, printDivId) {
 	printWindow.focus();
 }	
 </script>
-<script async defer src="<?php echo $this->getGoogleAPI(); ?>"></script>  
+<script async defer src="<?php echo $this->getGoogleAPI(); ?>"></script> 

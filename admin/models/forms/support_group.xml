@@ -119,13 +119,14 @@
 			message="COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_MESSAGE"
 			hint="COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_HINT"
 		/>
-		<!-- Phone Field. Type: Tel. (joomla) -->
+		<!-- Phone Field. Type: Text. (joomla) -->
 		<field
-			type="tel"
+			type="text"
 			name="phone"
 			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_LABEL"
 			size="60"
 			maxlength="150"
+			default=""
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_DESCRIPTION"
 			class="text_area"
 			filter="STRING"
@@ -152,6 +153,7 @@
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 			button="true"
 		/>
@@ -275,6 +277,7 @@
 			label="COM_SUPPORTGROUPS_SUPPORT_GROUP_INFO_LABEL"
 			description="COM_SUPPORTGROUPS_SUPPORT_GROUP_INFO_DESCRIPTION"
 			class="list_class"
+			default=""
 			required="false"
 		/>
 	</fieldset>

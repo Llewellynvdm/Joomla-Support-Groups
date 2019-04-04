@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_support_group` (
 	`marker` TEXT NOT NULL,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
 	`phone` VARCHAR(64) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_support_group` (
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
-	`metakey` TEXT NOT NULL DEFAULT '',
-	`metadesc` TEXT NOT NULL DEFAULT '',
-	`metadata` TEXT NOT NULL DEFAULT '',
+	`metakey` TEXT NOT NULL,
+	`metadesc` TEXT NOT NULL,
+	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_support_group` (
 	KEY `idx_female_children` (`female_children`),
 	KEY `idx_male_art` (`male_art`),
 	KEY `idx_male_children` (`male_children`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_payment` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_payment` (
 	`amount` VARCHAR(100) NOT NULL DEFAULT 0,
 	`support_group` INT(11) NOT NULL DEFAULT 0,
 	`year` INT(11) NOT NULL DEFAULT 0,
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_payment` (
 	KEY `idx_state` (`published`),
 	KEY `idx_support_group` (`support_group`),
 	KEY `idx_year` (`year`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_facility` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_facility` (
 	`marker` TEXT NOT NULL,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
 	`phone` VARCHAR(64) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -97,9 +97,9 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_facility` (
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
-	`metakey` TEXT NOT NULL DEFAULT '',
-	`metadesc` TEXT NOT NULL DEFAULT '',
-	`metadata` TEXT NOT NULL DEFAULT '',
+	`metakey` TEXT NOT NULL,
+	`metadesc` TEXT NOT NULL,
+	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
@@ -109,14 +109,14 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_facility` (
 	KEY `idx_name` (`name`),
 	KEY `idx_facility_type` (`facility_type`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_facility_type` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
 	`alias` CHAR(64) NOT NULL DEFAULT '',
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_facility_type` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_additional_info` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_additional_info` (
 	`details` TEXT NOT NULL,
 	`info_type` INT(11) NOT NULL DEFAULT 0,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -157,9 +157,9 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_additional_info` (
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
-	`metakey` TEXT NOT NULL DEFAULT '',
-	`metadesc` TEXT NOT NULL DEFAULT '',
-	`metadata` TEXT NOT NULL DEFAULT '',
+	`metakey` TEXT NOT NULL,
+	`metadesc` TEXT NOT NULL,
+	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
@@ -168,14 +168,14 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_additional_info` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_info_type` (`info_type`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_info_type` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
 	`alias` CHAR(64) NOT NULL DEFAULT '',
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_info_type` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_area` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_area` (
 	`details` TEXT NOT NULL,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
 	`region` INT(11) NOT NULL DEFAULT 0,
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -218,9 +218,9 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_area` (
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
-	`metakey` TEXT NOT NULL DEFAULT '',
-	`metadesc` TEXT NOT NULL DEFAULT '',
-	`metadata` TEXT NOT NULL DEFAULT '',
+	`metakey` TEXT NOT NULL,
+	`metadesc` TEXT NOT NULL,
+	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
@@ -231,14 +231,14 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_area` (
 	KEY `idx_area_type` (`area_type`),
 	KEY `idx_region` (`region`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_area_type` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
 	`alias` CHAR(64) NOT NULL DEFAULT '',
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_area_type` (
 	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_region` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_region` (
 	`alias` CHAR(64) NOT NULL DEFAULT '',
 	`country` INT(11) NOT NULL DEFAULT 0,
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -278,9 +278,9 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_region` (
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
-	`metakey` TEXT NOT NULL DEFAULT '',
-	`metadesc` TEXT NOT NULL DEFAULT '',
-	`metadata` TEXT NOT NULL DEFAULT '',
+	`metakey` TEXT NOT NULL,
+	`metadesc` TEXT NOT NULL,
+	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_region` (
 	KEY `idx_name` (`name`),
 	KEY `idx_country` (`country`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_country` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -301,7 +301,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_country` (
 	`currency` CHAR(7) NOT NULL DEFAULT '',
 	`name` VARCHAR(255) NOT NULL DEFAULT '',
 	`worldzone` VARCHAR(255) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -313,9 +313,9 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_country` (
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
-	`metakey` TEXT NOT NULL DEFAULT '',
-	`metadesc` TEXT NOT NULL DEFAULT '',
-	`metadata` TEXT NOT NULL DEFAULT '',
+	`metakey` TEXT NOT NULL,
+	`metadesc` TEXT NOT NULL,
+	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
@@ -328,7 +328,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_country` (
 	KEY `idx_codethree` (`codethree`),
 	KEY `idx_codetwo` (`codetwo`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_currency` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -343,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_currency` (
 	`positivestyle` VARCHAR(255) NOT NULL DEFAULT '',
 	`symbol` CHAR(11) NOT NULL DEFAULT '',
 	`thousands` CHAR(7) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -355,9 +355,9 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_currency` (
 	`hits` INT(10) unsigned NOT NULL DEFAULT 0,
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
-	`metakey` TEXT NOT NULL DEFAULT '',
-	`metadesc` TEXT NOT NULL DEFAULT '',
-	`metadata` TEXT NOT NULL DEFAULT '',
+	`metakey` TEXT NOT NULL,
+	`metadesc` TEXT NOT NULL,
+	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
 	UNIQUE KEY `idx_codethree` (`codethree`),
 	KEY `idx_access` (`access`),
@@ -368,7 +368,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_currency` (
 	KEY `idx_name` (`name`),
 	KEY `idx_numericcode` (`numericcode`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_help_document` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -385,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_help_document` (
 	`title` CHAR(64) NOT NULL DEFAULT '',
 	`type` TINYINT(1) NOT NULL DEFAULT 0,
 	`url` VARCHAR(255) NOT NULL DEFAULT '',
-	`params` text NOT NULL DEFAULT '',
+	`params` text NOT NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
 	`modified_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -409,7 +409,7 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_help_document` (
 	KEY `idx_article` (`article`),
 	KEY `idx_target` (`target`),
 	KEY `idx_alias` (`alias`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `#__supportgroups_info_type`
@@ -487,10 +487,10 @@ INSERT INTO `#__supportgroups_area` (`id`, `alias`, `color`, `details`, `name`, 
 -- Dumping data for table `#__supportgroups_region`
 --
 
-INSERT INTO `#__supportgroups_region` (`id`, `asset_id`, `alias`, `country`, `name`, `params`, `published`, `created_by`, `modified_by`, `created`, `modified`, `checked_out`, `checked_out_time`, `version`, `hits`, `access`, `ordering`) VALUES
-(1, 26816, 'khomas', 146, 'Khomas', '', 1, 450, '', '2016-05-17 05:01:46', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', 1, 1),
-(2, 26817, 'karas', 146, 'Karas', '', 1, 450, '', '2016-05-17 05:01:57', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', 1, 2),
-(3, 33181, 'region', 13, 'Region', '', 1, 450, '', '2016-11-15 04:52:45', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', 1, 3);
+INSERT INTO `#__supportgroups_region` (`id`, `alias`, `country`, `name`, `published`, `created`) VALUES
+(1, 'khomas', 146, 'Khomas', 1, '2016-05-17 05:01:46'),
+(2, 'karas', 146, 'Karas', 1, '2016-05-17 05:01:57'),
+(3, 'region', 13, 'Region', 1, '2016-11-15 04:52:45');
 
 --
 -- Dumping data for table `#__supportgroups_country`
@@ -502,7 +502,7 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (3, '', '', 'DZA', 'DZ', 'DZD', 'Algeria', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (4, '', '', 'ASM', 'AS', 'USD', 'American Samoa', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (5, '', '', 'AND', 'AD', 'EUR', 'Andorra', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(6, 15677, 'angola', 'AGO', 'AO', 'GBP', 'Angola', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 2, '', ''),
+(6, '', '', 'AGO', 'AO', 'GBP', 'Angola', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 2, '', ''),
 (7, '', '', 'AIA', 'AI', 'XCD', 'Anguilla', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (8, '', '', 'ATA', 'AQ', 'USD', 'Antarctica', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (9, '', '', 'ATG', 'AG', 'XCD', 'Antigua and Barbuda', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
@@ -524,7 +524,7 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (25, '', '', 'BTN', 'BT', 'INR', 'Bhutan', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (26, '', '', 'BOL', 'BO', 'BOB', 'Bolivia', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (27, '', '', 'BIH', 'BA', 'BAM', 'Bosnia and Herzegowina', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(28, 15678, 'botswana', 'BWA', 'BW', 'BWP', 'Botswana', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
+(28, '', '', 'BWA', 'BW', 'BWP', 'Botswana', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (29, '', '', 'BVT', 'BV', 'NOK', 'Bouvet Island', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (30, '', '', 'BRA', 'BR', 'BRL', 'Brazil', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (31, '', '', 'IOT', 'IO', 'USD', 'British Indian Ocean Territory', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
@@ -545,7 +545,7 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (46, '', '', 'CCK', 'CC', 'AUD', 'Cocos (Keeling) Islands', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (47, '', '', 'COL', 'CO', 'COP', 'Colombia', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (48, '', '', 'COM', 'KM', 'KMF', 'Comoros', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(49, 15679, 'congo', 'COG', 'CG', 'XAF', 'Congo', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
+(49, '', '', 'COG', 'CG', 'XAF', 'Congo', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (50, '', '', 'COK', 'CK', 'NZD', 'Cook Islands', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (51, '', '', 'CRI', 'CR', 'CRC', 'Costa Rica', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (52, '', '', 'CIV', 'CI', 'XOF', 'Cote D\'Ivoire', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
@@ -614,7 +614,7 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (115, '', '', 'LAO', 'LA', 'LAK', 'Lao People\'s Democratic Republic', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (116, '', '', 'LVA', 'LV', 'LVL', 'Latvia', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (117, '', '', 'LBN', 'LB', 'LBP', 'Lebanon', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(118, 15680, 'lesotho', 'LSO', 'LS', 'ZAR', 'Lesotho', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
+(118, '', '', 'LSO', 'LS', 'ZAR', 'Lesotho', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (119, '', '', 'LBR', 'LR', 'LRD', 'Liberia', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (120, '', '', 'LBY', 'LY', 'LYD', 'Libya', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (121, '', '', 'LIE', 'LI', 'CHF', 'Liechtenstein', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
@@ -640,9 +640,9 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (141, '', '', 'MNG', 'MN', 'MNT', 'Mongolia', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (142, '', '', 'MSR', 'MS', 'XCD', 'Montserrat', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (143, '', '', 'MAR', 'MA', 'MAD', 'Morocco', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(144, 15681, 'mozambique', 'MOZ', 'MZ', 'MZN', 'Mozambique', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
+(144, '', '', 'MOZ', 'MZ', 'MZN', 'Mozambique', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (145, '', '', 'MMR', 'MM', 'MMK', 'Myanmar', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(146, 15682, 'namibia', 'NAM', 'NA', 'NAD', 'Namibia', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
+(146, '', '', 'NAM', 'NA', 'NAD', 'Namibia', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (147, '', '', 'NRU', 'NR', 'AUD', 'Nauru', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (148, '', '', 'NPL', 'NP', 'NPR', 'Nepal', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (149, '', '', 'NLD', 'NL', 'EUR', 'Netherlands', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
@@ -688,7 +688,7 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (189, '', '', 'SVN', 'SI', 'EUR', 'Slovenia', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (190, '', '', 'SLB', 'SB', 'SBD', 'Solomon Islands', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (191, '', '', 'SOM', 'SO', 'SOS', 'Somalia', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(192, 15683, 'south-africa', 'ZAF', 'ZA', 'ZAR', 'South Africa', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
+(192, '', '', 'ZAF', 'ZA', 'ZAR', 'South Africa', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (193, '', '', 'SGS', 'GS', 'GBP', 'South Georgia and the South Sandwich Islands', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (194, '', '', 'ESP', 'ES', 'EUR', 'Spain', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (195, '', '', 'LKA', 'LK', 'LKR', 'Sri Lanka', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
@@ -703,7 +703,7 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (204, '', '', 'SYR', 'SY', 'SYP', 'Syrian Arab Republic', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (205, '', '', 'TWN', 'TW', 'TWD', 'Taiwan', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (206, '', '', 'TJK', 'TJ', 'TJS', 'Tajikistan', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(207, 15684, 'tanzania-united-republic-of', 'TZA', 'TZ', 'TZS', 'Tanzania, United Republic of', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
+(207, '', '', 'TZA', 'TZ', 'TZS', 'Tanzania, United Republic of', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (208, '', '', 'THA', 'TH', 'THB', 'Thailand', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (209, '', '', 'TGO', 'TG', 'XOF', 'Togo', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (210, '', '', 'TKL', 'TK', 'NZD', 'Tokelau', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
@@ -731,9 +731,9 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (232, '', '', 'WLF', 'WF', 'XPF', 'Wallis and Futuna Islands', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (233, '', '', 'ESH', 'EH', 'MAD', 'Western Sahara', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (234, '', '', 'YEM', 'YE', 'YER', 'Yemen', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
-(235, 15685, 'the-democratic-republic-of-congo', 'DRC', 'DC', 'CDF', 'The Democratic Republic of Congo', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
-(236, 15686, 'zambia', 'ZMB', 'ZM', 'USD', 'Zambia', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
-(237, 15687, 'zimbabwe', 'ZWE', 'ZW', 'USD', 'Zimbabwe', '', '', 1, '', 450, '0000-00-00 00:00:00', '2016-02-11 00:08:09', '', '0000-00-00 00:00:00', 1, '', ''),
+(235, '', '', 'DRC', 'DC', 'CDF', 'The Democratic Republic of Congo', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
+(236, '', '', 'ZMB', 'ZM', 'USD', 'Zambia', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
+(237, '', '', 'ZWE', 'ZW', 'USD', 'Zimbabwe', '', '', 1, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (238, '', '', 'XET', 'XE', 'USD', 'East Timor', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (239, '', '', 'JEY', 'JE', 'GBP', 'Jersey', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (240, '', '', 'XSB', 'XB', 'EUR', 'St. Barthelemy', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
@@ -743,6 +743,10 @@ INSERT INTO `#__supportgroups_country` (`id`, `asset_id`, `alias`, `codethree`, 
 (244, '', '', 'MAF', 'MF', 'EUR', 'Sint Maarten (French Antilles)', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (245, '', '', 'SXM', 'SX', 'ANG', 'Sint Maarten (Netherlands Antilles)', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', ''),
 (246, '', '', 'ZZZ', 'ZZ', 'ZZZ', 'Reserved', '', '', 2, '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '0000-00-00 00:00:00', 1, '', '');
+
+--
+-- Dumping data for table `#__supportgroups_currency`
+--
 
 INSERT INTO `#__supportgroups_currency` (`id`, `asset_id`, `alias`, `codethree`, `decimalplace`, `decimalsymbol`, `name`, `negativestyle`, `numericcode`, `positivestyle`, `symbol`, `thousands`, `params`, `published`, `created_by`, `modified_by`, `created`, `modified`, `checked_out`, `checked_out_time`, `version`, `hits`, `access`, `ordering`) VALUES
 (1, 0, '', 'AED', 2, ',', 'United Arab Emirates dirham', '{sign}{number} {symbol}', 784, '{number} {symbol}', 'د.إ', '', '', 1, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 1, 0, 0, 23),

@@ -1,4 +1,4 @@
-# Support Groups (1.0.8)
+# Support Groups (1.0.10)
 
 This is a [Joomla 3.x](http://www.joomla.org/) component.
 
@@ -12,15 +12,15 @@ Support Groups component adds the ability to your Joomla website to manage vario
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Support Groups](http://www.vdm.io)
 + *First Build*: 24th February, 2016
-+ *Last Build*: 5th May, 2018
-+ *Version*: 1.0.8
++ *Last Build*: 4th April, 2019
++ *Version*: 1.0.10
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
 
 # Component Number
 
-+ *Line count*: **66093**
-+ *File count*: **492**
++ *Line count*: **66697**
++ *File count*: **494**
 + *Folder count*: **98**
 
 > This **component** was build with a Joomla [Automated Component Builder](http://vdm.bz/component-builder).

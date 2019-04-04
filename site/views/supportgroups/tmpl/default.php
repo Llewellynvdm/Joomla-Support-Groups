@@ -6,31 +6,31 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 390 of this MVC
-	@build			1st April, 2017
-	@created		10th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
+defined('_JEXEC') or die('Restricted access');
 
 // get modules
 $model_behind_map = $this->getModules('behind-table','div','uk-panel');
 
 ?>
-<?php echo $this->toolbar->render(); ?> 
+<?php echo $this->toolbar->render(); ?>
 <?php if (isset($this->items) && SupportgroupsHelper::checkArray($this->items)): ?>
 	<div id="totals"></div>
 	<table id="table" class="footable uk-table" data-show-toggle="true" data-toggle-column="first" data-paging="true" data-filtering="true" data-paging-size="100" data-sorting="true"></table>
@@ -123,4 +123,4 @@ $model_behind_map = $this->getModules('behind-table','div','uk-panel');
 	</script>
 <?php else: ?>
 	<div class="uk-alert"><?php echo JText::_('COM_SUPPORTGROUPS_NO_SUPPORT_GROUPS_FOUND'); ?></div>
-<?php endif; ?>	  
+<?php endif; ?>	 

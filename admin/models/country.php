@@ -6,30 +6,27 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 4 of this MVC
-	@build			25th October, 2017
-	@created		5th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		country.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
-
-// import Joomla modelform library
-jimport('joomla.application.component.modeladmin');
 
 /**
  * Supportgroups Country Model
@@ -63,6 +60,9 @@ class SupportgroupsModelCountry extends JModelAdmin
 	 */
 	public function getTable($type = 'country', $prefix = 'SupportgroupsTable', $config = array())
 	{
+		// add table path for when model gets used from other component
+		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_supportgroups/tables');
+		// get instance of the table
 		return JTable::getInstance($type, $prefix, $config);
 	}
     
@@ -107,10 +107,10 @@ class SupportgroupsModelCountry extends JModelAdmin
 	}
 
 	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getVvyregions()
 	{
 		// Get the user object.
@@ -173,11 +173,9 @@ class SupportgroupsModelCountry extends JModelAdmin
 			// set values to display correctly.
 			if (SupportgroupsHelper::checkArray($items))
 			{
-				// get user object.
-				$user = JFactory::getUser();
 				foreach ($items as $nr => &$item)
 				{
-					$access = ($user->authorise('region.access', 'com_supportgroups.region.' . (int) $item->id) && $user->authorise('region.access', 'com_supportgroups'));
+					$access = (JFactory::getUser()->authorise('region.access', 'com_supportgroups.region.' . (int) $item->id) && JFactory::getUser()->authorise('region.access', 'com_supportgroups'));
 					if (!$access)
 					{
 						unset($items[$nr]);
@@ -189,22 +187,25 @@ class SupportgroupsModelCountry extends JModelAdmin
 			return $items;
 		}
 		return false;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
 	 *
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array    $options   Optional array of options for the form creation.
 	 *
 	 * @return  mixed  A JForm object on success, false on failure
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true)
+	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
 	{
+		// set load data option
+		$options['load_data'] = $loadData;
 		// Get the form.
-		$form = $this->loadForm('com_supportgroups.country', 'country', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_supportgroups.country', 'country', $options);
 
 		if (empty($form))
 		{
@@ -262,20 +263,311 @@ class SupportgroupsModelCountry extends JModelAdmin
 			// Disable fields while saving.
 			$form->setFieldAttribute('created', 'filter', 'unset');
 		}
+		// Modify the form based on Edit Name access controls.
+		if ($id != 0 && (!$user->authorise('country.edit.name', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.edit.name', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('name', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('name', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('name'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'required', 'false');
+			}
+		}
+		// Modify the from the form based on Name access controls.
+		if ($id != 0 && (!$user->authorise('country.access.name', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.access.name', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('name');
+		}
+		// Modify the form based on View Name access controls.
+		if ($id != 0 && (!$user->authorise('country.view.name', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.view.name', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('name', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('name')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('name', 'required', 'false');
+				// Make sure
+				$form->setValue('name', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('name');
+			}
+		}
+		// Modify the form based on Edit Currency access controls.
+		if ($id != 0 && (!$user->authorise('country.edit.currency', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.edit.currency', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('currency', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('currency', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('currency'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('currency', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('currency', 'required', 'false');
+			}
+		}
+		// Modify the from the form based on Currency access controls.
+		if ($id != 0 && (!$user->authorise('country.access.currency', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.access.currency', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('currency');
+		}
+		// Modify the form based on View Currency access controls.
+		if ($id != 0 && (!$user->authorise('country.view.currency', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.view.currency', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('currency', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('currency')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('currency', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('currency', 'required', 'false');
+				// Make sure
+				$form->setValue('currency', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('currency');
+			}
+		}
+		// Modify the form based on Edit Worldzone access controls.
+		if ($id != 0 && (!$user->authorise('country.edit.worldzone', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.edit.worldzone', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('worldzone', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('worldzone', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('worldzone'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('worldzone', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('worldzone', 'required', 'false');
+			}
+		}
+		// Modify the from the form based on Worldzone access controls.
+		if ($id != 0 && (!$user->authorise('country.access.worldzone', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.access.worldzone', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('worldzone');
+		}
+		// Modify the form based on View Worldzone access controls.
+		if ($id != 0 && (!$user->authorise('country.view.worldzone', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.view.worldzone', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('worldzone', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('worldzone')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('worldzone', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('worldzone', 'required', 'false');
+				// Make sure
+				$form->setValue('worldzone', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('worldzone');
+			}
+		}
+		// Modify the form based on Edit Codethree access controls.
+		if ($id != 0 && (!$user->authorise('country.edit.codethree', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.edit.codethree', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('codethree', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('codethree', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('codethree'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('codethree', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('codethree', 'required', 'false');
+			}
+		}
+		// Modify the from the form based on Codethree access controls.
+		if ($id != 0 && (!$user->authorise('country.access.codethree', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.access.codethree', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('codethree');
+		}
+		// Modify the form based on View Codethree access controls.
+		if ($id != 0 && (!$user->authorise('country.view.codethree', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.view.codethree', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('codethree', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('codethree')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('codethree', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('codethree', 'required', 'false');
+				// Make sure
+				$form->setValue('codethree', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('codethree');
+			}
+		}
+		// Modify the form based on Edit Codetwo access controls.
+		if ($id != 0 && (!$user->authorise('country.edit.codetwo', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.edit.codetwo', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('codetwo', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('codetwo', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('codetwo'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('codetwo', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('codetwo', 'required', 'false');
+			}
+		}
+		// Modify the from the form based on Codetwo access controls.
+		if ($id != 0 && (!$user->authorise('country.access.codetwo', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.access.codetwo', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('codetwo');
+		}
+		// Modify the form based on View Codetwo access controls.
+		if ($id != 0 && (!$user->authorise('country.view.codetwo', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.view.codetwo', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('codetwo', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('codetwo')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('codetwo', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('codetwo', 'required', 'false');
+				// Make sure
+				$form->setValue('codetwo', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('codetwo');
+			}
+		}
+		// Modify the form based on Edit Alias access controls.
+		if ($id != 0 && (!$user->authorise('country.edit.alias', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.edit.alias', 'com_supportgroups')))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('alias', 'disabled', 'true');
+			// Disable fields for display.
+			$form->setFieldAttribute('alias', 'readonly', 'true');
+			// If there is no value continue.
+			if (!$form->getValue('alias'))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'required', 'false');
+			}
+		}
+		// Modify the from the form based on Alias access controls.
+		if ($id != 0 && (!$user->authorise('country.access.alias', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.access.alias', 'com_supportgroups')))
+		{
+			// Remove the field
+			$form->removeField('alias');
+		}
+		// Modify the form based on View Alias access controls.
+		if ($id != 0 && (!$user->authorise('country.view.alias', 'com_supportgroups.country.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('country.view.alias', 'com_supportgroups')))
+		{
+			// Make the field hidded.
+			$form->setFieldAttribute('alias', 'type', 'hidden');
+			// If there is no value continue.
+			if (!($val = $form->getValue('alias')))
+			{
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'filter', 'unset');
+				// Disable fields while saving.
+				$form->setFieldAttribute('alias', 'required', 'false');
+				// Make sure
+				$form->setValue('alias', null, '');
+			}
+			elseif (SupportgroupsHelper::checkArray($val))
+			{
+				// We have to unset then (TODO)
+				// Hiddend field can not handel array value
+				// Even if we conver to json we get an error
+				$form->removeField('alias');
+			}
+		}
 		// Only load these values if no id is found
 		if (0 == $id)
 		{
-			// Set redirected field name
-			$redirectedField = $jinput->get('ref', null, 'STRING');
-			// Set redirected field value
-			$redirectedValue = $jinput->get('refid', 0, 'INT');
+			// Set redirected view name
+			$redirectedView = $jinput->get('ref', null, 'STRING');
+			// Set field name (or fall back to view name)
+			$redirectedField = $jinput->get('field', $redirectedView, 'STRING');
+			// Set redirected view id
+			$redirectedId = $jinput->get('refid', 0, 'INT');
+			// Set field id (or fall back to redirected view id)
+			$redirectedValue = $jinput->get('field_id', $redirectedId, 'INT');
 			if (0 != $redirectedValue && $redirectedField)
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 
@@ -326,7 +618,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 	protected function canEditState($record)
 	{
 		$user = JFactory::getUser();
-		$recordId	= (!empty($record->id)) ? $record->id : 0;
+		$recordId = (!empty($record->id)) ? $record->id : 0;
 
 		if ($recordId)
 		{
@@ -434,7 +726,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -592,7 +884,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 	 *
 	 * @return  mixed  An array of new IDs on success, boolean false on failure.
 	 *
-	 * @since	12.2
+	 * @since 12.2
 	 */
 	protected function batchCopy($values, $pks, $contexts)
 	{
@@ -685,7 +977,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 			$this->table->id = 0;
 
 			// TODO: Deal with ordering?
-			// $this->table->ordering	= 1;
+			// $this->table->ordering = 1;
 
 			// Check the row.
 			if (!$this->table->check())
@@ -719,7 +1011,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -730,7 +1022,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 	 *
 	 * @return  boolean  True if successful, false otherwise and internal error is set.
 	 *
-	 * @since	12.2
+	 * @since 12.2
 	 */
 	protected function batchMove($values, $pks, $contexts)
 	{
@@ -851,7 +1143,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
@@ -960,14 +1252,14 @@ class SupportgroupsModelCountry extends JModelAdmin
 	}
 
 	/**
-	* Method to change the title/s & alias.
-	*
-	* @param   string         $alias        The alias.
-	* @param   string/array   $title        The title.
-	*
-	* @return	array/string  Contains the modified title/s and/or alias.
-	*
-	*/
+	 * Method to change the title/s & alias.
+	 *
+	 * @param   string         $alias        The alias.
+	 * @param   string/array   $title        The title.
+	 *
+	 * @return	array/string  Contains the modified title/s and/or alias.
+	 *
+	 */
 	protected function _generateNewTitle($alias, $title = null)
 	{
 

@@ -6,21 +6,21 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.8
-	@build			5th May, 2018
+	@version		1.0.10
+	@build			4th April, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		facilitiestype.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
@@ -74,9 +74,15 @@ class JFormFieldFacilitiestype extends JFormFieldList
 			$refJ = '';
 			if (!is_null($values['id']) && strlen($values['view']))
 			{
-				// only load referal if not new item.
+				// only load referral if not new item.
 				$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
 				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
+				// get the return value.
+				$_uri = (string) JUri::getInstance();
+				$_return = urlencode(base64_encode($_uri));
+				// load return value.
+				$ref .= '&amp;return=' . $_return;
+				$refJ .= '&return=' . $_return;
 			}
 			$user = JFactory::getUser();
 			// only add if user allowed to create facility_type
@@ -146,9 +152,9 @@ class JFormFieldFacilitiestype extends JFormFieldList
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array		An array of JHtml options.
+	 * @return	array    An array of JHtml options.
 	 */
-	public function getOptions()
+	protected function getOptions()
 	{
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);

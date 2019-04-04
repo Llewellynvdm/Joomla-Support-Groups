@@ -6,30 +6,27 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 32 of this MVC
-	@build			25th October, 2017
-	@created		4th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		area.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
-
-// import Joomla modelform library
-jimport('joomla.application.component.modeladmin');
 
 /**
  * Supportgroups Area Model
@@ -63,6 +60,9 @@ class SupportgroupsModelArea extends JModelAdmin
 	 */
 	public function getTable($type = 'area', $prefix = 'SupportgroupsTable', $config = array())
 	{
+		// add table path for when model gets used from other component
+		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_supportgroups/tables');
+		// get instance of the table
 		return JTable::getInstance($type, $prefix, $config);
 	}
     
@@ -107,10 +107,10 @@ class SupportgroupsModelArea extends JModelAdmin
 	}
 
 	/**
-	* Method to get list data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getVvxsupport_groups()
 	{
 		// Get the user object.
@@ -177,11 +177,9 @@ class SupportgroupsModelArea extends JModelAdmin
 			// set values to display correctly.
 			if (SupportgroupsHelper::checkArray($items))
 			{
-				// get user object.
-				$user = JFactory::getUser();
 				foreach ($items as $nr => &$item)
 				{
-					$access = ($user->authorise('support_group.access', 'com_supportgroups.support_group.' . (int) $item->id) && $user->authorise('support_group.access', 'com_supportgroups'));
+					$access = (JFactory::getUser()->authorise('support_group.access', 'com_supportgroups.support_group.' . (int) $item->id) && JFactory::getUser()->authorise('support_group.access', 'com_supportgroups'));
 					if (!$access)
 					{
 						unset($items[$nr]);
@@ -193,22 +191,25 @@ class SupportgroupsModelArea extends JModelAdmin
 			return $items;
 		}
 		return false;
-	} 
+	}
 
 	/**
 	 * Method to get the record form.
 	 *
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array    $options   Optional array of options for the form creation.
 	 *
 	 * @return  mixed  A JForm object on success, false on failure
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true)
+	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
 	{
+		// set load data option
+		$options['load_data'] = $loadData;
 		// Get the form.
-		$form = $this->loadForm('com_supportgroups.area', 'area', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_supportgroups.area', 'area', $options);
 
 		if (empty($form))
 		{
@@ -276,6 +277,7 @@ class SupportgroupsModelArea extends JModelAdmin
 			$form->setFieldAttribute('name', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('name', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('name'))
 			{
 				// Disable fields while saving.
@@ -292,6 +294,7 @@ class SupportgroupsModelArea extends JModelAdmin
 			$form->setFieldAttribute('area_type', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('area_type', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('area_type'))
 			{
 				// Disable fields while saving.
@@ -308,6 +311,7 @@ class SupportgroupsModelArea extends JModelAdmin
 			$form->setFieldAttribute('region', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('region', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('region'))
 			{
 				// Disable fields while saving.
@@ -324,6 +328,7 @@ class SupportgroupsModelArea extends JModelAdmin
 			$form->setFieldAttribute('details', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('details', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('details'))
 			{
 				// Disable fields while saving.
@@ -340,6 +345,7 @@ class SupportgroupsModelArea extends JModelAdmin
 			$form->setFieldAttribute('color', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('color', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('color'))
 			{
 				// Disable fields while saving.
@@ -356,6 +362,7 @@ class SupportgroupsModelArea extends JModelAdmin
 			$form->setFieldAttribute('alias', 'disabled', 'true');
 			// Disable fields for display.
 			$form->setFieldAttribute('alias', 'readonly', 'true');
+			// If there is no value continue.
 			if (!$form->getValue('alias'))
 			{
 				// Disable fields while saving.
@@ -367,17 +374,20 @@ class SupportgroupsModelArea extends JModelAdmin
 		// Only load these values if no id is found
 		if (0 == $id)
 		{
-			// Set redirected field name
-			$redirectedField = $jinput->get('ref', null, 'STRING');
-			// Set redirected field value
-			$redirectedValue = $jinput->get('refid', 0, 'INT');
+			// Set redirected view name
+			$redirectedView = $jinput->get('ref', null, 'STRING');
+			// Set field name (or fall back to view name)
+			$redirectedField = $jinput->get('field', $redirectedView, 'STRING');
+			// Set redirected view id
+			$redirectedId = $jinput->get('refid', 0, 'INT');
+			// Set field id (or fall back to redirected view id)
+			$redirectedValue = $jinput->get('field_id', $redirectedId, 'INT');
 			if (0 != $redirectedValue && $redirectedField)
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
 		}
-
 		return $form;
 	}
 
@@ -428,7 +438,7 @@ class SupportgroupsModelArea extends JModelAdmin
 	protected function canEditState($record)
 	{
 		$user = JFactory::getUser();
-		$recordId	= (!empty($record->id)) ? $record->id : 0;
+		$recordId = (!empty($record->id)) ? $record->id : 0;
 
 		if ($recordId)
 		{
@@ -536,7 +546,7 @@ class SupportgroupsModelArea extends JModelAdmin
 		}
 
 		return $data;
-	} 
+	}
 
 	/**
 	 * Method to get the unique fields of this table.
@@ -694,7 +704,7 @@ class SupportgroupsModelArea extends JModelAdmin
 	 *
 	 * @return  mixed  An array of new IDs on success, boolean false on failure.
 	 *
-	 * @since	12.2
+	 * @since 12.2
 	 */
 	protected function batchCopy($values, $pks, $contexts)
 	{
@@ -787,7 +797,7 @@ class SupportgroupsModelArea extends JModelAdmin
 			$this->table->id = 0;
 
 			// TODO: Deal with ordering?
-			// $this->table->ordering	= 1;
+			// $this->table->ordering = 1;
 
 			// Check the row.
 			if (!$this->table->check())
@@ -821,7 +831,7 @@ class SupportgroupsModelArea extends JModelAdmin
 		$this->cleanCache();
 
 		return $newIds;
-	} 
+	}
 
 	/**
 	 * Batch move items to a new category
@@ -832,7 +842,7 @@ class SupportgroupsModelArea extends JModelAdmin
 	 *
 	 * @return  boolean  True if successful, false otherwise and internal error is set.
 	 *
-	 * @since	12.2
+	 * @since 12.2
 	 */
 	protected function batchMove($values, $pks, $contexts)
 	{
@@ -953,7 +963,7 @@ class SupportgroupsModelArea extends JModelAdmin
 			$metadata = new JRegistry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
-		} 
+		}
         
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
@@ -1062,14 +1072,14 @@ class SupportgroupsModelArea extends JModelAdmin
 	}
 
 	/**
-	* Method to change the title/s & alias.
-	*
-	* @param   string         $alias        The alias.
-	* @param   string/array   $title        The title.
-	*
-	* @return	array/string  Contains the modified title/s and/or alias.
-	*
-	*/
+	 * Method to change the title/s & alias.
+	 *
+	 * @param   string         $alias        The alias.
+	 * @param   string/array   $title        The title.
+	 *
+	 * @return	array/string  Contains the modified title/s and/or alias.
+	 *
+	 */
 	protected function _generateNewTitle($alias, $title = null)
 	{
 

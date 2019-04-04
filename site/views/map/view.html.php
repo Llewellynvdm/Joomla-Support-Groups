@@ -6,28 +6,25 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 366 of this MVC
-	@build			5th July, 2016
-	@created		10th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-
-// import Joomla view library
-jimport('joomla.application.component.view');
 jimport('joomla.application.module.helper');
 
 /**
@@ -100,7 +97,7 @@ class SupportgroupsViewMap extends JViewLegacy
 	*/
 	public function getGoogleAPI()
 	{
-		$api_key = $this->params->get('api-key');
+		$api_key = $this->params->get('api_key');
 		if ($api_key)
 		{
 			return 'https://maps.googleapis.com/maps/api/js?key='.$api_key.'&callback=getMapScript';
@@ -148,7 +145,7 @@ class SupportgroupsViewMap extends JViewLegacy
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );
 		// Initialize the header checker.
-		$HeaderCheck = new supportgroupsHeaderCheck; 
+		$HeaderCheck = new supportgroupsHeaderCheck;
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -201,7 +198,7 @@ class SupportgroupsViewMap extends JViewLegacy
 					}
 				}
 			}
-		}   
+		}
 		// load the meta description
 		if ($this->params->get('menu-meta_description'))
 		{
@@ -216,7 +213,7 @@ class SupportgroupsViewMap extends JViewLegacy
 		if ($this->params->get('robots'))
 		{
 			$this->document->setMetadata('robots', $this->params->get('robots'));
-		} 
+		}
 		// Add the JavaScript for JStore
 		$this->document->addScript(JURI::root() .'media/com_supportgroups/js/jquery.json.min.js');
 		$this->document->addScript(JURI::root() .'media/com_supportgroups/js/jstorage.min.js');
@@ -293,7 +290,7 @@ class SupportgroupsViewMap extends JViewLegacy
 			#global {
 			    height: 600px;
 			}
-		"); 
+		");
 		// Set the Custom JS script to view
 		$this->document->addScriptDeclaration("
 			// set ajax

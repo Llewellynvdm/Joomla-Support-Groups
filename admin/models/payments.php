@@ -6,28 +6,25 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		@update number 5 of this MVC
-	@build			27th April, 2016
-	@created		6th March, 2016
+	@version		1.0.10
+	@build			4th April, 2019
+	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		payments.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-
-// import the Joomla modellist library
-jimport('joomla.application.component.modellist');
 
 /**
  * Payments Model
@@ -104,7 +101,7 @@ class SupportgroupsModelPayments extends JModelList
 	 * @return  mixed  An array of data items on success, false on failure.
 	 */
 	public function getItems()
-	{ 
+	{
 		// check in items
 		$this->checkInNow();
 
@@ -114,11 +111,9 @@ class SupportgroupsModelPayments extends JModelList
 		// set values to display correctly.
 		if (SupportgroupsHelper::checkArray($items))
 		{
-			// get user object.
-			$user = JFactory::getUser();
 			foreach ($items as $nr => &$item)
 			{
-				$access = ($user->authorise('payment.access', 'com_supportgroups.payment.' . (int) $item->id) && $user->authorise('payment.access', 'com_supportgroups'));
+				$access = (JFactory::getUser()->authorise('payment.access', 'com_supportgroups.payment.' . (int) $item->id) && JFactory::getUser()->authorise('payment.access', 'com_supportgroups'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -136,7 +131,7 @@ class SupportgroupsModelPayments extends JModelList
 				// convert to currency here
 				$item->amount = SupportgroupsHelper::setCurrency($item->amount, $item->support_group);
 			}
-		} 
+		}
 
 		// set selection value to a translatable value
 		if (SupportgroupsHelper::checkArray($items))
@@ -147,17 +142,17 @@ class SupportgroupsModelPayments extends JModelList
 				$item->year = $this->selectionTranslation($item->year, 'year');
 			}
 		}
- 
+
         
 		// return items
 		return $items;
 	}
 
 	/**
-	* Method to convert selection values to translatable string.
-	*
-	* @return translatable string
-	*/
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return translatable string
+	 */
 	public function selectionTranslation($value,$name)
 	{
 		// Array of year language strings
@@ -282,10 +277,10 @@ class SupportgroupsModelPayments extends JModelList
 	}
 
 	/**
-	* Method to get list export data.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
+	 * Method to get list export data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
 	public function getExportData($pks)
 	{
 		// setup the query
@@ -325,11 +320,9 @@ class SupportgroupsModelPayments extends JModelList
 				// set values to display correctly.
 				if (SupportgroupsHelper::checkArray($items))
 				{
-					// get user object.
-					$user = JFactory::getUser();
 					foreach ($items as $nr => &$item)
 					{
-						$access = ($user->authorise('payment.access', 'com_supportgroups.payment.' . (int) $item->id) && $user->authorise('payment.access', 'com_supportgroups'));
+						$access = (JFactory::getUser()->authorise('payment.access', 'com_supportgroups.payment.' . (int) $item->id) && JFactory::getUser()->authorise('payment.access', 'com_supportgroups'));
 						if (!$access)
 						{
 							unset($items[$nr]);
@@ -389,7 +382,7 @@ class SupportgroupsModelPayments extends JModelList
 			return $headers;
 		}
 		return false;
-	} 
+	}
 	
 	/**
 	 * Method to get a store id based on model configuration state.
@@ -414,16 +407,16 @@ class SupportgroupsModelPayments extends JModelList
 	}
 
 	/**
-	* Build an SQL query to checkin all items left checked out longer then a set time.
-	*
-	* @return  a bool
-	*
-	*/
+	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 *
+	 * @return  a bool
+	 *
+	 */
 	protected function checkInNow()
 	{
 		// Get set check in time
 		$time = JComponentHelper::getParams('com_supportgroups')->get('check_in');
-		
+
 		if ($time)
 		{
 

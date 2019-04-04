@@ -127,6 +127,7 @@
 			description="COM_SUPPORTGROUPS_COUNTRY_CURRENCY_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			required="true"
 		/>
 		<!-- Worldzone Field. Type: Text. (joomla) -->
@@ -136,6 +137,7 @@
 			label="COM_SUPPORTGROUPS_COUNTRY_WORLDZONE_LABEL"
 			size="40"
 			maxlength="50"
+			default=""
 			description="COM_SUPPORTGROUPS_COUNTRY_WORLDZONE_DESCRIPTION"
 			class="text_area"
 			required="false"
@@ -150,6 +152,7 @@
 			label="COM_SUPPORTGROUPS_COUNTRY_CODETHREE_LABEL"
 			size="40"
 			maxlength="3"
+			default=""
 			description="COM_SUPPORTGROUPS_COUNTRY_CODETHREE_DESCRIPTION"
 			class="text_area"
 			required="true"
@@ -164,6 +167,7 @@
 			label="COM_SUPPORTGROUPS_COUNTRY_CODETWO_LABEL"
 			size="40"
 			maxlength="2"
+			default=""
 			description="COM_SUPPORTGROUPS_COUNTRY_CODETWO_DESCRIPTION"
 			class="text_area"
 			required="true"

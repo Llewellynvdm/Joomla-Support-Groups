@@ -127,6 +127,7 @@
 			description="COM_SUPPORTGROUPS_AREA_AREA_TYPE_DESCRIPTION"
 			class="list_class"
 			multiple="false"
+			default=""
 			button="true"
 		/>
 		<!-- Region Field. Type: Regions. (custom) -->

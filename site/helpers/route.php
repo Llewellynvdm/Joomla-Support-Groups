@@ -6,29 +6,25 @@
       \ \/ / _` / __| __| | |  | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __| | |\/| |/ _ \ __| '_ \ / _ \ / _` |
        \  / (_| \__ \ |_  | |__| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_  | |  | |  __/ |_| | | | (_) | (_| |
         \/ \__,_|___/\__| |_____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__| |_|  |_|\___|\__|_| |_|\___/ \__,_|
-                                                        | |                                                                 
-                                                        |_| 				
+                                                        | |
+                                                        |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.8
-	@build			5th May, 2018
+	@version		1.0.10
+	@build			4th April, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		route.php
-	@author			Llewellyn van der Merwe <http://www.vdm.io>	
+	@author			Llewellyn van der Merwe <http://www.vdm.io>
 	@copyright		Copyright (C) 2015. All Rights Reserved
-	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html 
-	
-	Support Groups 
-                                                             
+	@license		GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
+
+	Support Groups
+
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-
-// Component Helper
-jimport('joomla.application.component.helper');
-jimport('joomla.application.categories');
 
 /**
  * Supportgroups Route Helper
@@ -38,8 +34,8 @@ abstract class SupportgroupsHelperRoute
 	protected static $lookup;
 
 	/**
-	* @param int The route of the Map
-	*/
+	 * @param int The route of the Map
+	 */
 	public static function getMapRoute($id = 0, $catid = 0)
 	{
 		if ($id > 0)
@@ -54,8 +50,10 @@ abstract class SupportgroupsHelperRoute
 		else
 		{
 			// Initialize the needel array.
-			$needles = array();
-			//Create the link but don't add the id.
+			$needles = array(
+				'map'  => array()
+			);
+			// Create the link but don't add the id.
 			$link = 'index.php?option=com_supportgroups&view=map';
 		}
 		if ($catid > 1)
@@ -79,8 +77,8 @@ abstract class SupportgroupsHelperRoute
 	}
 
 	/**
-	* @param int The route of the Supportgroups
-	*/
+	 * @param int The route of the Supportgroups
+	 */
 	public static function getSupportgroupsRoute($id = 0, $catid = 0)
 	{
 		if ($id > 0)
@@ -95,8 +93,10 @@ abstract class SupportgroupsHelperRoute
 		else
 		{
 			// Initialize the needel array.
-			$needles = array();
-			//Create the link but don't add the id.
+			$needles = array(
+				'supportgroups'  => array()
+			);
+			// Create the link but don't add the id.
 			$link = 'index.php?option=com_supportgroups&view=supportgroups';
 		}
 		if ($catid > 1)
@@ -203,8 +203,8 @@ abstract class SupportgroupsHelperRoute
 			}
 		}
 		return $link;
-	}	
-	
+	}
+
 	protected static function _findItem($needles = null,$type = null)
 	{
 		$app      = JFactory::getApplication();
@@ -252,6 +252,10 @@ abstract class SupportgroupsHelperRoute
 							self::$lookup[$language][$view][$item->query['id']] = $item->id;
 						}
 					}
+					else
+					{
+						self::$lookup[$language][$view][0] = $item->id;
+					}
 				}
 			}
 		}
@@ -262,17 +266,24 @@ abstract class SupportgroupsHelperRoute
 			{
 				if (isset(self::$lookup[$language][$view]))
 				{
-					foreach ($ids as $id)
+					if (SupportgroupsHelper::checkArray($ids))
 					{
-						if (isset(self::$lookup[$language][$view][(int) $id]))
+						foreach ($ids as $id)
 						{
-							return self::$lookup[$language][$view][(int) $id];
+							if (isset(self::$lookup[$language][$view][(int) $id]))
+							{
+								return self::$lookup[$language][$view][(int) $id];
+							}
 						}
+					}
+					elseif (isset(self::$lookup[$language][$view][0]))
+					{
+						return self::$lookup[$language][$view][0];
 					}
 				}
 			}
 		}
-		
+
 		if ($type)
 		{
 			// Check if the global menu item has been set.
