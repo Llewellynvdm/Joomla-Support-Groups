@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -202,7 +202,15 @@ class SupportgroupsViewAreas extends JViewLegacy
 
 		// Set Area Type Name Selection
 		$this->area_typeNameOptions = JFormHelper::loadFieldType('Areastype')->options;
-		if ($this->area_typeNameOptions)
+		// We do some sanitation for Area Type Name filter
+		if (SupportgroupsHelper::checkArray($this->area_typeNameOptions) &&
+			isset($this->area_typeNameOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->area_typeNameOptions[0]->value))
+		{
+			unset($this->area_typeNameOptions[0]);
+		}
+		// Only load Area Type Name filter if it has values
+		if (SupportgroupsHelper::checkArray($this->area_typeNameOptions))
 		{
 			// Area Type Name Filter
 			JHtmlSidebar::addFilter(
@@ -224,7 +232,15 @@ class SupportgroupsViewAreas extends JViewLegacy
 
 		// Set Region Name Selection
 		$this->regionNameOptions = JFormHelper::loadFieldType('Regions')->options;
-		if ($this->regionNameOptions)
+		// We do some sanitation for Region Name filter
+		if (SupportgroupsHelper::checkArray($this->regionNameOptions) &&
+			isset($this->regionNameOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->regionNameOptions[0]->value))
+		{
+			unset($this->regionNameOptions[0]);
+		}
+		// Only load Region Name filter if it has values
+		if (SupportgroupsHelper::checkArray($this->regionNameOptions))
 		{
 			// Region Name Filter
 			JHtmlSidebar::addFilter(

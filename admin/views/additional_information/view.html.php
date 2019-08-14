@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -202,7 +202,15 @@ class SupportgroupsViewAdditional_information extends JViewLegacy
 
 		// Set Info Type Name Selection
 		$this->info_typeNameOptions = JFormHelper::loadFieldType('Infotype')->options;
-		if ($this->info_typeNameOptions)
+		// We do some sanitation for Info Type Name filter
+		if (SupportgroupsHelper::checkArray($this->info_typeNameOptions) &&
+			isset($this->info_typeNameOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->info_typeNameOptions[0]->value))
+		{
+			unset($this->info_typeNameOptions[0]);
+		}
+		// Only load Info Type Name filter if it has values
+		if (SupportgroupsHelper::checkArray($this->info_typeNameOptions))
 		{
 			// Info Type Name Filter
 			JHtmlSidebar::addFilter(

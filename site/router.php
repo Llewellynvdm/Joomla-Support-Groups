@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		router.php
@@ -182,6 +182,8 @@ class SupportgroupsRouter extends JComponentRouterBase
 		{
 			$getTable = '#__categories';
 			$query->from($db->quoteName($getTable));
+			// we need this to target the components categories (TODO will keep an eye on this)
+			$query->where($db->quoteName('extension') . ' LIKE '. $db->quote((string)'com_' . $main . '%'));
 		}
 		else
 		{

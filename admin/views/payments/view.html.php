@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -202,7 +202,15 @@ class SupportgroupsViewPayments extends JViewLegacy
 
 		// Set Support Group Name Selection
 		$this->support_groupNameOptions = JFormHelper::loadFieldType('Supportgroups')->options;
-		if ($this->support_groupNameOptions)
+		// We do some sanitation for Support Group Name filter
+		if (SupportgroupsHelper::checkArray($this->support_groupNameOptions) &&
+			isset($this->support_groupNameOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->support_groupNameOptions[0]->value))
+		{
+			unset($this->support_groupNameOptions[0]);
+		}
+		// Only load Support Group Name filter if it has values
+		if (SupportgroupsHelper::checkArray($this->support_groupNameOptions))
 		{
 			// Support Group Name Filter
 			JHtmlSidebar::addFilter(
@@ -224,7 +232,15 @@ class SupportgroupsViewPayments extends JViewLegacy
 
 		// Set Year Selection
 		$this->yearOptions = $this->getTheYearSelections();
-		if ($this->yearOptions)
+		// We do some sanitation for Year filter
+		if (SupportgroupsHelper::checkArray($this->yearOptions) &&
+			isset($this->yearOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->yearOptions[0]->value))
+		{
+			unset($this->yearOptions[0]);
+		}
+		// Only load Year filter if it has values
+		if (SupportgroupsHelper::checkArray($this->yearOptions))
 		{
 			// Year Filter
 			JHtmlSidebar::addFilter(

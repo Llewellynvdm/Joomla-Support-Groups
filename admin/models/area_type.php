@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		area_type.php
@@ -32,13 +32,29 @@ use Joomla\Registry\Registry;
  * Supportgroups Area_type Model
  */
 class SupportgroupsModelArea_type extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'name'
+			),
+			'right' => array(
+				'alias'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_SUPPORTGROUPS';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *

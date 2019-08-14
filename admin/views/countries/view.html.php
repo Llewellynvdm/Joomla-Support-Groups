@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -202,7 +202,15 @@ class SupportgroupsViewCountries extends JViewLegacy
 
 		// Set Currency Name Selection
 		$this->currencyNameOptions = JFormHelper::loadFieldType('Currency')->options;
-		if ($this->currencyNameOptions)
+		// We do some sanitation for Currency Name filter
+		if (SupportgroupsHelper::checkArray($this->currencyNameOptions) &&
+			isset($this->currencyNameOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->currencyNameOptions[0]->value))
+		{
+			unset($this->currencyNameOptions[0]);
+		}
+		// Only load Currency Name filter if it has values
+		if (SupportgroupsHelper::checkArray($this->currencyNameOptions))
 		{
 			// Currency Name Filter
 			JHtmlSidebar::addFilter(
@@ -224,7 +232,15 @@ class SupportgroupsViewCountries extends JViewLegacy
 
 		// Set Worldzone Selection
 		$this->worldzoneOptions = $this->getTheWorldzoneSelections();
-		if ($this->worldzoneOptions)
+		// We do some sanitation for Worldzone filter
+		if (SupportgroupsHelper::checkArray($this->worldzoneOptions) &&
+			isset($this->worldzoneOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->worldzoneOptions[0]->value))
+		{
+			unset($this->worldzoneOptions[0]);
+		}
+		// Only load Worldzone filter if it has values
+		if (SupportgroupsHelper::checkArray($this->worldzoneOptions))
 		{
 			// Worldzone Filter
 			JHtmlSidebar::addFilter(

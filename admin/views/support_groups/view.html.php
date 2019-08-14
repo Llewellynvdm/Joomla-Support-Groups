@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -207,7 +207,15 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 
 		// Set Area Name Selection
 		$this->areaNameOptions = JFormHelper::loadFieldType('Areas')->options;
-		if ($this->areaNameOptions)
+		// We do some sanitation for Area Name filter
+		if (SupportgroupsHelper::checkArray($this->areaNameOptions) &&
+			isset($this->areaNameOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->areaNameOptions[0]->value))
+		{
+			unset($this->areaNameOptions[0]);
+		}
+		// Only load Area Name filter if it has values
+		if (SupportgroupsHelper::checkArray($this->areaNameOptions))
 		{
 			// Area Name Filter
 			JHtmlSidebar::addFilter(
@@ -229,7 +237,15 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 
 		// Set Facility Name Selection
 		$this->facilityNameOptions = JFormHelper::loadFieldType('Facilities')->options;
-		if ($this->facilityNameOptions)
+		// We do some sanitation for Facility Name filter
+		if (SupportgroupsHelper::checkArray($this->facilityNameOptions) &&
+			isset($this->facilityNameOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->facilityNameOptions[0]->value))
+		{
+			unset($this->facilityNameOptions[0]);
+		}
+		// Only load Facility Name filter if it has values
+		if (SupportgroupsHelper::checkArray($this->facilityNameOptions))
 		{
 			// Facility Name Filter
 			JHtmlSidebar::addFilter(

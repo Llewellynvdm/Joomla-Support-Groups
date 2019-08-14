@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -70,19 +70,6 @@ class SupportgroupsModelSupportgroups extends JModelList
 		// Create a new query object.
 		$query = $db->getQuery(true);
 
-		// Filtering.
-
-		$input = array('facility' => 'int','area' => 'int','region' => 'int','country' => 'int');
-		$where = array('facility' => 'e.id','area' => 'b.id','region' => 'c.id','country' => 'd.id');
-		$filtering = $this->input->getArray($input);
-		foreach ($filtering as $key => $filter)
-		{
-			if ($filter)
-			{
-				$query->where($where[$key].' = '. (int) $filter);
-			}
-		}
-
 		// Get from #__supportgroups_support_group as a
 		$query->select($db->quoteName(
 			array('a.id','a.name','a.alias','a.phone','a.info','a.male','a.male_children','a.male_art','a.female','a.female_children','a.female_art','a.marker','a.published','a.ordering'),
@@ -112,6 +99,19 @@ class SupportgroupsModelSupportgroups extends JModelList
 			array('e.id','e.alias','e.name','e.phone','e.marker'),
 			array('facility_id','facility_alias','facility_name','facility_phone','facility_marker')));
 		$query->join('LEFT', ($db->quoteName('#__supportgroups_facility', 'e')) . ' ON (' . $db->quoteName('a.facility') . ' = ' . $db->quoteName('e.id') . ')');
+
+		// Filtering.
+
+		$input = array('facility' => 'int','area' => 'int','region' => 'int','country' => 'int');
+		$where = array('facility' => 'e.id','area' => 'b.id','region' => 'c.id','country' => 'd.id');
+		$filtering = $this->input->getArray($input);
+		foreach ($filtering as $key => $filter)
+		{
+			if ($filter)
+			{
+				$query->where($where[$key].' = '. (int) $filter);
+			}
+		}
 		$query->where('a.access IN (' . implode(',', $this->levels) . ')');
 		// Get where a.published is 1
 		$query->where('a.published = 1');

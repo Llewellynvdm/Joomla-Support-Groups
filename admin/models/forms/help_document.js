@@ -10,7 +10,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		help_document.js
@@ -27,8 +27,7 @@ jform_vvvvvvwvvz_required = false;
 jform_vvvvvvxvwa_required = false;
 jform_vvvvvvyvwb_required = false;
 jform_vvvvvvzvwc_required = false;
-jform_vvvvvwavwd_required = false;
-jform_vvvvvwbvwe_required = false;
+jform_vvvvvwbvwd_required = false;
 
 // Initial Script
 jQuery(document).ready(function()
@@ -248,28 +247,10 @@ function vvvvvwa(type_vvvvvwa)
 	if (type)
 	{
 		jQuery('#jform_content-lbl').closest('.control-group').show();
-		// add required attribute to content field
-		if (jform_vvvvvwavwd_required)
-		{
-			updateFieldRequired('content',0);
-			jQuery('#jform_content').prop('required','required');
-			jQuery('#jform_content').attr('aria-required',true);
-			jQuery('#jform_content').addClass('required');
-			jform_vvvvvwavwd_required = false;
-		}
 	}
 	else
 	{
 		jQuery('#jform_content-lbl').closest('.control-group').hide();
-		// remove required attribute from content field
-		if (!jform_vvvvvwavwd_required)
-		{
-			updateFieldRequired('content',1);
-			jQuery('#jform_content').removeAttr('required');
-			jQuery('#jform_content').removeAttr('aria-required');
-			jQuery('#jform_content').removeClass('required');
-			jform_vvvvvwavwd_required = true;
-		}
 	}
 }
 
@@ -292,26 +273,26 @@ function vvvvvwb(target_vvvvvwb)
 	{
 		jQuery('#jform_groups').closest('.control-group').show();
 		// add required attribute to groups field
-		if (jform_vvvvvwbvwe_required)
+		if (jform_vvvvvwbvwd_required)
 		{
 			updateFieldRequired('groups',0);
 			jQuery('#jform_groups').prop('required','required');
 			jQuery('#jform_groups').attr('aria-required',true);
 			jQuery('#jform_groups').addClass('required');
-			jform_vvvvvwbvwe_required = false;
+			jform_vvvvvwbvwd_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_groups').closest('.control-group').hide();
 		// remove required attribute from groups field
-		if (!jform_vvvvvwbvwe_required)
+		if (!jform_vvvvvwbvwd_required)
 		{
 			updateFieldRequired('groups',1);
 			jQuery('#jform_groups').removeAttr('required');
 			jQuery('#jform_groups').removeAttr('aria-required');
 			jQuery('#jform_groups').removeClass('required');
-			jform_vvvvvwbvwe_required = true;
+			jform_vvvvvwbvwd_required = true;
 		}
 	}
 }

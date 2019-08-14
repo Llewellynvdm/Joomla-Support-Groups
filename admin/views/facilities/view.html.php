@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -202,7 +202,15 @@ class SupportgroupsViewFacilities extends JViewLegacy
 
 		// Set Facility Type Name Selection
 		$this->facility_typeNameOptions = JFormHelper::loadFieldType('Facilitiestype')->options;
-		if ($this->facility_typeNameOptions)
+		// We do some sanitation for Facility Type Name filter
+		if (SupportgroupsHelper::checkArray($this->facility_typeNameOptions) &&
+			isset($this->facility_typeNameOptions[0]->value) &&
+			!SupportgroupsHelper::checkString($this->facility_typeNameOptions[0]->value))
+		{
+			unset($this->facility_typeNameOptions[0]);
+		}
+		// Only load Facility Type Name filter if it has values
+		if (SupportgroupsHelper::checkArray($this->facility_typeNameOptions))
 		{
 			// Facility Type Name Filter
 			JHtmlSidebar::addFilter(

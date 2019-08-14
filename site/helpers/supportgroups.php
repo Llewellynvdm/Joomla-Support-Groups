@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -334,38 +334,42 @@ abstract class SupportgroupsHelper
 	/**
 	* Get any component's model
 	**/
-	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $component = 'Supportgroups', $config = array())
+	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $Component = 'Supportgroups', $config = array())
 	{
 		// fix the name
 		$name = self::safeString($name);
-		// full path
-		$fullPath = $path . '/models';
-		// set prefix
-		$prefix = $component.'Model';
+		// full path to models
+		$fullPathModels = $path . '/models';
 		// load the model file
-		JModelLegacy::addIncludePath($fullPath, $prefix);
+		JModelLegacy::addIncludePath($fullPathModels, $Component . 'Model');
+		// make sure the table path is loaded
+		if (!isset($config['table_path']) || !self::checkString($config['table_path']))
+		{
+			// This is the JCB default path to tables in Joomla 3.x
+			$config['table_path'] = JPATH_ADMINISTRATOR . '/components/com_' . strtolower($Component) . '/tables';
+		}
 		// get instance
-		$model = JModelLegacy::getInstance($name, $prefix, $config);
+		$model = JModelLegacy::getInstance($name, $Component . 'Model', $config);
 		// if model not found (strange)
 		if ($model == false)
 		{
 			jimport('joomla.filesystem.file');
 			// get file path
-			$filePath = $path.'/'.$name.'.php';
-			$fullPath = $fullPath.'/'.$name.'.php';
+			$filePath = $path . '/' . $name . '.php';
+			$fullPathModel = $fullPathModels . '/' . $name . '.php';
 			// check if it exists
 			if (JFile::exists($filePath))
 			{
 				// get the file
 				require_once $filePath;
 			}
-			elseif (JFile::exists($fullPath))
+			elseif (JFile::exists($fullPathModel))
 			{
 				// get the file
-				require_once $fullPath;
+				require_once $fullPathModel;
 			}
 			// build class names
-			$modelClass = $prefix.$name;
+			$modelClass = $Component . 'Model' . $name;
 			if (class_exists($modelClass))
 			{
 				// initialize the model

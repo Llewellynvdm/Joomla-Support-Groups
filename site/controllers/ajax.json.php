@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		ajax.json.php
@@ -52,7 +52,7 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 		// Check Token!
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
-		if($token == $call_token)
+		if($jinput->get($token, 0, 'ALNUM') || $token === $call_token)
 		{
 			$task = $this->getTask();
 			switch($task)

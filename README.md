@@ -12,14 +12,14 @@ Support Groups component adds the ability to your Joomla website to manage vario
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Support Groups](http://www.vdm.io)
 + *First Build*: 24th February, 2016
-+ *Last Build*: 4th April, 2019
++ *Last Build*: 14th August, 2019
 + *Version*: 1.0.10
 + *Copyright*: Copyright (C) 2015. All Rights Reserved
 + *License*: GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html
 
 # Component Number
 
-+ *Line count*: **66697**
++ *Line count*: **67827**
 + *File count*: **494**
 + *Folder count*: **98**
 

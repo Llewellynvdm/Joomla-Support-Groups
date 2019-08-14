@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.10
-	@build			4th April, 2019
+	@build			14th August, 2019
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		support_group.php
@@ -32,13 +32,54 @@ use Joomla\Registry\Registry;
  * Supportgroups Support_group Model
  */
 class SupportgroupsModelSupport_group extends JModelAdmin
-{    
+{
+	/**
+	 * The tab layout fields array.
+	 *
+	 * @var      array
+	 */
+	protected $tabLayoutFields = array(
+		'details' => array(
+			'left' => array(
+				'phone',
+				'facility',
+				'info'
+			),
+			'right' => array(
+				'male',
+				'male_children',
+				'male_art',
+				'female',
+				'female_children',
+				'female_art'
+			),
+			'fullwidth' => array(
+				'details'
+			),
+			'above' => array(
+				'name',
+				'alias'
+			),
+			'under' => array(
+				'marker'
+			)
+		),
+		'location' => array(
+			'left' => array(
+				'area'
+			),
+			'fullwidth' => array(
+				'note_set_marker'
+			)
+		)
+	);
+
 	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
 	protected $text_prefix = 'COM_SUPPORTGROUPS';
-    
+
 	/**
 	 * The type alias for this content type.
 	 *
