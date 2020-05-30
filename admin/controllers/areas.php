@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		areas.php
@@ -25,6 +25,8 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Areas Controller
@@ -67,7 +69,7 @@ class SupportgroupsControllerAreas extends JControllerAdmin
 			$input = JFactory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
-			JArrayHelper::toInteger($pks);
+			ArrayHelper::toInteger($pks);
 			// Get the model
 			$model = $this->getModel('Areas');
 			// get the data to export

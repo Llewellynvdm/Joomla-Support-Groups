@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		facility_types.php
@@ -25,6 +25,8 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Facility_types Model
@@ -100,12 +102,18 @@ class SupportgroupsModelFacility_types extends JModelList
 		// load parent items
 		$items = parent::getItems();
 
-		// set values to display correctly.
+		// Set values to display correctly.
 		if (SupportgroupsHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !SupportgroupsHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('facility_type.access', 'com_supportgroups.facility_type.' . (int) $item->id) && JFactory::getUser()->authorise('facility_type.access', 'com_supportgroups'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('facility_type.access', 'com_supportgroups.facility_type.' . (int) $item->id) && $user->authorise('facility_type.access', 'com_supportgroups'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -181,7 +189,7 @@ class SupportgroupsModelFacility_types extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');	
+		$orderDirn = $this->state->get('list.direction', 'asc');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -193,17 +201,23 @@ class SupportgroupsModelFacility_types extends JModelList
 	/**
 	 * Method to get list export data.
 	 *
+	 * @param   array  $pks  The ids of the items to get
+	 * @param   JUser  $user  The user making the request
+	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getExportData($pks)
+	public function getExportData($pks, $user = null)
 	{
 		// setup the query
 		if (SupportgroupsHelper::checkArray($pks))
 		{
-			// Set a value to know this is exporting method.
+			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
-			// Get the user object.
-			$user = JFactory::getUser();
+			// Get the user object if not set.
+			if (!isset($user) || !SupportgroupsHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			// Create a new query object.
 			$db = JFactory::getDBO();
 			$query = $db->getQuery(true);
@@ -231,12 +245,13 @@ class SupportgroupsModelFacility_types extends JModelList
 			{
 				$items = $db->loadObjectList();
 
-				// set values to display correctly.
+				// Set values to display correctly.
 				if (SupportgroupsHelper::checkArray($items))
 				{
 					foreach ($items as $nr => &$item)
 					{
-						$access = (JFactory::getUser()->authorise('facility_type.access', 'com_supportgroups.facility_type.' . (int) $item->id) && JFactory::getUser()->authorise('facility_type.access', 'com_supportgroups'));
+						// Remove items the user can't access.
+						$access = ($user->authorise('facility_type.access', 'com_supportgroups.facility_type.' . (int) $item->id) && $user->authorise('facility_type.access', 'com_supportgroups'));
 						if (!$access)
 						{
 							unset($items[$nr]);

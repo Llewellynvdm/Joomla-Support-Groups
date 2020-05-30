@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		help_documents.php
@@ -25,6 +25,8 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Help_documents Model
@@ -44,8 +46,8 @@ class SupportgroupsModelHelp_documents extends JModelList
 				'a.title','title',
 				'a.type','type',
 				'a.location','location',
-				'a.admin_view','admin_view',
-				'a.site_view','site_view'
+				'g.',
+				'h.'
 			);
 		}
 
@@ -116,12 +118,18 @@ class SupportgroupsModelHelp_documents extends JModelList
 		// load parent items
 		$items = parent::getItems();
 
-		// set values to display correctly.
+		// Set values to display correctly.
 		if (SupportgroupsHelper::checkArray($items))
 		{
+			// Get the user object if not set.
+			if (!isset($user) || !SupportgroupsHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			foreach ($items as $nr => &$item)
 			{
-				$access = (JFactory::getUser()->authorise('help_document.access', 'com_supportgroups.help_document.' . (int) $item->id) && JFactory::getUser()->authorise('help_document.access', 'com_supportgroups'));
+				// Remove items the user can't access.
+				$access = ($user->authorise('help_document.access', 'com_supportgroups.help_document.' . (int) $item->id) && $user->authorise('help_document.access', 'com_supportgroups'));
 				if (!$access)
 				{
 					unset($items[$nr]);
@@ -132,21 +140,12 @@ class SupportgroupsModelHelp_documents extends JModelList
 				$groupsArray = json_decode($item->groups, true);
 				if (SupportgroupsHelper::checkArray($groupsArray))
 				{
-					$groupsNames = '';
-					$counter = 0;
+					$groupsNames = array();
 					foreach ($groupsArray as $groups)
 					{
-						if ($counter == 0)
-						{
-							$groupsNames .= SupportgroupsHelper::getGroupName($groups);
-						}
-						else
-						{
-							$groupsNames .= ', '.SupportgroupsHelper::getGroupName($groups);
-						}
-						$counter++;
+						$groupsNames[] = SupportgroupsHelper::getGroupName($groups);
 					}
-					$item->groups = $groupsNames;
+					$item->groups =  implode(', ', $groupsNames);
 				}
 			}
 		}
@@ -288,7 +287,7 @@ class SupportgroupsModelHelp_documents extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');	
+		$orderDirn = $this->state->get('list.direction', 'asc');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -300,17 +299,23 @@ class SupportgroupsModelHelp_documents extends JModelList
 	/**
 	 * Method to get list export data.
 	 *
+	 * @param   array  $pks  The ids of the items to get
+	 * @param   JUser  $user  The user making the request
+	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getExportData($pks)
+	public function getExportData($pks, $user = null)
 	{
 		// setup the query
 		if (SupportgroupsHelper::checkArray($pks))
 		{
-			// Set a value to know this is exporting method.
+			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
-			// Get the user object.
-			$user = JFactory::getUser();
+			// Get the user object if not set.
+			if (!isset($user) || !SupportgroupsHelper::checkObject($user))
+			{
+				$user = JFactory::getUser();
+			}
 			// Create a new query object.
 			$db = JFactory::getDBO();
 			$query = $db->getQuery(true);
@@ -338,12 +343,13 @@ class SupportgroupsModelHelp_documents extends JModelList
 			{
 				$items = $db->loadObjectList();
 
-				// set values to display correctly.
+				// Set values to display correctly.
 				if (SupportgroupsHelper::checkArray($items))
 				{
 					foreach ($items as $nr => &$item)
 					{
-						$access = (JFactory::getUser()->authorise('help_document.access', 'com_supportgroups.help_document.' . (int) $item->id) && JFactory::getUser()->authorise('help_document.access', 'com_supportgroups'));
+						// Remove items the user can't access.
+						$access = ($user->authorise('help_document.access', 'com_supportgroups.help_document.' . (int) $item->id) && $user->authorise('help_document.access', 'com_supportgroups'));
 						if (!$access)
 						{
 							unset($items[$nr]);

@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default.php
@@ -89,8 +89,8 @@ if ($this->saveOrder)
                 $this->loadTemplate('batch_body')
             ); ?>
         <?php endif; ?>
-		<input type="hidden" name="filter_order" value="" />
-		<input type="hidden" name="filter_order_Dir" value="" />
+		<input type="hidden" name="filter_order" value="<?php echo $this->listOrder; ?>" />
+		<input type="hidden" name="filter_order_Dir" value="<?php echo $this->listDirn; ?>" />
 		<input type="hidden" name="boxchecked" value="0" />
 	</div>
 <?php endif; ?>

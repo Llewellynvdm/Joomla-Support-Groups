@@ -31,11 +31,6 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_support_group` (
 	`metadesc` TEXT NOT NULL,
 	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_area` (`area`),
 	KEY `idx_facility` (`facility`),
@@ -45,7 +40,12 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_support_group` (
 	KEY `idx_female_art` (`female_art`),
 	KEY `idx_female_children` (`female_children`),
 	KEY `idx_male_art` (`male_art`),
-	KEY `idx_male_children` (`male_children`)
+	KEY `idx_male_children` (`male_children`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_payment` (
@@ -67,13 +67,13 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_payment` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_support_group` (`support_group`),
+	KEY `idx_year` (`year`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_support_group` (`support_group`),
-	KEY `idx_year` (`year`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_facility` (
@@ -101,14 +101,14 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_facility` (
 	`metadesc` TEXT NOT NULL,
 	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_facility_type` (`facility_type`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_facility_type` (`facility_type`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_facility_type` (
@@ -129,13 +129,13 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_facility_type` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_additional_info` (
@@ -161,13 +161,13 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_additional_info` (
 	`metadesc` TEXT NOT NULL,
 	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_info_type` (`info_type`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_info_type` (`info_type`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_info_type` (
@@ -188,13 +188,13 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_info_type` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_area` (
@@ -222,15 +222,15 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_area` (
 	`metadesc` TEXT NOT NULL,
 	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_area_type` (`area_type`),
+	KEY `idx_region` (`region`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_area_type` (`area_type`),
-	KEY `idx_region` (`region`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_area_type` (
@@ -251,13 +251,13 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_area_type` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_region` (
@@ -282,14 +282,14 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_region` (
 	`metadesc` TEXT NOT NULL,
 	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
+	KEY `idx_name` (`name`),
+	KEY `idx_country` (`country`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_country` (`country`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_country` (
@@ -317,17 +317,17 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_country` (
 	`metadesc` TEXT NOT NULL,
 	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
-	KEY `idx_access` (`access`),
-	KEY `idx_checkout` (`checked_out`),
-	KEY `idx_createdby` (`created_by`),
-	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
 	KEY `idx_name` (`name`),
 	KEY `idx_currency` (`currency`),
 	KEY `idx_worldzone` (`worldzone`),
 	KEY `idx_codethree` (`codethree`),
 	KEY `idx_codetwo` (`codetwo`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_alias` (`alias`),
+	KEY `idx_access` (`access`),
+	KEY `idx_checkout` (`checked_out`),
+	KEY `idx_createdby` (`created_by`),
+	KEY `idx_modifiedby` (`modified_by`),
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_currency` (
@@ -360,14 +360,14 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_currency` (
 	`metadata` TEXT NOT NULL,
 	PRIMARY KEY  (`id`),
 	UNIQUE KEY `idx_codethree` (`codethree`),
+	KEY `idx_name` (`name`),
+	KEY `idx_numericcode` (`numericcode`),
+	KEY `idx_alias` (`alias`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_name` (`name`),
-	KEY `idx_numericcode` (`numericcode`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `#__supportgroups_help_document` (
@@ -379,7 +379,6 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_help_document` (
 	`content` TEXT NOT NULL,
 	`groups` TEXT NOT NULL,
 	`location` TINYINT(1) NOT NULL DEFAULT 0,
-	`not_required` INT(1) NOT NULL DEFAULT 0,
 	`site_view` CHAR(255) NOT NULL DEFAULT '',
 	`target` TINYINT(1) NOT NULL DEFAULT 0,
 	`title` CHAR(64) NOT NULL DEFAULT '',
@@ -398,17 +397,17 @@ CREATE TABLE IF NOT EXISTS `#__supportgroups_help_document` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (`id`),
+	KEY `idx_title` (`title`),
+	KEY `idx_type` (`type`),
+	KEY `idx_location` (`location`),
+	KEY `idx_alias` (`alias`),
+	KEY `idx_article` (`article`),
+	KEY `idx_target` (`target`),
 	KEY `idx_access` (`access`),
 	KEY `idx_checkout` (`checked_out`),
 	KEY `idx_createdby` (`created_by`),
 	KEY `idx_modifiedby` (`modified_by`),
-	KEY `idx_state` (`published`),
-	KEY `idx_title` (`title`),
-	KEY `idx_type` (`type`),
-	KEY `idx_location` (`location`),
-	KEY `idx_article` (`article`),
-	KEY `idx_target` (`target`),
-	KEY `idx_alias` (`alias`)
+	KEY `idx_state` (`published`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --

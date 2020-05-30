@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -48,8 +48,9 @@ class SupportgroupsViewHelp_documents extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
-		$this->listOrder = $this->escape($this->state->get('list.ordering'));
-		$this->listDirn = $this->escape($this->state->get('list.direction'));
+		// Add the list ordering clause.
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
 		$this->saveOrder = $this->listOrder == 'ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
@@ -362,7 +363,7 @@ class SupportgroupsViewHelp_documents extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.sorting' => JText::_('JGRID_HEADING_ORDERING'),
+			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.title' => JText::_('COM_SUPPORTGROUPS_HELP_DOCUMENT_TITLE_LABEL'),
 			'a.type' => JText::_('COM_SUPPORTGROUPS_HELP_DOCUMENT_TYPE_LABEL'),

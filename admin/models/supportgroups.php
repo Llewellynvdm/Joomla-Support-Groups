@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -287,7 +287,7 @@ class SupportgroupsModelSupportgroups extends JModelList
 		$document->addScript(JURI::root() . "media/com_supportgroups/js/marked.js");
 		$document->addScriptDeclaration('
 		var token = "'.JSession::getFormToken().'";
-		var noticeboard = "https://www.vdm.io/supportgroups-noticeboard-md";
+		var noticeboard = "https://vdm.bz/supportgroups-noticeboard-md";
 		jQuery(document).ready(function () {
 			jQuery.get(noticeboard)
 			.success(function(board) { 
@@ -322,9 +322,9 @@ class SupportgroupsModelSupportgroups extends JModelList
 		// to check is READ/NEW
 		function getIS(type,notice){
 			if(type == 1){
-				var getUrl = "index.php?option=com_supportgroups&task=ajax.isNew&format=json";
+				var getUrl = "index.php?option=com_supportgroups&task=ajax.isNew&format=json&raw=true";
 			} else if (type == 2) {
-				var getUrl = "index.php?option=com_supportgroups&task=ajax.isRead&format=json";
+				var getUrl = "index.php?option=com_supportgroups&task=ajax.isRead&format=json&raw=true";
 			}	
 			if(token.length > 0 && notice.length){
 				var request = "token="+token+"&notice="+notice;
@@ -332,23 +332,24 @@ class SupportgroupsModelSupportgroups extends JModelList
 			return jQuery.ajax({
 				type: "POST",
 				url: getUrl,
-				dataType: "jsonp",
+				dataType: "json",
 				data: request,
-				jsonp: "callback"
+				jsonp: false
 			});
 		}
-		// nice little dot trick :)
-		jQuery(document).ready( function($) {
-			var x=0;
-			setInterval(function() {
-				var dots = "";
-				x++;
-				for (var y=0; y < x%8; y++) {
-					dots+=".";
-				}
-				$(".loading-dots").text(dots);
-			} , 500);
-		});');
+		
+// nice little dot trick :)
+jQuery(document).ready( function($) {
+  var x=0;
+  setInterval(function() {
+	var dots = "";
+	x++;
+	for (var y=0; y < x%8; y++) {
+		dots+=".";
+	}
+	$(".loading-dots").text(dots);
+  } , 500);
+});');
 
 		return '<div id="noticeboard-md">'.JText::_('COM_SUPPORTGROUPS_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}

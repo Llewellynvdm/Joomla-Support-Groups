@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -26,11 +26,31 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Language\Language;
+use Joomla\String\StringHelper;
+use Joomla\Utilities\ArrayHelper;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 /**
  * Supportgroups component helper.
  */
 abstract class SupportgroupsHelper
 {
+	/**
+	 * Composer Switch
+	 * 
+	 * @var      array
+	 */
+	protected static $composer = array();
+
+	/**
+	 * The Main Active Language
+	 * 
+	 * @var      string
+	 */
+	public static $langTag;
 
 	/**
 	* 	The global params
@@ -256,9 +276,30 @@ abstract class SupportgroupsHelper
 		return '/' . trim( $filePath, '/' ) . '/' . $fileName;
 	}
 
+
 	/**
-	* Load the Component xml manifest.
-	**/
+	 * Load the Composer Vendors
+	 */
+	public static function composerAutoload($target)
+	{
+		// insure we load the composer vendor only once
+		if (!isset(self::$composer[$target]))
+		{
+			// get the function name
+			$functionName = self::safeString('compose' . $target);
+			// check if method exist
+			if (method_exists(__CLASS__, $functionName))
+			{
+				return self::{$functionName}();
+			}
+			return false;
+		}
+		return self::$composer[$target];
+	}
+
+	/**
+	 * Load the Component xml manifest.
+	 */
 	public static function manifest()
 	{
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_supportgroups/supportgroups.xml";
@@ -266,13 +307,13 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Joomla version object
-	**/	
+	 * Joomla version object
+	 */	
 	protected static $JVersion;
 
 	/**
-	* set/get Joomla version
-	**/
+	 * set/get Joomla version
+	 */
 	public static function jVersion()
 	{
 		// check if set
@@ -284,8 +325,8 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Load the Contributors details.
-	**/
+	 * Load the Contributors details.
+	 */
 	public static function getContributors()
 	{
 		// get params
@@ -394,8 +435,8 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Configure the Linkbar.
-	**/
+	 * Configure the Linkbar.
+	 */
 	public static function addSubmenu($submenu)
 	{
 		// load user for access menus
@@ -543,19 +584,18 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	 * Prepares the xml document
-	 */
-	public static function xls($rows,$fileName = null,$title = null,$subjectTab = null,$creator = 'Vast Development Method',$description = null,$category = null,$keywords = null,$modified = null)
+	* Prepares the xml document
+	*/
+	public static function xls($rows, $fileName = null, $title = null, $subjectTab = null, $creator = 'Joomla Component Builder', $description = null, $category = null,$keywords = null, $modified = null)
 	{
 		// set the user
 		$user = JFactory::getUser();
-		
-		// set fieldname if not set
+		// set fileName if not set
 		if (!$fileName)
 		{
 			$fileName = 'exported_'.JFactory::getDate()->format('jS_F_Y');
 		}
-		// set modiefied if not set
+		// set modified if not set
 		if (!$modified)
 		{
 			$modified = $user->name;
@@ -571,29 +611,33 @@ abstract class SupportgroupsHelper
 			$subjectTab = 'Sheet1';
 		}
 
-		// make sure the file is loaded
-		JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');
+		// make sure we have the composer classes loaded
+		self::composerAutoload('phpspreadsheet');
 
-		// Create new PHPExcel object
-		$objPHPExcel = new PHPExcel();
+		// Create new Spreadsheet object
+		$spreadsheet = new Spreadsheet();
 
 		// Set document properties
-		$objPHPExcel->getProperties()->setCreator($creator)
-			->setCompany('Vast Development Method')
+		$spreadsheet->getProperties()
+			->setCreator($creator)
+			->setCompany('Joomla Component Builder')
 			->setLastModifiedBy($modified)
 			->setTitle($title)
 			->setSubject($subjectTab);
-		if (!$description)
+		// set description
+		if ($description)
 		{
-			$objPHPExcel->getProperties()->setDescription($description);
+			$spreadsheet->getProperties()->setDescription($description);
 		}
-		if (!$keywords)
+		// set keywords
+		if ($keywords)
 		{
-			$objPHPExcel->getProperties()->setKeywords($keywords);
+			$spreadsheet->getProperties()->setKeywords($keywords);
 		}
-		if (!$category)
+		// set category
+		if ($category)
 		{
-			$objPHPExcel->getProperties()->setCategory($category);
+			$spreadsheet->getProperties()->setCategory($category);
 		}
 
 		// Some styles
@@ -625,15 +669,15 @@ abstract class SupportgroupsHelper
 			foreach ($rows as $array){
 				$a = 'A';
 				foreach ($array as $value){
-					$objPHPExcel->setActiveSheetIndex(0)->setCellValue($a.$i, $value);
+					$spreadsheet->setActiveSheetIndex(0)->setCellValue($a.$i, $value);
 					if ($i == 1){
-						$objPHPExcel->getActiveSheet()->getColumnDimension($a)->setAutoSize(true);
-						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($headerStyles);
-						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+						$spreadsheet->getActiveSheet()->getColumnDimension($a)->setAutoSize(true);
+						$spreadsheet->getActiveSheet()->getStyle($a.$i)->applyFromArray($headerStyles);
+						$spreadsheet->getActiveSheet()->getStyle($a.$i)->getAlignment()->setHorizontal(PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 					} elseif ($a === 'A'){
-						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($sideStyles);
+						$spreadsheet->getActiveSheet()->getStyle($a.$i)->applyFromArray($sideStyles);
 					} else {
-						$objPHPExcel->getActiveSheet()->getStyle($a.$i)->applyFromArray($normalStyles);
+						$spreadsheet->getActiveSheet()->getStyle($a.$i)->applyFromArray($normalStyles);
 					}
 					$a++;
 				}
@@ -646,10 +690,10 @@ abstract class SupportgroupsHelper
 		}
 
 		// Rename worksheet
-		$objPHPExcel->getActiveSheet()->setTitle($subjectTab);
+		$spreadsheet->getActiveSheet()->setTitle($subjectTab);
 
 		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
-		$objPHPExcel->setActiveSheetIndex(0);
+		$spreadsheet->setActiveSheetIndex(0);
 
 		// Redirect output to a client's web browser (Excel5)
 		header('Content-Type: application/vnd.ms-excel');
@@ -664,19 +708,18 @@ abstract class SupportgroupsHelper
 		header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
 		header ('Pragma: public'); // HTTP/1.0
 
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-		$objWriter->save('php://output');
+		$writer = IOFactory::createWriter($spreadsheet, 'Xls');
+		$writer->save('php://output');
 		jexit();
 	}
 
 	/**
-	 * Get CSV Headers
-	 */
+	* Get CSV Headers
+	*/
 	public static function getFileHeaders($dataType)
 	{
-		// make sure these files are loaded
-		JLoader::import('PHPExcel', JPATH_COMPONENT_ADMINISTRATOR . '/helpers');
-		JLoader::import('ChunkReadFilter', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/PHPExcel/Reader');
+		// make sure we have the composer classes loaded
+		self::composerAutoload('phpspreadsheet');
 		// get session object
 		$session = JFactory::getSession();
 		$package = $session->get('package', null);
@@ -684,13 +727,12 @@ abstract class SupportgroupsHelper
 		// set the headers
 		if(isset($package['dir']))
 		{
-			$chunkFilter = new PHPExcel_Reader_chunkReadFilter();
 			// only load first three rows
-			$chunkFilter->setRows(2,1);
+			$chunkFilter = new PhpOffice\PhpSpreadsheet\Reader\chunkReadFilter(2,1);
 			// identify the file type
-			$inputFileType = PHPExcel_IOFactory::identify($package['dir']);
+			$inputFileType = IOFactory::identify($package['dir']);
 			// create the reader for this file type
-			$excelReader = PHPExcel_IOFactory::createReader($inputFileType);
+			$excelReader = IOFactory::createReader($inputFileType);
 			// load the limiting filter
 			$excelReader->setReadFilter($chunkFilter);
 			$excelReader->setReadDataOnly(true);
@@ -718,6 +760,19 @@ abstract class SupportgroupsHelper
 			return $headers;
 		}
 		return false;
+	}
+
+	/**
+	* Load the Composer Vendor phpspreadsheet
+	*/
+	protected static function composephpspreadsheet()
+	{
+		// load the autoloader for phpspreadsheet
+		require_once JPATH_SITE . '/libraries/phpspreadsheet/vendor/autoload.php';
+		// do not load again
+		self::$composer['phpspreadsheet'] = true;
+
+		return  true;
 	}
 
 	/**
@@ -820,7 +875,15 @@ abstract class SupportgroupsHelper
 			{
 				$query->from($db->quoteName('#_'.$main.'_'.$table));
 			}
-			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
+			// add strings to array search
+			if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
+			{
+				$query->where($db->quoteName($whereString) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$where) . '")');
+			}
+			else
+			{
+				$query->where($db->quoteName($whereString) . ' ' . $operator . ' (' . implode(',',$where) . ')');
+			}
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getNumRows())
@@ -923,21 +986,26 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Get the action permissions
-	*
-	* @param  string   $view        The related view name
-	* @param  int      $record      The item to act upon
-	* @param  string   $views       The related list view name
-	* @param  mixed    $target      Only get this permission (like edit, create, delete)
-	* @param  string   $component   The target component
-	*
-	* @return  object   The JObject of permission/authorised actions
-	* 
-	**/
-	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'supportgroups')
+	 * Get the action permissions
+	 *
+	 * @param  string   $view        The related view name
+	 * @param  int      $record      The item to act upon
+	 * @param  string   $views       The related list view name
+	 * @param  mixed    $target      Only get this permission (like edit, create, delete)
+	 * @param  string   $component   The target component
+	 * @param  object   $user        The user whose permissions we are loading
+	 *
+	 * @return  object   The JObject of permission/authorised actions
+	 * 
+	 */
+	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'supportgroups', $user = 'null')
 	{
-		// get the user object
-		$user = JFactory::getUser();
+		// load the user if not given
+		if (!self::checkObject($user))
+		{
+			// get the user object
+			$user = JFactory::getUser();
+		}
 		// load the JObject
 		$result = new JObject;
 		// make view name safe (just incase)
@@ -1093,14 +1161,14 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Filter the action permissions
-	*
-	* @param  string   $action   The action to check
-	* @param  array    $targets  The array of target actions
-	*
-	* @return  boolean   true if action should be filtered out
-	* 
-	**/
+	 * Filter the action permissions
+	 *
+	 * @param  string   $action   The action to check
+	 * @param  array    $targets  The array of target actions
+	 *
+	 * @return  boolean   true if action should be filtered out
+	 * 
+	 */
 	protected static function filterActions(&$view, &$action, &$targets)
 	{
 		foreach ($targets as $target)
@@ -1116,8 +1184,8 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Get any component's model
-	**/
+	 * Get any component's model
+	 */
 	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $Component = 'Supportgroups', $config = array())
 	{
 		// fix the name
@@ -1164,8 +1232,8 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Add to asset Table
-	*/
+	 * Add to asset Table
+	 */
 	public static function setAsset($id, $table, $inherit = true)
 	{
 		$parent = JTable::getInstance('Asset');
@@ -1271,7 +1339,7 @@ abstract class SupportgroupsHelper
 				}
 			}
 			// check if there are any view values remaining
-			if (count($_result))
+			if (count((array) $_result))
 			{
 				$_result = json_encode($_result);
 				$_result = array($_result);
@@ -1396,7 +1464,31 @@ abstract class SupportgroupsHelper
 				jimport('joomla.form.form');
 			}
 			// get field type
-			$field = JFormHelper::loadFieldType($attributes['type'],true);
+			$field = JFormHelper::loadFieldType($attributes['type'], true);
+			// get field xml
+			$XML = self::getFieldXML($attributes, $options);
+			// setup the field
+			$field->setup($XML, $default);
+			// return the field object
+			return $field;
+		}
+		return false;
+	}
+
+	/**
+	 * get the field xml
+	 *
+	 * @param   array      $attributes   The array of attributes
+	 * @param   array      $options      The options to apply to the XML element
+	 *
+	 * @return  object
+	 *
+	 */
+	public static function getFieldXML(&$attributes, $options = null)
+	{
+		// make sure we have attributes and a type value
+		if (self::checkArray($attributes))
+		{
 			// start field xml
 			$XML = new SimpleXMLElement('<field/>');
 			// load the attributes
@@ -1407,10 +1499,8 @@ abstract class SupportgroupsHelper
 				// load the options
 				self::xmlAddOptions($XML, $options);
 			}
-			// setup the field
-			$field->setup($XML, $default);
-			// return the field object
-			return $field;
+			// return the field xml
+			return $XML;
 		}
 		return false;
 	}
@@ -1450,12 +1540,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if have an json string
-	*
-	* @input	string   The json string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an json string
+	 *
+	 * @input	string   The json string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkJson($string)
 	{
 		if (self::checkString($string))
@@ -1467,12 +1557,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if have an object with a length
-	*
-	* @input	object   The object to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an object with a length
+	 *
+	 * @input	object   The object to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkObject($object)
 	{
 		if (isset($object) && is_object($object))
@@ -1483,12 +1573,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if have an array with a length
-	*
-	* @input	array   The array to check
-	*
-	* @returns bool/int  number of items in array on success
-	**/
+	 * Check if have an array with a length
+	 *
+	 * @input	array   The array to check
+	 *
+	 * @returns bool/int  number of items in array on success
+	 */
 	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
@@ -1511,12 +1601,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if have a string with a length
-	*
-	* @input	string   The string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have a string with a length
+	 *
+	 * @input	string   The string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -1527,11 +1617,11 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if we are connected
-	* Thanks https://stackoverflow.com/a/4860432/1429677
-	*
-	* @returns bool true on success
-	**/
+	 * Check if we are connected
+	 * Thanks https://stackoverflow.com/a/4860432/1429677
+	 *
+	 * @returns bool true on success
+	 */
 	public static function isConnected()
 	{
 		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
@@ -1552,12 +1642,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Merge an array of array's
-	*
-	* @input	array   The arrays you would like to merge
-	*
-	* @returns array on success
-	**/
+	 * Merge an array of array's
+	 *
+	 * @input	array   The arrays you would like to merge
+	 *
+	 * @returns array on success
+	 */
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -1582,12 +1672,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Shorten a string
-	*
-	* @input	string   The you would like to shorten
-	*
-	* @returns string on success
-	**/
+	 * Shorten a string
+	 *
+	 * @input	string   The you would like to shorten
+	 *
+	 * @returns string on success
+	 */
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
@@ -1623,12 +1713,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Making strings safe (various ways)
-	*
-	* @input	string   The you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making strings safe (various ways)
+	 *
+	 * @input	string   The you would like to make safe
+	 *
+	 * @returns string on success
+	 */
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
 		if ($replaceNumbers === true)
@@ -1658,6 +1748,8 @@ abstract class SupportgroupsHelper
 			$string = trim($string);
 			$string = preg_replace('/'.$spacer.'+/', ' ', $string);
 			$string = preg_replace('/\s+/', ' ', $string);
+			// Transliterate string
+			$string = self::transliterate($string);
 			// remove all and keep only characters
 			if ($keepOnlyCharacters)
 			{
@@ -1726,6 +1818,19 @@ abstract class SupportgroupsHelper
 		return '';
 	}
 
+	public static function transliterate($string)
+	{
+		// set tag only once
+		if (!self::checkString(self::$langTag))
+		{
+			// get global value
+			self::$langTag = JComponentHelper::getParams('com_supportgroups')->get('language', 'en-GB');
+		}
+		// Transliterate on the language requested
+		$lang = Language::getInstance(self::$langTag);
+		return $lang->transliterate($string);
+	}
+
 	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
 		if (self::checkString($var))
@@ -1767,12 +1872,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Convert an integer into an English word string
-	* Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
-	*
-	* @input	an int
-	* @returns a string
-	**/
+	 * Convert an integer into an English word string
+	 * Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
+	 *
+	 * @input	an int
+	 * @returns a string
+	 */
 	public static function numberToString($x)
 	{
 		$nwords = array( "zero", "one", "two", "three", "four", "five", "six", "seven",
@@ -1858,10 +1963,10 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Random Key
-	*
-	* @returns a string
-	**/
+	 * Random Key
+	 *
+	 * @returns a string
+	 */
 	public static function randomkey($size)
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";

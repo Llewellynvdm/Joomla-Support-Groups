@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default_head.php
@@ -44,17 +44,17 @@ defined('_JEXEC') or die('Restricted access');
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL', 'support_group_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL', 'g.name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_YEAR_LABEL', 'year', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_YEAR_LABEL', 'a.year', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_AMOUNT_LABEL', 'amount', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_AMOUNT_LABEL', 'a.amount', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >
-			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_STATUS', 'published', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_STATUS', 'a.published', $this->listDirn, $this->listOrder); ?>
 		</th>
 	<?php else: ?>
 		<th width="10" class="nowrap center" >
@@ -62,6 +62,6 @@ defined('_JEXEC') or die('Restricted access');
 		</th>
 	<?php endif; ?>
 	<th width="5" class="nowrap center hidden-phone" >
-			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_ID', 'id', $this->listDirn, $this->listOrder); ?>
+			<?php echo JHtml::_('grid.sort', 'COM_SUPPORTGROUPS_PAYMENT_ID', 'a.id', $this->listDirn, $this->listOrder); ?>
 	</th>
 </tr>

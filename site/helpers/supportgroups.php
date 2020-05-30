@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -26,11 +26,28 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Language\Language;
+use Joomla\String\StringHelper;
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Supportgroups component helper
  */
 abstract class SupportgroupsHelper
 {
+	/**
+	 * Composer Switch
+	 * 
+	 * @var      array
+	 */
+	protected static $composer = array();
+
+	/**
+	 * The Main Active Language
+	 * 
+	 * @var      string
+	 */
+	public static $langTag;
 
 	public static function setTotals(&$data,&$type,&$id)
 	{
@@ -145,7 +162,30 @@ abstract class SupportgroupsHelper
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Load the Composer Vendors
+	 */
+	public static function composerAutoload($target)
+	{
+		// insure we load the composer vendor only once
+		if (!isset(self::$composer[$target]))
+		{
+			// get the function name
+			$functionName = self::safeString('compose' . $target);
+			// check if method exist
+			if (method_exists(__CLASS__, $functionName))
+			{
+				return self::{$functionName}();
+			}
+			return false;
+		}
+		return self::$composer[$target];
+	}
+
+	/**
+	 * Convert it into a string
+	 */
 	public static function jsonToString($value, $sperator = ", ", $table = null, $id = 'id', $name = 'name')
 	{
 		// do some table foot work
@@ -195,8 +235,8 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Load the Component xml manifest.
-	**/
+	 * Load the Component xml manifest.
+	 */
 	public static function manifest()
 	{
 		$manifestUrl = JPATH_ADMINISTRATOR."/components/com_supportgroups/supportgroups.xml";
@@ -204,13 +244,13 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Joomla version object
-	**/	
+	 * Joomla version object
+	 */	
 	protected static $JVersion;
 
 	/**
-	* set/get Joomla version
-	**/
+	 * set/get Joomla version
+	 */
 	public static function jVersion()
 	{
 		// check if set
@@ -222,8 +262,8 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Load the Contributors details.
-	**/
+	 * Load the Contributors details.
+	 */
 	public static function getContributors()
 	{
 		// get params
@@ -332,8 +372,8 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Get any component's model
-	**/
+	 * Get any component's model
+	 */
 	public static function getModel($name, $path = JPATH_COMPONENT_SITE, $Component = 'Supportgroups', $config = array())
 	{
 		// fix the name
@@ -380,8 +420,8 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Add to asset Table
-	*/
+	 * Add to asset Table
+	 */
 	public static function setAsset($id, $table, $inherit = true)
 	{
 		$parent = JTable::getInstance('Asset');
@@ -487,7 +527,7 @@ abstract class SupportgroupsHelper
 				}
 			}
 			// check if there are any view values remaining
-			if (count($_result))
+			if (count((array) $_result))
 			{
 				$_result = json_encode($_result);
 				$_result = array($_result);
@@ -601,7 +641,7 @@ abstract class SupportgroupsHelper
 	 * @return  object
 	 *
 	 */
-	public static function getFieldObject($attributes, $default = '', $options = null)
+	public static function getFieldObject(&$attributes, $default = '', $options = null)
 	{
 		// make sure we have attributes and a type value
 		if (self::checkArray($attributes) && isset($attributes['type']))
@@ -612,7 +652,31 @@ abstract class SupportgroupsHelper
 				jimport('joomla.form.form');
 			}
 			// get field type
-			$field = JFormHelper::loadFieldType($attributes['type'],true);
+			$field = JFormHelper::loadFieldType($attributes['type'], true);
+			// get field xml
+			$XML = self::getFieldXML($attributes, $options);
+			// setup the field
+			$field->setup($XML, $default);
+			// return the field object
+			return $field;
+		}
+		return false;
+	}
+
+	/**
+	 * get the field xml
+	 *
+	 * @param   array      $attributes   The array of attributes
+	 * @param   array      $options      The options to apply to the XML element
+	 *
+	 * @return  object
+	 *
+	 */
+	public static function getFieldXML(&$attributes, $options = null)
+	{
+		// make sure we have attributes and a type value
+		if (self::checkArray($attributes))
+		{
 			// start field xml
 			$XML = new SimpleXMLElement('<field/>');
 			// load the attributes
@@ -623,10 +687,8 @@ abstract class SupportgroupsHelper
 				// load the options
 				self::xmlAddOptions($XML, $options);
 			}
-			// setup the field
-			$field->setup($XML, $default);
-			// return the field object
-			return $field;
+			// return the field xml
+			return $XML;
 		}
 		return false;
 	}
@@ -867,7 +929,15 @@ abstract class SupportgroupsHelper
 			{
 				$query->from($db->quoteName('#_'.$main.'_'.$table));
 			}
-			$query->where($db->quoteName($whereString) . ' '.$operator.' (' . implode(',',$where) . ')');
+			// add strings to array search
+			if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
+			{
+				$query->where($db->quoteName($whereString) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$where) . '")');
+			}
+			else
+			{
+				$query->where($db->quoteName($whereString) . ' ' . $operator . ' (' . implode(',',$where) . ')');
+			}
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getNumRows())
@@ -922,21 +992,26 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Get the action permissions
-	*
-	* @param  string   $view        The related view name
-	* @param  int      $record      The item to act upon
-	* @param  string   $views       The related list view name
-	* @param  mixed    $target      Only get this permission (like edit, create, delete)
-	* @param  string   $component   The target component
-	*
-	* @return  object   The JObject of permission/authorised actions
-	* 
-	**/
-	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'supportgroups')
+	 * Get the action permissions
+	 *
+	 * @param  string   $view        The related view name
+	 * @param  int      $record      The item to act upon
+	 * @param  string   $views       The related list view name
+	 * @param  mixed    $target      Only get this permission (like edit, create, delete)
+	 * @param  string   $component   The target component
+	 * @param  object   $user        The user whose permissions we are loading
+	 *
+	 * @return  object   The JObject of permission/authorised actions
+	 * 
+	 */
+	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'supportgroups', $user = 'null')
 	{
-		// get the user object
-		$user = JFactory::getUser();
+		// load the user if not given
+		if (!self::checkObject($user))
+		{
+			// get the user object
+			$user = JFactory::getUser();
+		}
 		// load the JObject
 		$result = new JObject;
 		// make view name safe (just incase)
@@ -1092,14 +1167,14 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Filter the action permissions
-	*
-	* @param  string   $action   The action to check
-	* @param  array    $targets  The array of target actions
-	*
-	* @return  boolean   true if action should be filtered out
-	* 
-	**/
+	 * Filter the action permissions
+	 *
+	 * @param  string   $action   The action to check
+	 * @param  array    $targets  The array of target actions
+	 *
+	 * @return  boolean   true if action should be filtered out
+	 * 
+	 */
 	protected static function filterActions(&$view, &$action, &$targets)
 	{
 		foreach ($targets as $target)
@@ -1115,12 +1190,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if have an json string
-	*
-	* @input	string   The json string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an json string
+	 *
+	 * @input	string   The json string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkJson($string)
 	{
 		if (self::checkString($string))
@@ -1132,12 +1207,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if have an object with a length
-	*
-	* @input	object   The object to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have an object with a length
+	 *
+	 * @input	object   The object to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkObject($object)
 	{
 		if (isset($object) && is_object($object))
@@ -1148,12 +1223,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if have an array with a length
-	*
-	* @input	array   The array to check
-	*
-	* @returns bool/int  number of items in array on success
-	**/
+	 * Check if have an array with a length
+	 *
+	 * @input	array   The array to check
+	 *
+	 * @returns bool/int  number of items in array on success
+	 */
 	public static function checkArray($array, $removeEmptyString = false)
 	{
 		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
@@ -1176,12 +1251,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if have a string with a length
-	*
-	* @input	string   The string to check
-	*
-	* @returns bool true on success
-	**/
+	 * Check if have a string with a length
+	 *
+	 * @input	string   The string to check
+	 *
+	 * @returns bool true on success
+	 */
 	public static function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -1192,11 +1267,11 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Check if we are connected
-	* Thanks https://stackoverflow.com/a/4860432/1429677
-	*
-	* @returns bool true on success
-	**/
+	 * Check if we are connected
+	 * Thanks https://stackoverflow.com/a/4860432/1429677
+	 *
+	 * @returns bool true on success
+	 */
 	public static function isConnected()
 	{
 		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
@@ -1217,12 +1292,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Merge an array of array's
-	*
-	* @input	array   The arrays you would like to merge
-	*
-	* @returns array on success
-	**/
+	 * Merge an array of array's
+	 *
+	 * @input	array   The arrays you would like to merge
+	 *
+	 * @returns array on success
+	 */
 	public static function mergeArrays($arrays)
 	{
 		if(self::checkArray($arrays))
@@ -1247,12 +1322,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Shorten a string
-	*
-	* @input	string   The you would like to shorten
-	*
-	* @returns string on success
-	**/
+	 * Shorten a string
+	 *
+	 * @input	string   The you would like to shorten
+	 *
+	 * @returns string on success
+	 */
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::checkString($string))
@@ -1288,12 +1363,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Making strings safe (various ways)
-	*
-	* @input	string   The you would like to make safe
-	*
-	* @returns string on success
-	**/
+	 * Making strings safe (various ways)
+	 *
+	 * @input	string   The you would like to make safe
+	 *
+	 * @returns string on success
+	 */
 	public static function safeString($string, $type = 'L', $spacer = '_', $replaceNumbers = true, $keepOnlyCharacters = true)
 	{
 		if ($replaceNumbers === true)
@@ -1323,6 +1398,8 @@ abstract class SupportgroupsHelper
 			$string = trim($string);
 			$string = preg_replace('/'.$spacer.'+/', ' ', $string);
 			$string = preg_replace('/\s+/', ' ', $string);
+			// Transliterate string
+			$string = self::transliterate($string);
 			// remove all and keep only characters
 			if ($keepOnlyCharacters)
 			{
@@ -1391,6 +1468,19 @@ abstract class SupportgroupsHelper
 		return '';
 	}
 
+	public static function transliterate($string)
+	{
+		// set tag only once
+		if (!self::checkString(self::$langTag))
+		{
+			// get global value
+			self::$langTag = JComponentHelper::getParams('com_supportgroups')->get('language', 'en-GB');
+		}
+		// Transliterate on the language requested
+		$lang = Language::getInstance(self::$langTag);
+		return $lang->transliterate($string);
+	}
+
 	public static function htmlEscape($var, $charset = 'UTF-8', $shorten = false, $length = 40)
 	{
 		if (self::checkString($var))
@@ -1432,12 +1522,12 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Convert an integer into an English word string
-	* Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
-	*
-	* @input	an int
-	* @returns a string
-	**/
+	 * Convert an integer into an English word string
+	 * Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
+	 *
+	 * @input	an int
+	 * @returns a string
+	 */
 	public static function numberToString($x)
 	{
 		$nwords = array( "zero", "one", "two", "three", "four", "five", "six", "seven",
@@ -1523,10 +1613,10 @@ abstract class SupportgroupsHelper
 	}
 
 	/**
-	* Random Key
-	*
-	* @returns a string
-	**/
+	 * Random Key
+	 *
+	 * @returns a string
+	 */
 	public static function randomkey($size)
 	{
 		$bag = "abcefghijknopqrstuwxyzABCDDEFGHIJKLLMMNOPQRSTUVVWXYZabcddefghijkllmmnopqrstuvvwxyzABCEFGHIJKNOPQRSTUWXYZ";

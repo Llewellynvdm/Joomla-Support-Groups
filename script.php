@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		script.php
@@ -1113,6 +1113,331 @@ class com_supportgroupsInstallerScript
 			$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));
 		}
 
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups from the action_logs_extensions table
+		$supportgroups_action_logs_extensions = array( $db->quoteName('extension') . ' = ' . $db->quote('com_supportgroups') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_logs_extensions'));
+		$query->where($supportgroups_action_logs_extensions);
+		$db->setQuery($query);
+		// Execute the query to remove Supportgroups
+		$supportgroups_removed_done = $db->execute();
+		if ($supportgroups_removed_done)
+		{
+			// If successfully remove Supportgroups add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups extension was removed from the <b>#__action_logs_extensions</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Support_group from the action_log_config table
+		$support_group_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.support_group') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($support_group_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.support_group
+		$support_group_action_log_config_done = $db->execute();
+		if ($support_group_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Support_group add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.support_group type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Payment from the action_log_config table
+		$payment_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.payment') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($payment_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.payment
+		$payment_action_log_config_done = $db->execute();
+		if ($payment_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Payment add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.payment type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Facility from the action_log_config table
+		$facility_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.facility') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($facility_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.facility
+		$facility_action_log_config_done = $db->execute();
+		if ($facility_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Facility add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.facility type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Facility_type from the action_log_config table
+		$facility_type_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.facility_type') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($facility_type_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.facility_type
+		$facility_type_action_log_config_done = $db->execute();
+		if ($facility_type_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Facility_type add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.facility_type type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Additional_info from the action_log_config table
+		$additional_info_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.additional_info') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($additional_info_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.additional_info
+		$additional_info_action_log_config_done = $db->execute();
+		if ($additional_info_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Additional_info add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.additional_info type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Info_type from the action_log_config table
+		$info_type_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.info_type') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($info_type_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.info_type
+		$info_type_action_log_config_done = $db->execute();
+		if ($info_type_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Info_type add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.info_type type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Area from the action_log_config table
+		$area_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.area') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($area_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.area
+		$area_action_log_config_done = $db->execute();
+		if ($area_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Area add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.area type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Area_type from the action_log_config table
+		$area_type_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.area_type') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($area_type_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.area_type
+		$area_type_action_log_config_done = $db->execute();
+		if ($area_type_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Area_type add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.area_type type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Region from the action_log_config table
+		$region_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.region') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($region_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.region
+		$region_action_log_config_done = $db->execute();
+		if ($region_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Region add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.region type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Country from the action_log_config table
+		$country_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.country') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($country_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.country
+		$country_action_log_config_done = $db->execute();
+		if ($country_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Country add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.country type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Currency from the action_log_config table
+		$currency_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.currency') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($currency_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.currency
+		$currency_action_log_config_done = $db->execute();
+		if ($currency_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Currency add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.currency type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = JFactory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = JFactory::getApplication();
+		}
+		// Remove Supportgroups Help_document from the action_log_config table
+		$help_document_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_supportgroups.help_document') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($help_document_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_supportgroups.help_document
+		$help_document_action_log_config_done = $db->execute();
+		if ($help_document_action_log_config_done)
+		{
+			// If successfully removed Supportgroups Help_document add queued success message.
+			$app->enqueueMessage(JText::_('The com_supportgroups.help_document type alias was removed from the <b>#__action_log_config</b> table'));
+		}
 		// little notice as after service, in case of bad experience with component.
 		echo '<h2>Did something go wrong? Are you disappointed?</h2>
 		<p>Please let me know at <a href="mailto:joomla@vdm.io">joomla@vdm.io</a>.
@@ -1162,6 +1487,14 @@ class com_supportgroupsInstallerScript
 		if ($type === 'install')
 		{
 		}
+		// check if the PHPExcel stuff is still around
+		if (JFile::exists(JPATH_ADMINISTRATOR . '/components/com_supportgroups/helpers/PHPExcel.php'))
+		{
+			// We need to remove this old PHPExcel folder
+			$this->removeFolder(JPATH_ADMINISTRATOR . '/components/com_supportgroups/helpers/PHPExcel');
+			// We need to remove this old PHPExcel file
+			JFile::delete(JPATH_ADMINISTRATOR . '/components/com_supportgroups/helpers/PHPExcel.php');
+		}
 		return true;
 	}
 
@@ -1177,6 +1510,8 @@ class com_supportgroupsInstallerScript
 	{
 		// get application
 		$app = JFactory::getApplication();
+		// We check if we have dynamic folders to copy
+		$this->setDynamicF0ld3rs($app, $parent);
 		// set the default component settings
 		if ($type === 'install')
 		{
@@ -1321,9 +1656,9 @@ class com_supportgroupsInstallerScript
 			$help_document->type_title = 'Supportgroups Help_document';
 			$help_document->type_alias = 'com_supportgroups.help_document';
 			$help_document->table = '{"special": {"dbtable": "#__supportgroups_help_document","key": "id","type": "Help_document","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","not_required":"not_required","content":"content","article":"article","url":"url","target":"target","alias":"alias"}}';
+			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","not_required":"not_required","alias":"alias","content":"content","article":"article","url":"url","target":"target"}}';
 			$help_document->router = 'SupportgroupsHelperRoute::getHelp_documentRoute';
-			$help_document->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","not_required","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
+			$help_document->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
 
 			// Set the object into the content types table.
 			$help_document_Inserted = $db->insertObject('#__content_types', $help_document);
@@ -1346,6 +1681,222 @@ class com_supportgroupsInstallerScript
 			echo '<a target="_blank" href="http://www.vdm.io" title="Support Groups">
 				<img src="components/com_supportgroups/assets/images/vdm-component.jpg"/>
 				</a>';
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the supportgroups action logs extensions object.
+			$supportgroups_action_logs_extensions = new stdClass();
+			$supportgroups_action_logs_extensions->extension = 'com_supportgroups';
+
+			// Set the object into the action logs extensions table.
+			$supportgroups_action_logs_extensions_Inserted = $db->insertObject('#__action_logs_extensions', $supportgroups_action_logs_extensions);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the support_group action log config object.
+			$support_group_action_log_config = new stdClass();
+			$support_group_action_log_config->type_title = 'SUPPORT_GROUP';
+			$support_group_action_log_config->type_alias = 'com_supportgroups.support_group';
+			$support_group_action_log_config->id_holder = 'id';
+			$support_group_action_log_config->title_holder = 'name';
+			$support_group_action_log_config->table_name = '#__supportgroups_support_group';
+			$support_group_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$support_group_Inserted = $db->insertObject('#__action_log_config', $support_group_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the payment action log config object.
+			$payment_action_log_config = new stdClass();
+			$payment_action_log_config->type_title = 'PAYMENT';
+			$payment_action_log_config->type_alias = 'com_supportgroups.payment';
+			$payment_action_log_config->id_holder = 'id';
+			$payment_action_log_config->title_holder = 'support_group';
+			$payment_action_log_config->table_name = '#__supportgroups_payment';
+			$payment_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$payment_Inserted = $db->insertObject('#__action_log_config', $payment_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the facility action log config object.
+			$facility_action_log_config = new stdClass();
+			$facility_action_log_config->type_title = 'FACILITY';
+			$facility_action_log_config->type_alias = 'com_supportgroups.facility';
+			$facility_action_log_config->id_holder = 'id';
+			$facility_action_log_config->title_holder = 'name';
+			$facility_action_log_config->table_name = '#__supportgroups_facility';
+			$facility_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$facility_Inserted = $db->insertObject('#__action_log_config', $facility_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the facility_type action log config object.
+			$facility_type_action_log_config = new stdClass();
+			$facility_type_action_log_config->type_title = 'FACILITY_TYPE';
+			$facility_type_action_log_config->type_alias = 'com_supportgroups.facility_type';
+			$facility_type_action_log_config->id_holder = 'id';
+			$facility_type_action_log_config->title_holder = 'name';
+			$facility_type_action_log_config->table_name = '#__supportgroups_facility_type';
+			$facility_type_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$facility_type_Inserted = $db->insertObject('#__action_log_config', $facility_type_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the additional_info action log config object.
+			$additional_info_action_log_config = new stdClass();
+			$additional_info_action_log_config->type_title = 'ADDITIONAL_INFO';
+			$additional_info_action_log_config->type_alias = 'com_supportgroups.additional_info';
+			$additional_info_action_log_config->id_holder = 'id';
+			$additional_info_action_log_config->title_holder = 'name';
+			$additional_info_action_log_config->table_name = '#__supportgroups_additional_info';
+			$additional_info_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$additional_info_Inserted = $db->insertObject('#__action_log_config', $additional_info_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the info_type action log config object.
+			$info_type_action_log_config = new stdClass();
+			$info_type_action_log_config->type_title = 'INFO_TYPE';
+			$info_type_action_log_config->type_alias = 'com_supportgroups.info_type';
+			$info_type_action_log_config->id_holder = 'id';
+			$info_type_action_log_config->title_holder = 'name';
+			$info_type_action_log_config->table_name = '#__supportgroups_info_type';
+			$info_type_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$info_type_Inserted = $db->insertObject('#__action_log_config', $info_type_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the area action log config object.
+			$area_action_log_config = new stdClass();
+			$area_action_log_config->type_title = 'AREA';
+			$area_action_log_config->type_alias = 'com_supportgroups.area';
+			$area_action_log_config->id_holder = 'id';
+			$area_action_log_config->title_holder = 'name';
+			$area_action_log_config->table_name = '#__supportgroups_area';
+			$area_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$area_Inserted = $db->insertObject('#__action_log_config', $area_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the area_type action log config object.
+			$area_type_action_log_config = new stdClass();
+			$area_type_action_log_config->type_title = 'AREA_TYPE';
+			$area_type_action_log_config->type_alias = 'com_supportgroups.area_type';
+			$area_type_action_log_config->id_holder = 'id';
+			$area_type_action_log_config->title_holder = 'name';
+			$area_type_action_log_config->table_name = '#__supportgroups_area_type';
+			$area_type_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$area_type_Inserted = $db->insertObject('#__action_log_config', $area_type_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the region action log config object.
+			$region_action_log_config = new stdClass();
+			$region_action_log_config->type_title = 'REGION';
+			$region_action_log_config->type_alias = 'com_supportgroups.region';
+			$region_action_log_config->id_holder = 'id';
+			$region_action_log_config->title_holder = 'name';
+			$region_action_log_config->table_name = '#__supportgroups_region';
+			$region_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$region_Inserted = $db->insertObject('#__action_log_config', $region_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the country action log config object.
+			$country_action_log_config = new stdClass();
+			$country_action_log_config->type_title = 'COUNTRY';
+			$country_action_log_config->type_alias = 'com_supportgroups.country';
+			$country_action_log_config->id_holder = 'id';
+			$country_action_log_config->title_holder = 'name';
+			$country_action_log_config->table_name = '#__supportgroups_country';
+			$country_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$country_Inserted = $db->insertObject('#__action_log_config', $country_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the currency action log config object.
+			$currency_action_log_config = new stdClass();
+			$currency_action_log_config->type_title = 'CURRENCY';
+			$currency_action_log_config->type_alias = 'com_supportgroups.currency';
+			$currency_action_log_config->id_holder = 'id';
+			$currency_action_log_config->title_holder = 'name';
+			$currency_action_log_config->table_name = '#__supportgroups_currency';
+			$currency_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$currency_Inserted = $db->insertObject('#__action_log_config', $currency_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the help_document action log config object.
+			$help_document_action_log_config = new stdClass();
+			$help_document_action_log_config->type_title = 'HELP_DOCUMENT';
+			$help_document_action_log_config->type_alias = 'com_supportgroups.help_document';
+			$help_document_action_log_config->id_holder = 'id';
+			$help_document_action_log_config->title_holder = 'title';
+			$help_document_action_log_config->table_name = '#__supportgroups_help_document';
+			$help_document_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Set the object into the action log config table.
+			$help_document_Inserted = $db->insertObject('#__action_log_config', $help_document_action_log_config);
 		}
 		// do any updates needed
 		if ($type === 'update')
@@ -1678,9 +2229,9 @@ class com_supportgroupsInstallerScript
 			$help_document->type_title = 'Supportgroups Help_document';
 			$help_document->type_alias = 'com_supportgroups.help_document';
 			$help_document->table = '{"special": {"dbtable": "#__supportgroups_help_document","key": "id","type": "Help_document","prefix": "supportgroupsTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","not_required":"not_required","content":"content","article":"article","url":"url","target":"target","alias":"alias"}}';
+			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","not_required":"not_required","alias":"alias","content":"content","article":"article","url":"url","target":"target"}}';
 			$help_document->router = 'SupportgroupsHelperRoute::getHelp_documentRoute';
-			$help_document->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","not_required","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
+			$help_document->content_history_options = '{"formFile": "administrator/components/com_supportgroups/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
 
 			// Check if help_document type is already in content_type DB.
 			$help_document_id = null;
@@ -1706,8 +2257,575 @@ class com_supportgroupsInstallerScript
 			echo '<a target="_blank" href="http://www.vdm.io" title="Support Groups">
 				<img src="components/com_supportgroups/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 1.0.10 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 1.0.11 Was Successful! Let us know if anything is not working as expected.</h3>';
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the supportgroups action logs extensions object.
+			$supportgroups_action_logs_extensions = new stdClass();
+			$supportgroups_action_logs_extensions->extension = 'com_supportgroups';
+
+			// Check if supportgroups action log extension is already in action logs extensions DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_logs_extensions'));
+			$query->where($db->quoteName('extension') . ' LIKE '. $db->quote($supportgroups_action_logs_extensions->extension));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the action logs extensions table if not found.
+			if (!$db->getNumRows())
+			{
+				$supportgroups_action_logs_extensions_Inserted = $db->insertObject('#__action_logs_extensions', $supportgroups_action_logs_extensions);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the support_group action log config object.
+			$support_group_action_log_config = new stdClass();
+			$support_group_action_log_config->id = null;
+			$support_group_action_log_config->type_title = 'SUPPORT_GROUP';
+			$support_group_action_log_config->type_alias = 'com_supportgroups.support_group';
+			$support_group_action_log_config->id_holder = 'id';
+			$support_group_action_log_config->title_holder = 'name';
+			$support_group_action_log_config->table_name = '#__supportgroups_support_group';
+			$support_group_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if support_group action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($support_group_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$support_group_action_log_config->id = $db->loadResult();
+				$support_group_action_log_config_Updated = $db->updateObject('#__action_log_config', $support_group_action_log_config, 'id');
+			}
+			else
+			{
+				$support_group_action_log_config_Inserted = $db->insertObject('#__action_log_config', $support_group_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the payment action log config object.
+			$payment_action_log_config = new stdClass();
+			$payment_action_log_config->id = null;
+			$payment_action_log_config->type_title = 'PAYMENT';
+			$payment_action_log_config->type_alias = 'com_supportgroups.payment';
+			$payment_action_log_config->id_holder = 'id';
+			$payment_action_log_config->title_holder = 'support_group';
+			$payment_action_log_config->table_name = '#__supportgroups_payment';
+			$payment_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if payment action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($payment_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$payment_action_log_config->id = $db->loadResult();
+				$payment_action_log_config_Updated = $db->updateObject('#__action_log_config', $payment_action_log_config, 'id');
+			}
+			else
+			{
+				$payment_action_log_config_Inserted = $db->insertObject('#__action_log_config', $payment_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the facility action log config object.
+			$facility_action_log_config = new stdClass();
+			$facility_action_log_config->id = null;
+			$facility_action_log_config->type_title = 'FACILITY';
+			$facility_action_log_config->type_alias = 'com_supportgroups.facility';
+			$facility_action_log_config->id_holder = 'id';
+			$facility_action_log_config->title_holder = 'name';
+			$facility_action_log_config->table_name = '#__supportgroups_facility';
+			$facility_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if facility action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($facility_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$facility_action_log_config->id = $db->loadResult();
+				$facility_action_log_config_Updated = $db->updateObject('#__action_log_config', $facility_action_log_config, 'id');
+			}
+			else
+			{
+				$facility_action_log_config_Inserted = $db->insertObject('#__action_log_config', $facility_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the facility_type action log config object.
+			$facility_type_action_log_config = new stdClass();
+			$facility_type_action_log_config->id = null;
+			$facility_type_action_log_config->type_title = 'FACILITY_TYPE';
+			$facility_type_action_log_config->type_alias = 'com_supportgroups.facility_type';
+			$facility_type_action_log_config->id_holder = 'id';
+			$facility_type_action_log_config->title_holder = 'name';
+			$facility_type_action_log_config->table_name = '#__supportgroups_facility_type';
+			$facility_type_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if facility_type action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($facility_type_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$facility_type_action_log_config->id = $db->loadResult();
+				$facility_type_action_log_config_Updated = $db->updateObject('#__action_log_config', $facility_type_action_log_config, 'id');
+			}
+			else
+			{
+				$facility_type_action_log_config_Inserted = $db->insertObject('#__action_log_config', $facility_type_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the additional_info action log config object.
+			$additional_info_action_log_config = new stdClass();
+			$additional_info_action_log_config->id = null;
+			$additional_info_action_log_config->type_title = 'ADDITIONAL_INFO';
+			$additional_info_action_log_config->type_alias = 'com_supportgroups.additional_info';
+			$additional_info_action_log_config->id_holder = 'id';
+			$additional_info_action_log_config->title_holder = 'name';
+			$additional_info_action_log_config->table_name = '#__supportgroups_additional_info';
+			$additional_info_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if additional_info action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($additional_info_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$additional_info_action_log_config->id = $db->loadResult();
+				$additional_info_action_log_config_Updated = $db->updateObject('#__action_log_config', $additional_info_action_log_config, 'id');
+			}
+			else
+			{
+				$additional_info_action_log_config_Inserted = $db->insertObject('#__action_log_config', $additional_info_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the info_type action log config object.
+			$info_type_action_log_config = new stdClass();
+			$info_type_action_log_config->id = null;
+			$info_type_action_log_config->type_title = 'INFO_TYPE';
+			$info_type_action_log_config->type_alias = 'com_supportgroups.info_type';
+			$info_type_action_log_config->id_holder = 'id';
+			$info_type_action_log_config->title_holder = 'name';
+			$info_type_action_log_config->table_name = '#__supportgroups_info_type';
+			$info_type_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if info_type action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($info_type_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$info_type_action_log_config->id = $db->loadResult();
+				$info_type_action_log_config_Updated = $db->updateObject('#__action_log_config', $info_type_action_log_config, 'id');
+			}
+			else
+			{
+				$info_type_action_log_config_Inserted = $db->insertObject('#__action_log_config', $info_type_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the area action log config object.
+			$area_action_log_config = new stdClass();
+			$area_action_log_config->id = null;
+			$area_action_log_config->type_title = 'AREA';
+			$area_action_log_config->type_alias = 'com_supportgroups.area';
+			$area_action_log_config->id_holder = 'id';
+			$area_action_log_config->title_holder = 'name';
+			$area_action_log_config->table_name = '#__supportgroups_area';
+			$area_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if area action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($area_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$area_action_log_config->id = $db->loadResult();
+				$area_action_log_config_Updated = $db->updateObject('#__action_log_config', $area_action_log_config, 'id');
+			}
+			else
+			{
+				$area_action_log_config_Inserted = $db->insertObject('#__action_log_config', $area_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the area_type action log config object.
+			$area_type_action_log_config = new stdClass();
+			$area_type_action_log_config->id = null;
+			$area_type_action_log_config->type_title = 'AREA_TYPE';
+			$area_type_action_log_config->type_alias = 'com_supportgroups.area_type';
+			$area_type_action_log_config->id_holder = 'id';
+			$area_type_action_log_config->title_holder = 'name';
+			$area_type_action_log_config->table_name = '#__supportgroups_area_type';
+			$area_type_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if area_type action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($area_type_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$area_type_action_log_config->id = $db->loadResult();
+				$area_type_action_log_config_Updated = $db->updateObject('#__action_log_config', $area_type_action_log_config, 'id');
+			}
+			else
+			{
+				$area_type_action_log_config_Inserted = $db->insertObject('#__action_log_config', $area_type_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the region action log config object.
+			$region_action_log_config = new stdClass();
+			$region_action_log_config->id = null;
+			$region_action_log_config->type_title = 'REGION';
+			$region_action_log_config->type_alias = 'com_supportgroups.region';
+			$region_action_log_config->id_holder = 'id';
+			$region_action_log_config->title_holder = 'name';
+			$region_action_log_config->table_name = '#__supportgroups_region';
+			$region_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if region action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($region_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$region_action_log_config->id = $db->loadResult();
+				$region_action_log_config_Updated = $db->updateObject('#__action_log_config', $region_action_log_config, 'id');
+			}
+			else
+			{
+				$region_action_log_config_Inserted = $db->insertObject('#__action_log_config', $region_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the country action log config object.
+			$country_action_log_config = new stdClass();
+			$country_action_log_config->id = null;
+			$country_action_log_config->type_title = 'COUNTRY';
+			$country_action_log_config->type_alias = 'com_supportgroups.country';
+			$country_action_log_config->id_holder = 'id';
+			$country_action_log_config->title_holder = 'name';
+			$country_action_log_config->table_name = '#__supportgroups_country';
+			$country_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if country action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($country_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$country_action_log_config->id = $db->loadResult();
+				$country_action_log_config_Updated = $db->updateObject('#__action_log_config', $country_action_log_config, 'id');
+			}
+			else
+			{
+				$country_action_log_config_Inserted = $db->insertObject('#__action_log_config', $country_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the currency action log config object.
+			$currency_action_log_config = new stdClass();
+			$currency_action_log_config->id = null;
+			$currency_action_log_config->type_title = 'CURRENCY';
+			$currency_action_log_config->type_alias = 'com_supportgroups.currency';
+			$currency_action_log_config->id_holder = 'id';
+			$currency_action_log_config->title_holder = 'name';
+			$currency_action_log_config->table_name = '#__supportgroups_currency';
+			$currency_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if currency action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($currency_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$currency_action_log_config->id = $db->loadResult();
+				$currency_action_log_config_Updated = $db->updateObject('#__action_log_config', $currency_action_log_config, 'id');
+			}
+			else
+			{
+				$currency_action_log_config_Inserted = $db->insertObject('#__action_log_config', $currency_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = JFactory::getDbo();
+			}
+			// Create the help_document action log config object.
+			$help_document_action_log_config = new stdClass();
+			$help_document_action_log_config->id = null;
+			$help_document_action_log_config->type_title = 'HELP_DOCUMENT';
+			$help_document_action_log_config->type_alias = 'com_supportgroups.help_document';
+			$help_document_action_log_config->id_holder = 'id';
+			$help_document_action_log_config->title_holder = 'title';
+			$help_document_action_log_config->table_name = '#__supportgroups_help_document';
+			$help_document_action_log_config->text_prefix = 'COM_SUPPORTGROUPS';
+
+			// Check if help_document action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($help_document_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$help_document_action_log_config->id = $db->loadResult();
+				$help_document_action_log_config_Updated = $db->updateObject('#__action_log_config', $help_document_action_log_config, 'id');
+			}
+			else
+			{
+				$help_document_action_log_config_Inserted = $db->insertObject('#__action_log_config', $help_document_action_log_config);
+			}
 		}
 		return true;
+	}
+
+	/**
+	 * Remove folders with files
+	 * 
+	 * @param   string   $dir     The path to folder to remove
+	 * @param   boolean  $ignore  The folders and files to ignore and not remove
+	 *
+	 * @return  boolean   True in all is removed
+	 * 
+	 */
+	protected function removeFolder($dir, $ignore = false)
+	{
+		if (JFolder::exists($dir))
+		{
+			$it = new RecursiveDirectoryIterator($dir);
+			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+			// remove ending /
+			$dir = rtrim($dir, '/');
+			// now loop the files & folders
+			foreach ($it as $file)
+			{
+				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
+				// set file dir
+				$file_dir = $file->getPathname();
+				// check if this is a dir or a file
+				if ($file->isDir())
+				{
+					$keeper = false;
+					if ($this->checkArray($ignore))
+					{
+						foreach ($ignore as $keep)
+						{
+							if (strpos($file_dir, $dir.'/'.$keep) !== false)
+							{
+								$keeper = true;
+							}
+						}
+					}
+					if ($keeper)
+					{
+						continue;
+					}
+					JFolder::delete($file_dir);
+				}
+				else
+				{
+					$keeper = false;
+					if ($this->checkArray($ignore))
+					{
+						foreach ($ignore as $keep)
+						{
+							if (strpos($file_dir, $dir.'/'.$keep) !== false)
+							{
+								$keeper = true;
+							}
+						}
+					}
+					if ($keeper)
+					{
+						continue;
+					}
+					JFile::delete($file_dir);
+				}
+			}
+			// delete the root folder if not ignore found
+			if (!$this->checkArray($ignore))
+			{
+				return JFolder::delete($dir);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Check if have an array with a length
+	 *
+	 * @input	array   The array to check
+	 *
+	 * @returns bool/int  number of items in array on success
+	 */
+	protected function checkArray($array, $removeEmptyString = false)
+	{
+		if (isset($array) && is_array($array) && ($nr = count((array)$array)) > 0)
+		{
+			// also make sure the empty strings are removed
+			if ($removeEmptyString)
+			{
+				foreach ($array as $key => $string)
+				{
+					if (empty($string))
+					{
+						unset($array[$key]);
+					}
+				}
+				return $this->checkArray($array, false);
+			}
+			return $nr;
+		}
+		return false;
+	}
+
+	/**
+	 * Method to set/copy dynamic folders into place (use with caution)
+	 *
+	 * @return void
+	 */
+	protected function setDynamicF0ld3rs($app, $parent)
+	{
+		// get the instalation path
+		$installer = $parent->getParent();
+		$installPath = $installer->getPath('source');
+		// get all the folders
+		$folders = JFolder::folders($installPath);
+		// check if we have folders we may want to copy
+		$doNotCopy = array('media','admin','site'); // Joomla already deals with these
+		if (count((array) $folders) > 1)
+		{
+			foreach ($folders as $folder)
+			{
+				// Only copy if not a standard folders
+				if (!in_array($folder, $doNotCopy))
+				{
+					// set the source path
+					$src = $installPath.'/'.$folder;
+					// set the destination path
+					$dest = JPATH_ROOT.'/'.$folder;
+					// now try to copy the folder
+					if (!JFolder::copy($src, $dest, '', true))
+					{
+						$app->enqueueMessage('Could not copy '.$folder.' folder into place, please make sure destination is writable!', 'error');
+					}
+				}
+			}
+		}
 	}
 }

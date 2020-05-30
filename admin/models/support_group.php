@@ -10,8 +10,8 @@
                                                         |_|
 /-------------------------------------------------------------------------------------------------------------------------------/
 
-	@version		1.0.10
-	@build			14th August, 2019
+	@version		1.0.11
+	@build			30th May, 2020
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		support_group.php
@@ -27,6 +27,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
+use Joomla\String\StringHelper;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Supportgroups Support_group Model
@@ -217,12 +219,18 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 		{
 			$items = $db->loadObjectList();
 
-			// set values to display correctly.
+			// Set values to display correctly.
 			if (SupportgroupsHelper::checkArray($items))
 			{
+				// Get the user object if not set.
+				if (!isset($user) || !SupportgroupsHelper::checkObject($user))
+				{
+					$user = JFactory::getUser();
+				}
 				foreach ($items as $nr => &$item)
 				{
-					$access = (JFactory::getUser()->authorise('payment.access', 'com_supportgroups.payment.' . (int) $item->id) && JFactory::getUser()->authorise('payment.access', 'com_supportgroups'));
+					// Remove items the user can't access.
+					$access = ($user->authorise('payment.access', 'com_supportgroups.payment.' . (int) $item->id) && $user->authorise('payment.access', 'com_supportgroups'));
 					if (!$access)
 					{
 						unset($items[$nr]);
@@ -315,8 +323,23 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
+		// check if xpath was set in options
+		$xpath = false;
+		if (isset($options['xpath']))
+		{
+			$xpath = $options['xpath'];
+			unset($options['xpath']);
+		}
+		// check if clear form was set in options
+		$clear = false;
+		if (isset($options['clear']))
+		{
+			$clear = $options['clear'];
+			unset($options['clear']);
+		}
+
 		// Get the form.
-		$form = $this->loadForm('com_supportgroups.support_group', 'support_group', $options);
+		$form = $this->loadForm('com_supportgroups.support_group', 'support_group', $options, $clear, $xpath);
 
 		if (empty($form))
 		{
@@ -752,6 +775,8 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+			// run the perprocess of the data
+			$this->preprocessData('com_supportgroups.support_group', $data);
 		}
 
 		return $data;
@@ -764,7 +789,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function getUniqeFields()
+	protected function getUniqueFields()
 	{
 		return false;
 	}
@@ -823,7 +848,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	{
 		// Sanitize ids.
 		$pks = array_unique($pks);
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 
 		// Remove any values of zero.
 		if (array_search(0, $pks, true))
@@ -864,7 +889,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 
 		if (!empty($commands['move_copy']))
 		{
-			$cmd = JArrayHelper::getValue($commands, 'move_copy', 'c');
+			$cmd = ArrayHelper::getValue($commands, 'move_copy', 'c');
 
 			if ($cmd == 'c')
 			{
@@ -931,8 +956,8 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			return false;
 		}
 
-		// get list of uniqe fields
-		$uniqeFields = $this->getUniqeFields();
+		// get list of unique fields
+		$uniqueFields = $this->getUniqueFields();
 		// remove move_copy from array
 		unset($values['move_copy']);
 
@@ -993,12 +1018,12 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 				}
 			}
 
-			// update all uniqe fields
-			if (SupportgroupsHelper::checkArray($uniqeFields))
+			// update all unique fields
+			if (SupportgroupsHelper::checkArray($uniqueFields))
 			{
-				foreach ($uniqeFields as $uniqeField)
+				foreach ($uniqueFields as $uniqueField)
 				{
-					$this->table->$uniqeField = $this->generateUniqe($uniqeField,$this->table->$uniqeField);
+					$this->table->$uniqueField = $this->generateUnique($uniqueField,$this->table->$uniqueField);
 				}
 			}
 
@@ -1247,16 +1272,16 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			}
 		}
 
-		// Alter the uniqe field for save as copy
+		// Alter the unique field for save as copy
 		if ($input->get('task') === 'save2copy')
 		{
-			// Automatic handling of other uniqe fields
-			$uniqeFields = $this->getUniqeFields();
-			if (SupportgroupsHelper::checkArray($uniqeFields))
+			// Automatic handling of other unique fields
+			$uniqueFields = $this->getUniqueFields();
+			if (SupportgroupsHelper::checkArray($uniqueFields))
 			{
-				foreach ($uniqeFields as $uniqeField)
+				foreach ($uniqueFields as $uniqueField)
 				{
-					$data[$uniqeField] = $this->generateUniqe($uniqeField,$data[$uniqeField]);
+					$data[$uniqueField] = $this->generateUnique($uniqueField,$data[$uniqueField]);
 				}
 			}
 		}
@@ -1269,7 +1294,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	}
 	
 	/**
-	 * Method to generate a uniqe value.
+	 * Method to generate a unique value.
 	 *
 	 * @param   string  $field name.
 	 * @param   string  $value data.
@@ -1278,15 +1303,15 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	 *
 	 * @since   3.0
 	 */
-	protected function generateUniqe($field,$value)
+	protected function generateUnique($field,$value)
 	{
 
-		// set field value uniqe 
+		// set field value unique
 		$table = $this->getTable();
 
 		while ($table->load(array($field => $value)))
 		{
-			$value = JString::increment($value);
+			$value = StringHelper::increment($value);
 		}
 
 		return $value;
@@ -1314,15 +1339,15 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			{
 				foreach($title as $nr => &$_title)
 				{
-					$_title = JString::increment($_title);
+					$_title = StringHelper::increment($_title);
 				}
 			}
 			// Make sure we have a title
 			elseif ($title)
 			{
-				$title = JString::increment($title);
+				$title = StringHelper::increment($title);
 			}
-			$alias = JString::increment($alias, 'dash');
+			$alias = StringHelper::increment($alias, 'dash');
 		}
 		// Check if this is an array of titles
 		if (SupportgroupsHelper::checkArray($title))
