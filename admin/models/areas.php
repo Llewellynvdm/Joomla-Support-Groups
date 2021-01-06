@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		areas.php
@@ -40,22 +40,29 @@ class SupportgroupsModelAreas extends JModelList
 			$config['filter_fields'] = array(
 				'a.id','id',
 				'a.published','published',
+				'a.access','access',
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.name','name',
-				'g.name',
-				'h.name'
+				'g.name','area_type',
+				'h.name','region',
+				'a.name','name'
 			);
 		}
 
 		parent::__construct($config);
 	}
-	
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
 	 * @return  void
+	 *
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -66,32 +73,33 @@ class SupportgroupsModelAreas extends JModelList
 		{
 			$this->context .= '.' . $layout;
 		}
-		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+
+		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
+		$this->setState('filter.access', $access);
+
+		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
+		$this->setState('filter.published', $published);
+
+		$created_by = $this->getUserStateFromRequest($this->context . '.filter.created_by', 'filter_created_by', '');
+		$this->setState('filter.created_by', $created_by);
+
+		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
+		$this->setState('filter.created', $created);
+
+		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
+		$this->setState('filter.sorting', $sorting);
+
+		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+		$this->setState('filter.search', $search);
 
 		$area_type = $this->getUserStateFromRequest($this->context . '.filter.area_type', 'filter_area_type');
 		$this->setState('filter.area_type', $area_type);
 
 		$region = $this->getUserStateFromRequest($this->context . '.filter.region', 'filter_region');
 		$this->setState('filter.region', $region);
-        
-		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
-		$this->setState('filter.sorting', $sorting);
-        
-		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
-        
-		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
-		$this->setState('filter.search', $search);
 
-		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
-		$this->setState('filter.published', $published);
-        
-		$created_by = $this->getUserStateFromRequest($this->context . '.filter.created_by', 'filter_created_by', '');
-		$this->setState('filter.created_by', $created_by);
-
-		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
-		$this->setState('filter.created', $created);
+		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
+		$this->setState('filter.name', $name);
 
 		// List state information.
 		parent::populateState($ordering, $direction);
@@ -186,9 +194,17 @@ class SupportgroupsModelAreas extends JModelList
 		$query->select('ag.title AS access_level');
 		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
 		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
+		$_access = $this->getState('filter.access');
+		if ($_access && is_numeric($_access))
 		{
-			$query->where('a.access = ' . (int) $access);
+			$query->where('a.access = ' . (int) $_access);
+		}
+		elseif (SupportgroupsHelper::checkArray($_access))
+		{
+			// Secure the array for the query
+			$_access = ArrayHelper::toInteger($_access);
+			// Filter by the Access Array.
+			$query->where('a.access IN (' . implode(',', $_access) . ')');
 		}
 		// Implement View Level Access
 		if (!$user->authorise('core.options', 'com_supportgroups'))
@@ -211,20 +227,44 @@ class SupportgroupsModelAreas extends JModelList
 			}
 		}
 
-		// Filter by area_type.
-		if ($area_type = $this->getState('filter.area_type'))
+		// Filter by Area_type.
+		$_area_type = $this->getState('filter.area_type');
+		if (is_numeric($_area_type))
 		{
-			$query->where('a.area_type = ' . $db->quote($db->escape($area_type)));
+			if (is_float($_area_type))
+			{
+				$query->where('a.area_type = ' . (float) $_area_type);
+			}
+			else
+			{
+				$query->where('a.area_type = ' . (int) $_area_type);
+			}
 		}
-		// Filter by region.
-		if ($region = $this->getState('filter.region'))
+		elseif (SupportgroupsHelper::checkString($_area_type))
 		{
-			$query->where('a.region = ' . $db->quote($db->escape($region)));
+			$query->where('a.area_type = ' . $db->quote($db->escape($_area_type)));
+		}
+		// Filter by Region.
+		$_region = $this->getState('filter.region');
+		if (is_numeric($_region))
+		{
+			if (is_float($_region))
+			{
+				$query->where('a.region = ' . (float) $_region);
+			}
+			else
+			{
+				$query->where('a.region = ' . (int) $_region);
+			}
+		}
+		elseif (SupportgroupsHelper::checkString($_region))
+		{
+			$query->where('a.region = ' . $db->quote($db->escape($_region)));
 		}
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');
+		$orderDirn = $this->state->get('list.direction', 'desc');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -244,7 +284,7 @@ class SupportgroupsModelAreas extends JModelList
 	public function getExportData($pks, $user = null)
 	{
 		// setup the query
-		if (SupportgroupsHelper::checkArray($pks))
+		if (($pks_size = SupportgroupsHelper::checkArray($pks)) !== false || 'bulk' === $pks)
 		{
 			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
@@ -262,7 +302,24 @@ class SupportgroupsModelAreas extends JModelList
 
 			// From the supportgroups_area table
 			$query->from($db->quoteName('#__supportgroups_area', 'a'));
-			$query->where('a.id IN (' . implode(',',$pks) . ')');
+			// The bulk export path
+			if ('bulk' === $pks)
+			{
+				$query->where('a.id > 0');
+			}
+			// A large array of ID's will not work out well
+			elseif ($pks_size > 500)
+			{
+				// Use lowest ID
+				$query->where('a.id >= ' . (int) min($pks));
+				// Use highest ID
+				$query->where('a.id <= ' . (int) max($pks));
+			}
+			// The normal default path
+			else
+			{
+				$query->where('a.id IN (' . implode(',',$pks) . ')');
+			}
 			// Implement View Level Access
 			if (!$user->authorise('core.options', 'com_supportgroups'))
 			{
@@ -359,12 +416,13 @@ class SupportgroupsModelAreas extends JModelList
 		$id .= ':' . $this->getState('filter.id');
 		$id .= ':' . $this->getState('filter.search');
 		$id .= ':' . $this->getState('filter.published');
+		$id .= ':' . $this->getState('filter.access');
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.area_type');
 		$id .= ':' . $this->getState('filter.region');
+		$id .= ':' . $this->getState('filter.name');
 
 		return parent::getStoreId($id);
 	}

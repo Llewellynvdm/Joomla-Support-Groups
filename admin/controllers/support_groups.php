@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		support_groups.php
@@ -69,7 +69,7 @@ class SupportgroupsControllerSupport_groups extends JControllerAdmin
 			$input = JFactory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
-			ArrayHelper::toInteger($pks);
+			$pks = ArrayHelper::toInteger($pks);
 			// Get the model
 			$model = $this->getModel('Support_groups');
 			// get the data to export

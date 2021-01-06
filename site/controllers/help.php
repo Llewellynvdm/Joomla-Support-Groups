@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		help.php

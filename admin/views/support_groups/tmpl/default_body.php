@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default_body.php
@@ -24,7 +24,7 @@
 /-----------------------------------------------------------------------------------------------------------------------------*/
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access'); 
+defined('_JEXEC') or die('Restricted access');
 
 $edit = "index.php?option=com_supportgroups&view=support_groups&task=support_group.edit";
 
@@ -39,11 +39,8 @@ $edit = "index.php?option=com_supportgroups&view=support_groups&task=support_gro
 		<td class="order nowrap center hidden-phone">
 		<?php if ($canDo->get('support_group.edit.state')): ?>
 			<?php
-				if ($this->saveOrder)
-				{
-					$iconClass = ' inactive';
-				}
-				else
+				$iconClass = '';
+				if (!$this->saveOrder)
 				{
 					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
 				}

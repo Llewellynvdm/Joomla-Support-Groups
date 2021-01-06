@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		edit.php
@@ -75,7 +75,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'regionTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('region.delete') || $this->canDo->get('region.edit.created_by') || $this->canDo->get('region.edit.state') || $this->canDo->get('region.edit.created')) : ?>
+	<?php if ($this->canDo->get('region.edit.created_by') || $this->canDo->get('region.edit.created') || $this->canDo->get('region.edit.state') || ($this->canDo->get('region.delete') && $this->canDo->get('region.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'regionTab', 'publishing', JText::_('COM_SUPPORTGROUPS_REGION_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

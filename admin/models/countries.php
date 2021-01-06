@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		countries.php
@@ -40,12 +40,13 @@ class SupportgroupsModelCountries extends JModelList
 			$config['filter_fields'] = array(
 				'a.id','id',
 				'a.published','published',
+				'a.access','access',
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'a.name','name',
-				'g.name',
+				'g.name','currency',
 				'a.worldzone','worldzone',
+				'a.name','name',
 				'a.codethree','codethree',
 				'a.codetwo','codetwo'
 			);
@@ -53,11 +54,17 @@ class SupportgroupsModelCountries extends JModelList
 
 		parent::__construct($config);
 	}
-	
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
 	 * @return  void
+	 *
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -68,8 +75,24 @@ class SupportgroupsModelCountries extends JModelList
 		{
 			$this->context .= '.' . $layout;
 		}
-		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+
+		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
+		$this->setState('filter.access', $access);
+
+		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
+		$this->setState('filter.published', $published);
+
+		$created_by = $this->getUserStateFromRequest($this->context . '.filter.created_by', 'filter_created_by', '');
+		$this->setState('filter.created_by', $created_by);
+
+		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
+		$this->setState('filter.created', $created);
+
+		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
+		$this->setState('filter.sorting', $sorting);
+
+		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+		$this->setState('filter.search', $search);
 
 		$currency = $this->getUserStateFromRequest($this->context . '.filter.currency', 'filter_currency');
 		$this->setState('filter.currency', $currency);
@@ -77,29 +100,14 @@ class SupportgroupsModelCountries extends JModelList
 		$worldzone = $this->getUserStateFromRequest($this->context . '.filter.worldzone', 'filter_worldzone');
 		$this->setState('filter.worldzone', $worldzone);
 
+		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
+		$this->setState('filter.name', $name);
+
 		$codethree = $this->getUserStateFromRequest($this->context . '.filter.codethree', 'filter_codethree');
 		$this->setState('filter.codethree', $codethree);
 
 		$codetwo = $this->getUserStateFromRequest($this->context . '.filter.codetwo', 'filter_codetwo');
 		$this->setState('filter.codetwo', $codetwo);
-        
-		$sorting = $this->getUserStateFromRequest($this->context . '.filter.sorting', 'filter_sorting', 0, 'int');
-		$this->setState('filter.sorting', $sorting);
-        
-		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
-        
-		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
-		$this->setState('filter.search', $search);
-
-		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
-		$this->setState('filter.published', $published);
-        
-		$created_by = $this->getUserStateFromRequest($this->context . '.filter.created_by', 'filter_created_by', '');
-		$this->setState('filter.created_by', $created_by);
-
-		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
-		$this->setState('filter.created', $created);
 
 		// List state information.
 		parent::populateState($ordering, $direction);
@@ -181,9 +189,17 @@ class SupportgroupsModelCountries extends JModelList
 		$query->select('ag.title AS access_level');
 		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
 		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
+		$_access = $this->getState('filter.access');
+		if ($_access && is_numeric($_access))
 		{
-			$query->where('a.access = ' . (int) $access);
+			$query->where('a.access = ' . (int) $_access);
+		}
+		elseif (SupportgroupsHelper::checkArray($_access))
+		{
+			// Secure the array for the query
+			$_access = ArrayHelper::toInteger($_access);
+			// Filter by the Access Array.
+			$query->where('a.access IN (' . implode(',', $_access) . ')');
 		}
 		// Implement View Level Access
 		if (!$user->authorise('core.options', 'com_supportgroups'))
@@ -206,20 +222,44 @@ class SupportgroupsModelCountries extends JModelList
 			}
 		}
 
-		// Filter by currency.
-		if ($currency = $this->getState('filter.currency'))
+		// Filter by Currency.
+		$_currency = $this->getState('filter.currency');
+		if (is_numeric($_currency))
 		{
-			$query->where('a.currency = ' . $db->quote($db->escape($currency)));
+			if (is_float($_currency))
+			{
+				$query->where('a.currency = ' . (float) $_currency);
+			}
+			else
+			{
+				$query->where('a.currency = ' . (int) $_currency);
+			}
+		}
+		elseif (SupportgroupsHelper::checkString($_currency))
+		{
+			$query->where('a.currency = ' . $db->quote($db->escape($_currency)));
 		}
 		// Filter by Worldzone.
-		if ($worldzone = $this->getState('filter.worldzone'))
+		$_worldzone = $this->getState('filter.worldzone');
+		if (is_numeric($_worldzone))
 		{
-			$query->where('a.worldzone = ' . $db->quote($db->escape($worldzone)));
+			if (is_float($_worldzone))
+			{
+				$query->where('a.worldzone = ' . (float) $_worldzone);
+			}
+			else
+			{
+				$query->where('a.worldzone = ' . (int) $_worldzone);
+			}
+		}
+		elseif (SupportgroupsHelper::checkString($_worldzone))
+		{
+			$query->where('a.worldzone = ' . $db->quote($db->escape($_worldzone)));
 		}
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'asc');
+		$orderDirn = $this->state->get('list.direction', 'desc');
 		if ($orderCol != '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -239,7 +279,7 @@ class SupportgroupsModelCountries extends JModelList
 	public function getExportData($pks, $user = null)
 	{
 		// setup the query
-		if (SupportgroupsHelper::checkArray($pks))
+		if (($pks_size = SupportgroupsHelper::checkArray($pks)) !== false || 'bulk' === $pks)
 		{
 			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
@@ -257,7 +297,24 @@ class SupportgroupsModelCountries extends JModelList
 
 			// From the supportgroups_country table
 			$query->from($db->quoteName('#__supportgroups_country', 'a'));
-			$query->where('a.id IN (' . implode(',',$pks) . ')');
+			// The bulk export path
+			if ('bulk' === $pks)
+			{
+				$query->where('a.id > 0');
+			}
+			// A large array of ID's will not work out well
+			elseif ($pks_size > 500)
+			{
+				// Use lowest ID
+				$query->where('a.id >= ' . (int) min($pks));
+				// Use highest ID
+				$query->where('a.id <= ' . (int) max($pks));
+			}
+			// The normal default path
+			else
+			{
+				$query->where('a.id IN (' . implode(',',$pks) . ')');
+			}
 			// Implement View Level Access
 			if (!$user->authorise('core.options', 'com_supportgroups'))
 			{
@@ -345,12 +402,13 @@ class SupportgroupsModelCountries extends JModelList
 		$id .= ':' . $this->getState('filter.id');
 		$id .= ':' . $this->getState('filter.search');
 		$id .= ':' . $this->getState('filter.published');
+		$id .= ':' . $this->getState('filter.access');
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.currency');
 		$id .= ':' . $this->getState('filter.worldzone');
+		$id .= ':' . $this->getState('filter.name');
 		$id .= ':' . $this->getState('filter.codethree');
 		$id .= ':' . $this->getState('filter.codetwo');
 

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -50,8 +50,8 @@ class SupportgroupsViewPayments extends JViewLegacy
 		$this->user = JFactory::getUser();
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
-		$this->saveOrder = $this->listOrder == 'ordering';
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
+		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
 		// get global action permissions
@@ -168,6 +168,7 @@ class SupportgroupsViewPayments extends JViewLegacy
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -175,15 +176,6 @@ class SupportgroupsViewPayments extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -191,15 +183,6 @@ class SupportgroupsViewPayments extends JViewLegacy
 			'filter_access',
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
-			);
-		}
 
 		// Set Support Group Name Selection
 		$this->support_groupNameOptions = JFormHelper::loadFieldType('Supportgroups')->options;
@@ -215,20 +198,10 @@ class SupportgroupsViewPayments extends JViewLegacy
 		{
 			// Support Group Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL').' -',
+				'- Select ' . JText::_('COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL') . ' -',
 				'filter_support_group',
 				JHtml::_('select.options', $this->support_groupNameOptions, 'value', 'text', $this->state->get('filter.support_group'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Support Group Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL').' -',
-					'batch[support_group]',
-					JHtml::_('select.options', $this->support_groupNameOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Year Selection
@@ -249,16 +222,48 @@ class SupportgroupsViewPayments extends JViewLegacy
 				'filter_year',
 				JHtml::_('select.options', $this->yearOptions, 'value', 'text', $this->state->get('filter.year'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Year Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_PAYMENT_YEAR_LABEL').' -',
-					'batch[year]',
-					JHtml::_('select.options', $this->yearOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+			);
+		}
+
+		// Only load Support Group Name batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Support Group Name Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL').' -',
+				'batch[support_group]',
+				JHtml::_('select.options', $this->support_groupNameOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Year batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Year Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_PAYMENT_YEAR_LABEL').' -',
+				'batch[year]',
+				JHtml::_('select.options', $this->yearOptions, 'value', 'text')
+			);
 		}
 	}
 
@@ -303,7 +308,7 @@ class SupportgroupsViewPayments extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
+			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'g.name' => JText::_('COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL'),
 			'a.year' => JText::_('COM_SUPPORTGROUPS_PAYMENT_YEAR_LABEL'),
@@ -329,13 +334,13 @@ class SupportgroupsViewPayments extends JViewLegacy
 		$db->setQuery($query);
 
 		$results = $db->loadColumn();
+		$_filter = array();
 
 		if ($results)
 		{
 			// get model
 			$model = $this->getModel();
 			$results = array_unique($results);
-			$_filter = array();
 			foreach ($results as $year)
 			{
 				// Translate the year selection
@@ -343,8 +348,7 @@ class SupportgroupsViewPayments extends JViewLegacy
 				// Now add the year and its text to the options array
 				$_filter[] = JHtml::_('select.option', $year, JText::_($text));
 			}
-			return $_filter;
 		}
-		return false;
+		return $_filter;
 	}
 }

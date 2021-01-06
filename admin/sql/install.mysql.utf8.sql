@@ -487,9 +487,14 @@ INSERT INTO `#__supportgroups_area` (`id`, `alias`, `color`, `details`, `name`, 
 --
 
 INSERT INTO `#__supportgroups_region` (`id`, `alias`, `country`, `name`, `published`, `created`) VALUES
-(1, 'khomas', 146, 'Khomas', 1, '2016-05-17 05:01:46'),
-(2, 'karas', 146, 'Karas', 1, '2016-05-17 05:01:57'),
-(3, 'region', 13, 'Region', 1, '2016-11-15 04:52:45');
+(1, 'act', 13, 'ACT', 1, '2016-05-17 05:01:46'),
+(2, 'nsw', 13, 'NSW', 1, '2016-05-17 05:01:57'),
+(3, 'nt', 13, 'NT', 1, '2016-11-15 04:52:45'),
+(4, 'qld', 13, 'QLD', 1, '2020-06-02 12:55:29'),
+(5, 'sa', 13, 'SA', 1, '2020-06-02 12:55:29'),
+(6, 'tas', 13, 'TAS', 1, '2020-06-02 12:55:29'),
+(7, 'vic', 13, 'VIC', 1, '2020-06-02 12:55:29'),
+(8, 'wa', 13, 'WA', 1, '2020-06-02 12:55:29');
 
 --
 -- Dumping data for table `#__supportgroups_country`
@@ -914,13 +919,3 @@ INSERT INTO `#__supportgroups_currency` (`id`, `asset_id`, `alias`, `codethree`,
 (164, 0, '', 'ZZZ', 2, ',', 'Reserved', '', 0, '', 'O', '', '', 1, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 1, 0, 0, 164);
 
 
-
---
--- Always insure this column rules is large enough for all the access control values.
---
-ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control.';
-
---
--- Always insure this column name is large enough for long component and view names.
---
-ALTER TABLE `#__assets` CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'The unique name for the asset.';

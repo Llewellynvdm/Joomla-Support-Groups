@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		help_document.php
@@ -429,7 +429,7 @@ class SupportgroupsModelHelp_document extends JModelAdmin
 	public function validate($form, $data, $group = null)
 	{
 		// check if the not_required field is set
-		if (SupportgroupsHelper::checkString($data['not_required']))
+		if (isset($data['not_required']) && SupportgroupsHelper::checkString($data['not_required']))
 		{
 			$requiredFields = (array) explode(',',(string) $data['not_required']);
 			$requiredFields = array_unique($requiredFields);

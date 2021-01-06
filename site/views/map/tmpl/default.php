@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default.php
@@ -26,9 +26,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+
+
 // get modules
 $model_behind_map = $this->getModules('behind-map','div','uk-panel');
-
 ?>
 <?php echo $this->toolbar->render(); ?>
 <?php echo $this->backToRef; ?>

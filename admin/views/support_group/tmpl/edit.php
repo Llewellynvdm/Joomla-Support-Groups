@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		edit.php
@@ -108,7 +108,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'support_groupTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('support_group.delete') || $this->canDo->get('support_group.edit.created_by') || $this->canDo->get('support_group.edit.state') || $this->canDo->get('support_group.edit.created')) : ?>
+	<?php if ($this->canDo->get('support_group.edit.created_by') || $this->canDo->get('support_group.edit.created') || $this->canDo->get('support_group.edit.state') || ($this->canDo->get('support_group.delete') && $this->canDo->get('support_group.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'support_groupTab', 'publishing', JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

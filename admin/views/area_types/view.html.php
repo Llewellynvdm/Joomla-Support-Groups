@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -50,8 +50,8 @@ class SupportgroupsViewArea_types extends JViewLegacy
 		$this->user = JFactory::getUser();
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
-		$this->saveOrder = $this->listOrder == 'ordering';
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
+		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
 		// get global action permissions
@@ -168,6 +168,7 @@ class SupportgroupsViewArea_types extends JViewLegacy
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -175,15 +176,6 @@ class SupportgroupsViewArea_types extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -192,6 +184,17 @@ class SupportgroupsViewArea_types extends JViewLegacy
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
 
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			JHtmlBatch_::addListSelection(
@@ -243,7 +246,7 @@ class SupportgroupsViewArea_types extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
+			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_SUPPORTGROUPS_AREA_TYPE_NAME_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')

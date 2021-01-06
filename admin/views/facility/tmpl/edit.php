@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		edit.php
@@ -71,7 +71,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'facilityTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('facility.delete') || $this->canDo->get('facility.edit.created_by') || $this->canDo->get('facility.edit.state') || $this->canDo->get('facility.edit.created')) : ?>
+	<?php if ($this->canDo->get('facility.edit.created_by') || $this->canDo->get('facility.edit.created') || $this->canDo->get('facility.edit.state') || ($this->canDo->get('facility.delete') && $this->canDo->get('facility.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'facilityTab', 'publishing', JText::_('COM_SUPPORTGROUPS_FACILITY_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

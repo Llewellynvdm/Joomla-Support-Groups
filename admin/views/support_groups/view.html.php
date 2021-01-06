@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -50,8 +50,8 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 		$this->user = JFactory::getUser();
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
-		$this->saveOrder = $this->listOrder == 'ordering';
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
+		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
 		// get global action permissions
@@ -137,7 +137,7 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 			if ($this->user->authorise('support_group.smart_export', 'com_supportgroups'))
 			{
 				// add Smart Export button.
-				JToolBarHelper::custom('support_groups.smartExport', 'download', '', 'COM_SUPPORTGROUPS_SMART_EXPORT', 'true');
+				JToolBarHelper::custom('support_groups.smartExport', 'download custom-button-smartexport', '', 'COM_SUPPORTGROUPS_SMART_EXPORT', 'true');
 			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
@@ -173,6 +173,7 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -180,15 +181,6 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -196,15 +188,6 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 			'filter_access',
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
-			);
-		}
 
 		// Set Area Name Selection
 		$this->areaNameOptions = JFormHelper::loadFieldType('Areas')->options;
@@ -220,20 +203,10 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 		{
 			// Area Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL').' -',
+				'- Select ' . JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL') . ' -',
 				'filter_area',
 				JHtml::_('select.options', $this->areaNameOptions, 'value', 'text', $this->state->get('filter.area'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Area Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL').' -',
-					'batch[area]',
-					JHtml::_('select.options', $this->areaNameOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Facility Name Selection
@@ -250,20 +223,52 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 		{
 			// Facility Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL').' -',
+				'- Select ' . JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL') . ' -',
 				'filter_facility',
 				JHtml::_('select.options', $this->facilityNameOptions, 'value', 'text', $this->state->get('filter.facility'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Facility Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL').' -',
-					'batch[facility]',
-					JHtml::_('select.options', $this->facilityNameOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+			);
+		}
+
+		// Only load Area Name batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Area Name Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_AREA_LABEL').' -',
+				'batch[area]',
+				JHtml::_('select.options', $this->areaNameOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Facility Name batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Facility Name Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_FACILITY_LABEL').' -',
+				'batch[facility]',
+				JHtml::_('select.options', $this->facilityNameOptions, 'value', 'text')
+			);
 		}
 	}
 
@@ -308,7 +313,7 @@ class SupportgroupsViewSupport_groups extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
+			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_NAME_LABEL'),
 			'a.phone' => JText::_('COM_SUPPORTGROUPS_SUPPORT_GROUP_PHONE_LABEL'),

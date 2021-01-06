@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		edit.php
@@ -70,7 +70,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'additional_infoTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('additional_info.delete') || $this->canDo->get('additional_info.edit.created_by') || $this->canDo->get('additional_info.edit.state') || $this->canDo->get('additional_info.edit.created')) : ?>
+	<?php if ($this->canDo->get('additional_info.edit.created_by') || $this->canDo->get('additional_info.edit.created') || $this->canDo->get('additional_info.edit.state') || ($this->canDo->get('additional_info.delete') && $this->canDo->get('additional_info.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'additional_infoTab', 'publishing', JText::_('COM_SUPPORTGROUPS_ADDITIONAL_INFO_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

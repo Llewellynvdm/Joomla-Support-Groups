@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -355,8 +355,6 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		// adding the joomla toolbar to the front
-		JLoader::register('JToolbarHelper', JPATH_ADMINISTRATOR.'/includes/toolbar.php');
 		
 		// set help url for this view if found
 		$help_url = SupportgroupsHelper::getHelpUrl('supportgroups');
@@ -384,7 +382,7 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 		{
 			// this is where you want to load your module position
 			$modules = JModuleHelper::getModules($position);
-			if ($modules)
+			if (SupportgroupsHelper::checkArray($modules, true))
 			{
 				// set the place holder
 				$this->setModules[$position] = array();

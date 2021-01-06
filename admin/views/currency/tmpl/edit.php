@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		edit.php
@@ -78,7 +78,7 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 	<?php $this->tab_name = 'currencyTab'; ?>
 	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
-	<?php if ($this->canDo->get('currency.delete') || $this->canDo->get('core.edit.created_by') || $this->canDo->get('currency.edit.state') || $this->canDo->get('core.edit.created')) : ?>
+	<?php if ($this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.created') || $this->canDo->get('currency.edit.state') || ($this->canDo->get('currency.delete') && $this->canDo->get('currency.edit.state'))) : ?>
 	<?php echo JHtml::_('bootstrap.addTab', 'currencyTab', 'publishing', JText::_('COM_SUPPORTGROUPS_CURRENCY_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">

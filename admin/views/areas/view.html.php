@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -50,8 +50,8 @@ class SupportgroupsViewAreas extends JViewLegacy
 		$this->user = JFactory::getUser();
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
-		$this->saveOrder = $this->listOrder == 'ordering';
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
+		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
 		// get global action permissions
@@ -168,6 +168,7 @@ class SupportgroupsViewAreas extends JViewLegacy
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 
+		// Only load publish filter if state change is allowed
 		if ($this->canState)
 		{
 			JHtmlSidebar::addFilter(
@@ -175,15 +176,6 @@ class SupportgroupsViewAreas extends JViewLegacy
 				'filter_published',
 				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
 			);
-			// only load if batch allowed
-			if ($this->canBatch)
-			{
-				JHtmlBatch_::addListSelection(
-					JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
-					'batch[published]',
-					JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
-				);
-			}
 		}
 
 		JHtmlSidebar::addFilter(
@@ -191,15 +183,6 @@ class SupportgroupsViewAreas extends JViewLegacy
 			'filter_access',
 			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
 		);
-
-		if ($this->canBatch && $this->canCreate && $this->canEdit)
-		{
-			JHtmlBatch_::addListSelection(
-				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
-				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
-			);
-		}
 
 		// Set Area Type Name Selection
 		$this->area_typeNameOptions = JFormHelper::loadFieldType('Areastype')->options;
@@ -215,20 +198,10 @@ class SupportgroupsViewAreas extends JViewLegacy
 		{
 			// Area Type Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_AREA_AREA_TYPE_LABEL').' -',
+				'- Select ' . JText::_('COM_SUPPORTGROUPS_AREA_AREA_TYPE_LABEL') . ' -',
 				'filter_area_type',
 				JHtml::_('select.options', $this->area_typeNameOptions, 'value', 'text', $this->state->get('filter.area_type'))
 			);
-
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Area Type Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_AREA_AREA_TYPE_LABEL').' -',
-					'batch[area_type]',
-					JHtml::_('select.options', $this->area_typeNameOptions, 'value', 'text')
-				);
-			}
 		}
 
 		// Set Region Name Selection
@@ -245,20 +218,52 @@ class SupportgroupsViewAreas extends JViewLegacy
 		{
 			// Region Name Filter
 			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_AREA_REGION_LABEL').' -',
+				'- Select ' . JText::_('COM_SUPPORTGROUPS_AREA_REGION_LABEL') . ' -',
 				'filter_region',
 				JHtml::_('select.options', $this->regionNameOptions, 'value', 'text', $this->state->get('filter.region'))
 			);
+		}
 
-			if ($this->canBatch && $this->canCreate && $this->canEdit)
-			{
-				// Region Name Batch Selection
-				JHtmlBatch_::addListSelection(
-					'- Keep Original '.JText::_('COM_SUPPORTGROUPS_AREA_REGION_LABEL').' -',
-					'batch[region]',
-					JHtml::_('select.options', $this->regionNameOptions, 'value', 'text')
-				);
-			}
+		// Only load published batch if state and batch is allowed
+		if ($this->canState && $this->canBatch)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_STATE'),
+				'batch[published]',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+			);
+		}
+
+		// Only load access batch if create, edit and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			JHtmlBatch_::addListSelection(
+				JText::_('COM_SUPPORTGROUPS_KEEP_ORIGINAL_ACCESS'),
+				'batch[access]',
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+			);
+		}
+
+		// Only load Area Type Name batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Area Type Name Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_AREA_AREA_TYPE_LABEL').' -',
+				'batch[area_type]',
+				JHtml::_('select.options', $this->area_typeNameOptions, 'value', 'text')
+			);
+		}
+
+		// Only load Region Name batch if create, edit, and batch is allowed
+		if ($this->canBatch && $this->canCreate && $this->canEdit)
+		{
+			// Region Name Batch Selection
+			JHtmlBatch_::addListSelection(
+				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_AREA_REGION_LABEL').' -',
+				'batch[region]',
+				JHtml::_('select.options', $this->regionNameOptions, 'value', 'text')
+			);
 		}
 	}
 
@@ -303,7 +308,7 @@ class SupportgroupsViewAreas extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'ordering' => JText::_('JGRID_HEADING_ORDERING'),
+			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.published' => JText::_('JSTATUS'),
 			'a.name' => JText::_('COM_SUPPORTGROUPS_AREA_NAME_LABEL'),
 			'g.name' => JText::_('COM_SUPPORTGROUPS_AREA_AREA_TYPE_LABEL'),

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			30th May, 2020
+	@build			6th January, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -122,8 +122,8 @@ class SupportgroupsModelSupportgroups extends JModelList
 							$viewName 	= $name;
 							$alt 		= $name;
 							$url 		= $url;
-							$image 		= $name.'.'.$type;
-							$name 		= 'COM_SUPPORTGROUPS_DASHBOARD_'.SupportgroupsHelper::safeString($name,'U');
+							$image 		= $name . '.' . $type;
+							$name 		= 'COM_SUPPORTGROUPS_DASHBOARD_' . SupportgroupsHelper::safeString($name,'U');
 						}
 					}
 					// internal views
@@ -145,17 +145,27 @@ class SupportgroupsModelSupportgroups extends JModelList
 							switch($action)
 							{
 								case 'add':
-									$url 	= 'index.php?option=com_supportgroups&view='.$name.'&layout=edit';
-									$image 	= $name.'_'.$action.'.'.$type;
-									$alt 	= $name.'&nbsp;'.$action;
+									$url	= 'index.php?option=com_supportgroups&view=' . $name . '&layout=edit';
+									$image	= $name . '_' . $action.  '.' . $type;
+									$alt	= $name . '&nbsp;' . $action;
 									$name	= 'COM_SUPPORTGROUPS_DASHBOARD_'.SupportgroupsHelper::safeString($name,'U').'_ADD';
 									$add	= true;
 								break;
 								default:
-									$url 	= 'index.php?option=com_categories&view=categories&extension=com_supportgroups.'.$name;
-									$image 	= $name.'_'.$action.'.'.$type;
-									$alt 	= $name.'&nbsp;'.$action;
-									$name	= 'COM_SUPPORTGROUPS_DASHBOARD_'.SupportgroupsHelper::safeString($name,'U').'_'.SupportgroupsHelper::safeString($action,'U');
+									// check for new convention (more stable)
+									if (strpos($action, '_qpo0O0oqp_') !== false)
+									{
+										list($action, $extension) = (array) explode('_qpo0O0oqp_', $action);
+										$extension = str_replace('_po0O0oq_', '.', $extension);
+									}
+									else
+									{
+										$extension = 'com_supportgroups.' . $name;
+									}
+									$url	= 'index.php?option=com_categories&view=categories&extension=' . $extension;
+									$image	= $name . '_' . $action . '.' . $type;
+									$alt	= $viewName . '&nbsp;' . $action;
+									$name	= 'COM_SUPPORTGROUPS_DASHBOARD_' . SupportgroupsHelper::safeString($name,'U') . '_' . SupportgroupsHelper::safeString($action,'U');
 								break;
 							}
 						}
@@ -163,9 +173,9 @@ class SupportgroupsModelSupportgroups extends JModelList
 						{
 							$viewName 	= $name;
 							$alt 		= $name;
-							$url 		= 'index.php?option=com_supportgroups&view='.$name;
-							$image 		= $name.'.'.$type;
-							$name 		= 'COM_SUPPORTGROUPS_DASHBOARD_'.SupportgroupsHelper::safeString($name,'U');
+							$url 		= 'index.php?option=com_supportgroups&view=' . $name;
+							$image 		= $name . '.' . $type;
+							$name 		= 'COM_SUPPORTGROUPS_DASHBOARD_' . SupportgroupsHelper::safeString($name,'U');
 							$hover		= false;
 						}
 					}
@@ -173,8 +183,8 @@ class SupportgroupsModelSupportgroups extends JModelList
 					{
 						$viewName 	= $view;
 						$alt 		= $view;
-						$url 		= 'index.php?option=com_supportgroups&view='.$view;
-						$image 		= $view.'.png';
+						$url 		= 'index.php?option=com_supportgroups&view=' . $view;
+						$image 		= $view . '.png';
 						$name 		= ucwords($view).'<br /><br />';
 						$hover		= false;
 					}
@@ -186,7 +196,7 @@ class SupportgroupsModelSupportgroups extends JModelList
 						$dashboard_list = false;
 						$accessTo = '';
 						$accessAdd = '';
-						// acces checking start
+						// access checking start
 						$accessCreate = (isset($viewAccess[$viewName.'.create'])) ? SupportgroupsHelper::checkString($viewAccess[$viewName.'.create']):false;
 						$accessAccess = (isset($viewAccess[$viewName.'.access'])) ? SupportgroupsHelper::checkString($viewAccess[$viewName.'.access']):false;
 						// set main controllers
@@ -201,7 +211,7 @@ class SupportgroupsModelSupportgroups extends JModelList
 						{
 							$accessAdd = 'core.create';
 						}
-						// check if acces to view is set
+						// check if access to view is set
 						if ($accessAccess)
 						{
 							$accessTo = $viewAccess[$viewName.'.access'];
