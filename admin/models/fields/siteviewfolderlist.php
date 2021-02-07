@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			6th January, 2021
+	@build			7th February, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		siteviewfolderlist.php
@@ -58,6 +58,10 @@ class JFormFieldSiteviewfolderlist extends JFormFieldList
 		// now check if there are files in the folder
 		if (JFolder::exists($localfolder) && $folders = JFolder::folders($localfolder))
 		{
+			if ($this->multiple === false)
+			{
+				$options[] = JHtml::_('select.option', '', JText::_('COM_SUPPORTGROUPS_SELECT_A_SITE_VIEW'));
+			}
 			foreach ($folders as $folder)
 			{
 				$options[] = JHtml::_('select.option', $folder, SupportgroupsHelper::safeString($folder, 'W'));
