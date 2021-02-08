@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			7th February, 2021
+	@build			8th February, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -48,6 +48,10 @@ class SupportgroupsViewAreas extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
@@ -168,62 +172,6 @@ class SupportgroupsViewAreas extends JViewLegacy
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Area Type Name Selection
-		$this->area_typeNameOptions = JFormHelper::loadFieldType('Areastype')->options;
-		// We do some sanitation for Area Type Name filter
-		if (SupportgroupsHelper::checkArray($this->area_typeNameOptions) &&
-			isset($this->area_typeNameOptions[0]->value) &&
-			!SupportgroupsHelper::checkString($this->area_typeNameOptions[0]->value))
-		{
-			unset($this->area_typeNameOptions[0]);
-		}
-		// Only load Area Type Name filter if it has values
-		if (SupportgroupsHelper::checkArray($this->area_typeNameOptions))
-		{
-			// Area Type Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_SUPPORTGROUPS_AREA_AREA_TYPE_LABEL') . ' -',
-				'filter_area_type',
-				JHtml::_('select.options', $this->area_typeNameOptions, 'value', 'text', $this->state->get('filter.area_type'))
-			);
-		}
-
-		// Set Region Name Selection
-		$this->regionNameOptions = JFormHelper::loadFieldType('Regions')->options;
-		// We do some sanitation for Region Name filter
-		if (SupportgroupsHelper::checkArray($this->regionNameOptions) &&
-			isset($this->regionNameOptions[0]->value) &&
-			!SupportgroupsHelper::checkString($this->regionNameOptions[0]->value))
-		{
-			unset($this->regionNameOptions[0]);
-		}
-		// Only load Region Name filter if it has values
-		if (SupportgroupsHelper::checkArray($this->regionNameOptions))
-		{
-			// Region Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_SUPPORTGROUPS_AREA_REGION_LABEL') . ' -',
-				'filter_region',
-				JHtml::_('select.options', $this->regionNameOptions, 'value', 'text', $this->state->get('filter.region'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -247,6 +195,15 @@ class SupportgroupsViewAreas extends JViewLegacy
 		// Only load Area Type Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Area Type Name Selection
+			$this->area_typeNameOptions = JFormHelper::loadFieldType('Areastype')->options;
+			// We do some sanitation for Area Type Name filter
+			if (SupportgroupsHelper::checkArray($this->area_typeNameOptions) &&
+				isset($this->area_typeNameOptions[0]->value) &&
+				!SupportgroupsHelper::checkString($this->area_typeNameOptions[0]->value))
+			{
+				unset($this->area_typeNameOptions[0]);
+			}
 			// Area Type Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_AREA_AREA_TYPE_LABEL').' -',
@@ -258,6 +215,15 @@ class SupportgroupsViewAreas extends JViewLegacy
 		// Only load Region Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Region Name Selection
+			$this->regionNameOptions = JFormHelper::loadFieldType('Regions')->options;
+			// We do some sanitation for Region Name filter
+			if (SupportgroupsHelper::checkArray($this->regionNameOptions) &&
+				isset($this->regionNameOptions[0]->value) &&
+				!SupportgroupsHelper::checkString($this->regionNameOptions[0]->value))
+			{
+				unset($this->regionNameOptions[0]);
+			}
 			// Region Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_AREA_REGION_LABEL').' -',

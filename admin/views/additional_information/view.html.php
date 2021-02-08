@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			7th February, 2021
+	@build			8th February, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -48,6 +48,10 @@ class SupportgroupsViewAdditional_information extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
@@ -168,42 +172,6 @@ class SupportgroupsViewAdditional_information extends JViewLegacy
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Info Type Name Selection
-		$this->info_typeNameOptions = JFormHelper::loadFieldType('Infotype')->options;
-		// We do some sanitation for Info Type Name filter
-		if (SupportgroupsHelper::checkArray($this->info_typeNameOptions) &&
-			isset($this->info_typeNameOptions[0]->value) &&
-			!SupportgroupsHelper::checkString($this->info_typeNameOptions[0]->value))
-		{
-			unset($this->info_typeNameOptions[0]);
-		}
-		// Only load Info Type Name filter if it has values
-		if (SupportgroupsHelper::checkArray($this->info_typeNameOptions))
-		{
-			// Info Type Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_SUPPORTGROUPS_ADDITIONAL_INFO_INFO_TYPE_LABEL') . ' -',
-				'filter_info_type',
-				JHtml::_('select.options', $this->info_typeNameOptions, 'value', 'text', $this->state->get('filter.info_type'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -227,6 +195,15 @@ class SupportgroupsViewAdditional_information extends JViewLegacy
 		// Only load Info Type Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Info Type Name Selection
+			$this->info_typeNameOptions = JFormHelper::loadFieldType('Infotype')->options;
+			// We do some sanitation for Info Type Name filter
+			if (SupportgroupsHelper::checkArray($this->info_typeNameOptions) &&
+				isset($this->info_typeNameOptions[0]->value) &&
+				!SupportgroupsHelper::checkString($this->info_typeNameOptions[0]->value))
+			{
+				unset($this->info_typeNameOptions[0]);
+			}
 			// Info Type Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_ADDITIONAL_INFO_INFO_TYPE_LABEL').' -',

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			7th February, 2021
+	@build			8th February, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -48,6 +48,10 @@ class SupportgroupsViewPayments extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
@@ -168,62 +172,6 @@ class SupportgroupsViewPayments extends JViewLegacy
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Support Group Name Selection
-		$this->support_groupNameOptions = JFormHelper::loadFieldType('Supportgroups')->options;
-		// We do some sanitation for Support Group Name filter
-		if (SupportgroupsHelper::checkArray($this->support_groupNameOptions) &&
-			isset($this->support_groupNameOptions[0]->value) &&
-			!SupportgroupsHelper::checkString($this->support_groupNameOptions[0]->value))
-		{
-			unset($this->support_groupNameOptions[0]);
-		}
-		// Only load Support Group Name filter if it has values
-		if (SupportgroupsHelper::checkArray($this->support_groupNameOptions))
-		{
-			// Support Group Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL') . ' -',
-				'filter_support_group',
-				JHtml::_('select.options', $this->support_groupNameOptions, 'value', 'text', $this->state->get('filter.support_group'))
-			);
-		}
-
-		// Set Year Selection
-		$this->yearOptions = $this->getTheYearSelections();
-		// We do some sanitation for Year filter
-		if (SupportgroupsHelper::checkArray($this->yearOptions) &&
-			isset($this->yearOptions[0]->value) &&
-			!SupportgroupsHelper::checkString($this->yearOptions[0]->value))
-		{
-			unset($this->yearOptions[0]);
-		}
-		// Only load Year filter if it has values
-		if (SupportgroupsHelper::checkArray($this->yearOptions))
-		{
-			// Year Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_PAYMENT_YEAR_LABEL').' -',
-				'filter_year',
-				JHtml::_('select.options', $this->yearOptions, 'value', 'text', $this->state->get('filter.year'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -247,6 +195,15 @@ class SupportgroupsViewPayments extends JViewLegacy
 		// Only load Support Group Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Support Group Name Selection
+			$this->support_groupNameOptions = JFormHelper::loadFieldType('Supportgroups')->options;
+			// We do some sanitation for Support Group Name filter
+			if (SupportgroupsHelper::checkArray($this->support_groupNameOptions) &&
+				isset($this->support_groupNameOptions[0]->value) &&
+				!SupportgroupsHelper::checkString($this->support_groupNameOptions[0]->value))
+			{
+				unset($this->support_groupNameOptions[0]);
+			}
 			// Support Group Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_PAYMENT_SUPPORT_GROUP_LABEL').' -',
@@ -258,6 +215,15 @@ class SupportgroupsViewPayments extends JViewLegacy
 		// Only load Year batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Year Selection
+			$this->yearOptions = JFormHelper::loadFieldType('paymentsfilteryear')->options;
+			// We do some sanitation for Year filter
+			if (SupportgroupsHelper::checkArray($this->yearOptions) &&
+				isset($this->yearOptions[0]->value) &&
+				!SupportgroupsHelper::checkString($this->yearOptions[0]->value))
+			{
+				unset($this->yearOptions[0]);
+			}
 			// Year Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_PAYMENT_YEAR_LABEL').' -',
@@ -315,40 +281,5 @@ class SupportgroupsViewPayments extends JViewLegacy
 			'a.amount' => JText::_('COM_SUPPORTGROUPS_PAYMENT_AMOUNT_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheYearSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('year'));
-		$query->from($db->quoteName('#__supportgroups_payment'));
-		$query->order($db->quoteName('year') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-		$_filter = array();
-
-		if ($results)
-		{
-			// get model
-			$model = $this->getModel();
-			$results = array_unique($results);
-			foreach ($results as $year)
-			{
-				// Translate the year selection
-				$text = $model->selectionTranslation($year,'year');
-				// Now add the year and its text to the options array
-				$_filter[] = JHtml::_('select.option', $year, JText::_($text));
-			}
-		}
-		return $_filter;
 	}
 }

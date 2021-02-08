@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			7th February, 2021
+	@build			8th February, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		payments.php
@@ -74,8 +74,15 @@ class SupportgroupsModelPayments extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -93,13 +100,25 @@ class SupportgroupsModelPayments extends JModelList
 		$this->setState('filter.search', $search);
 
 		$support_group = $this->getUserStateFromRequest($this->context . '.filter.support_group', 'filter_support_group');
-		$this->setState('filter.support_group', $support_group);
+		if ($formSubmited)
+		{
+			$support_group = $app->input->post->get('support_group');
+			$this->setState('filter.support_group', $support_group);
+		}
 
 		$year = $this->getUserStateFromRequest($this->context . '.filter.year', 'filter_year');
-		$this->setState('filter.year', $year);
+		if ($formSubmited)
+		{
+			$year = $app->input->post->get('year');
+			$this->setState('filter.year', $year);
+		}
 
 		$amount = $this->getUserStateFromRequest($this->context . '.filter.amount', 'filter_amount');
-		$this->setState('filter.amount', $amount);
+		if ($formSubmited)
+		{
+			$amount = $app->input->post->get('amount');
+			$this->setState('filter.amount', $amount);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);
@@ -468,7 +487,18 @@ class SupportgroupsModelPayments extends JModelList
 		$id .= ':' . $this->getState('filter.id');
 		$id .= ':' . $this->getState('filter.search');
 		$id .= ':' . $this->getState('filter.published');
-		$id .= ':' . $this->getState('filter.access');
+		// Check if the value is an array
+		$_access = $this->getState('filter.access');
+		if (SupportgroupsHelper::checkArray($_access))
+		{
+			$id .= ':' . implode(':', $_access);
+		}
+		// Check if this is only an number or string
+		elseif (is_numeric($_access)
+		 || SupportgroupsHelper::checkString($_access))
+		{
+			$id .= ':' . $_access;
+		}
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');

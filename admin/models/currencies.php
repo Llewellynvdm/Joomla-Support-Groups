@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			7th February, 2021
+	@build			8th February, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		currencies.php
@@ -75,8 +75,15 @@ class SupportgroupsModelCurrencies extends JModelList
 			$this->context .= '.' . $layout;
 		}
 
+		// Check if the form was submitted
+		$formSubmited = $app->input->post->get('form_submited');
+
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
+		if ($formSubmited)
+		{
+			$access = $app->input->post->get('access');
+			$this->setState('filter.access', $access);
+		}
 
 		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -94,16 +101,32 @@ class SupportgroupsModelCurrencies extends JModelList
 		$this->setState('filter.search', $search);
 
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
-		$this->setState('filter.name', $name);
+		if ($formSubmited)
+		{
+			$name = $app->input->post->get('name');
+			$this->setState('filter.name', $name);
+		}
 
 		$codethree = $this->getUserStateFromRequest($this->context . '.filter.codethree', 'filter_codethree');
-		$this->setState('filter.codethree', $codethree);
+		if ($formSubmited)
+		{
+			$codethree = $app->input->post->get('codethree');
+			$this->setState('filter.codethree', $codethree);
+		}
 
 		$numericcode = $this->getUserStateFromRequest($this->context . '.filter.numericcode', 'filter_numericcode');
-		$this->setState('filter.numericcode', $numericcode);
+		if ($formSubmited)
+		{
+			$numericcode = $app->input->post->get('numericcode');
+			$this->setState('filter.numericcode', $numericcode);
+		}
 
 		$decimalplace = $this->getUserStateFromRequest($this->context . '.filter.decimalplace', 'filter_decimalplace');
-		$this->setState('filter.decimalplace', $decimalplace);
+		if ($formSubmited)
+		{
+			$decimalplace = $app->input->post->get('decimalplace');
+			$this->setState('filter.decimalplace', $decimalplace);
+		}
 
 		// List state information.
 		parent::populateState($ordering, $direction);
@@ -360,7 +383,18 @@ class SupportgroupsModelCurrencies extends JModelList
 		$id .= ':' . $this->getState('filter.id');
 		$id .= ':' . $this->getState('filter.search');
 		$id .= ':' . $this->getState('filter.published');
-		$id .= ':' . $this->getState('filter.access');
+		// Check if the value is an array
+		$_access = $this->getState('filter.access');
+		if (SupportgroupsHelper::checkArray($_access))
+		{
+			$id .= ':' . implode(':', $_access);
+		}
+		// Check if this is only an number or string
+		elseif (is_numeric($_access)
+		 || SupportgroupsHelper::checkString($_access))
+		{
+			$id .= ':' . $_access;
+		}
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');

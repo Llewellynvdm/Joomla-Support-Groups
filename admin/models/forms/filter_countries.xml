@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_supportgroups/models/rules"
+	addfieldpath="/administrator/components/com_supportgroups/models/fields"
+>
+	<fields name="filter">
+		<field
+			type="text"
+			name="search"
+			inputmode="search"
+			label="COM_SUPPORTGROUPS_FILTER_SEARCH"
+			description="COM_SUPPORTGROUPS_FILTER_SEARCH_COUNTRIES"
+			hint="JSEARCH_FILTER"
+		/>
+		<field
+			type="status"
+			name="published"
+			label="COM_SUPPORTGROUPS_FILTER_PUBLISHED"
+			description="COM_SUPPORTGROUPS_FILTER_PUBLISHED_COUNTRIES"
+			onchange="this.form.submit();"
+		>
+			<option value="">JOPTION_SELECT_PUBLISHED</option>
+		</field>
+		<field
+			type="accesslevel"
+			name="access"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			multiple="true"
+			class="multipleAccessLevels"
+			onchange="this.form.submit();"
+		/>
+		<field
+			type="currency"
+			name="currency"
+			label="COM_SUPPORTGROUPS_COUNTRY_CURRENCY_LABEL"
+			multiple="false"
+			onchange="this.form.submit();"
+		/>
+		<field
+			type="countriesfilterworldzone"
+			name="worldzone"
+			label="COM_SUPPORTGROUPS_COUNTRY_WORLDZONE_LABEL"
+			multiple="false"
+			onchange="this.form.submit();"
+		/>
+		<input type="hidden" name="form_submited" value="1"/>
+	</fields>
+
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="COM_CONTENT_LIST_FULL_ORDERING"
+			description="COM_CONTENT_LIST_FULL_ORDERING_DESC"
+			onchange="this.form.submit();"
+			default="a.id DESC"
+			validate="options"
+		>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="a.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
+			<option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
+			<option value="a.published ASC">JSTATUS_ASC</option>
+			<option value="a.published DESC">JSTATUS_DESC</option>
+			<option value="a.name ASC">COM_SUPPORTGROUPS_FILTER_NAME_ASCENDING</option>
+			<option value="a.name DESC">COM_SUPPORTGROUPS_FILTER_NAME_DESCENDING</option>
+			<option value="g.name ASC">COM_SUPPORTGROUPS_FILTER_CURRENCY_ASCENDING</option>
+			<option value="g.name DESC">COM_SUPPORTGROUPS_FILTER_CURRENCY_DESCENDING</option>
+			<option value="a.worldzone ASC">COM_SUPPORTGROUPS_FILTER_WORLDZONE_ASCENDING</option>
+			<option value="a.worldzone DESC">COM_SUPPORTGROUPS_FILTER_WORLDZONE_DESCENDING</option>
+			<option value="a.codethree ASC">COM_SUPPORTGROUPS_FILTER_CODE_THREE_ASCENDING</option>
+			<option value="a.codethree DESC">COM_SUPPORTGROUPS_FILTER_CODE_THREE_DESCENDING</option>
+			<option value="a.codetwo ASC">COM_SUPPORTGROUPS_FILTER_CODE_TWO_ASCENDING</option>
+			<option value="a.codetwo DESC">COM_SUPPORTGROUPS_FILTER_CODE_TWO_DESCENDING</option>
+			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
+			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
+		</field>
+
+		<field
+			name="limit"
+			type="limitbox"
+			label="COM_CONTENT_LIST_LIMIT"
+			description="COM_CONTENT_LIST_LIMIT_DESC"
+			class="input-mini"
+			default="25"
+			onchange="this.form.submit();"
+		/>
+	</fields>
+</form>

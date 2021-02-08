@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			7th February, 2021
+	@build			8th February, 2021
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -48,6 +48,10 @@ class SupportgroupsViewCountries extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->user = JFactory::getUser();
+		// Load the filter form from xml.
+		$this->filterForm = $this->get('FilterForm');
+		// Load the active filters.
+		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
@@ -168,62 +172,6 @@ class SupportgroupsViewCountries extends JViewLegacy
 			JToolBarHelper::preferences('com_supportgroups');
 		}
 
-		// Only load publish filter if state change is allowed
-		if ($this->canState)
-		{
-			JHtmlSidebar::addFilter(
-				JText::_('JOPTION_SELECT_PUBLISHED'),
-				'filter_published',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->state->get('filter.published'), true)
-			);
-		}
-
-		JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_ACCESS'),
-			'filter_access',
-			JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'))
-		);
-
-		// Set Currency Name Selection
-		$this->currencyNameOptions = JFormHelper::loadFieldType('Currency')->options;
-		// We do some sanitation for Currency Name filter
-		if (SupportgroupsHelper::checkArray($this->currencyNameOptions) &&
-			isset($this->currencyNameOptions[0]->value) &&
-			!SupportgroupsHelper::checkString($this->currencyNameOptions[0]->value))
-		{
-			unset($this->currencyNameOptions[0]);
-		}
-		// Only load Currency Name filter if it has values
-		if (SupportgroupsHelper::checkArray($this->currencyNameOptions))
-		{
-			// Currency Name Filter
-			JHtmlSidebar::addFilter(
-				'- Select ' . JText::_('COM_SUPPORTGROUPS_COUNTRY_CURRENCY_LABEL') . ' -',
-				'filter_currency',
-				JHtml::_('select.options', $this->currencyNameOptions, 'value', 'text', $this->state->get('filter.currency'))
-			);
-		}
-
-		// Set Worldzone Selection
-		$this->worldzoneOptions = $this->getTheWorldzoneSelections();
-		// We do some sanitation for Worldzone filter
-		if (SupportgroupsHelper::checkArray($this->worldzoneOptions) &&
-			isset($this->worldzoneOptions[0]->value) &&
-			!SupportgroupsHelper::checkString($this->worldzoneOptions[0]->value))
-		{
-			unset($this->worldzoneOptions[0]);
-		}
-		// Only load Worldzone filter if it has values
-		if (SupportgroupsHelper::checkArray($this->worldzoneOptions))
-		{
-			// Worldzone Filter
-			JHtmlSidebar::addFilter(
-				'- Select '.JText::_('COM_SUPPORTGROUPS_COUNTRY_WORLDZONE_LABEL').' -',
-				'filter_worldzone',
-				JHtml::_('select.options', $this->worldzoneOptions, 'value', 'text', $this->state->get('filter.worldzone'))
-			);
-		}
-
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
@@ -247,6 +195,15 @@ class SupportgroupsViewCountries extends JViewLegacy
 		// Only load Currency Name batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Currency Name Selection
+			$this->currencyNameOptions = JFormHelper::loadFieldType('Currency')->options;
+			// We do some sanitation for Currency Name filter
+			if (SupportgroupsHelper::checkArray($this->currencyNameOptions) &&
+				isset($this->currencyNameOptions[0]->value) &&
+				!SupportgroupsHelper::checkString($this->currencyNameOptions[0]->value))
+			{
+				unset($this->currencyNameOptions[0]);
+			}
 			// Currency Name Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_COUNTRY_CURRENCY_LABEL').' -',
@@ -258,6 +215,15 @@ class SupportgroupsViewCountries extends JViewLegacy
 		// Only load Worldzone batch if create, edit, and batch is allowed
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
+			// Set Worldzone Selection
+			$this->worldzoneOptions = JFormHelper::loadFieldType('countriesfilterworldzone')->options;
+			// We do some sanitation for Worldzone filter
+			if (SupportgroupsHelper::checkArray($this->worldzoneOptions) &&
+				isset($this->worldzoneOptions[0]->value) &&
+				!SupportgroupsHelper::checkString($this->worldzoneOptions[0]->value))
+			{
+				unset($this->worldzoneOptions[0]);
+			}
 			// Worldzone Batch Selection
 			JHtmlBatch_::addListSelection(
 				'- Keep Original '.JText::_('COM_SUPPORTGROUPS_COUNTRY_WORLDZONE_LABEL').' -',
@@ -317,36 +283,5 @@ class SupportgroupsViewCountries extends JViewLegacy
 			'a.codetwo' => JText::_('COM_SUPPORTGROUPS_COUNTRY_CODETWO_LABEL'),
 			'a.id' => JText::_('JGRID_HEADING_ID')
 		);
-	}
-
-	protected function getTheWorldzoneSelections()
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-
-		// Create a new query object.
-		$query = $db->getQuery(true);
-
-		// Select the text.
-		$query->select($db->quoteName('worldzone'));
-		$query->from($db->quoteName('#__supportgroups_country'));
-		$query->order($db->quoteName('worldzone') . ' ASC');
-
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		$results = $db->loadColumn();
-		$_filter = array();
-
-		if ($results)
-		{
-			$results = array_unique($results);
-			foreach ($results as $worldzone)
-			{
-				// Now add the worldzone and its text to the options array
-				$_filter[] = JHtml::_('select.option', $worldzone, $worldzone);
-			}
-		}
-		return $_filter;
 	}
 }
