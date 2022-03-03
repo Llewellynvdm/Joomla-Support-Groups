@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -25,6 +25,8 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+
 
 /**
  * Supportgroups View class
@@ -71,10 +73,10 @@ class SupportgroupsViewSupportgroups extends JViewLegacy
 		JToolBarHelper::title(JText::_('COM_SUPPORTGROUPS_DASHBOARD'), 'grid-2');
 
 		// set help url for this view if found
-		$help_url = SupportgroupsHelper::getHelpUrl('supportgroups');
-		if (SupportgroupsHelper::checkString($help_url))
+		$this->help_url = SupportgroupsHelper::getHelpUrl('supportgroups');
+		if (SupportgroupsHelper::checkString($this->help_url))
 		{
-			JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
+			JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $this->help_url);
 		}
 
 		if ($canDo->get('core.admin') || $canDo->get('core.options'))

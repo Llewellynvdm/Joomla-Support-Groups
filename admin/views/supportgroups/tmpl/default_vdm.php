@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default_vdm.php

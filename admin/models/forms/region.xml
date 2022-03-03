@@ -120,8 +120,6 @@
 			maxlength="150"
 			description="COM_SUPPORTGROUPS_REGION_NAME_DESCRIPTION"
 			class="text_area"
-			readonly="false"
-			disabled="false"
 			required="true"
 			filter="STRING"
 			message="COM_SUPPORTGROUPS_REGION_NAME_MESSAGE"
@@ -136,7 +134,7 @@
 			class="list_class"
 			multiple="false"
 			required="true"
-			button="false"
+			button="true"
 		/>
 		<!-- Alias Field. Type: Text. (joomla) -->
 		<field

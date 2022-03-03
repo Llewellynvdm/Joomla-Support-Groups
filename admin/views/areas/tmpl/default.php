@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		default.php
@@ -26,7 +26,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::_('behavior.tooltip');
 JHtml::_('behavior.multiselect');
 JHtml::_('dropdown.init');
 JHtml::_('formbehavior.chosen', '.multipleAccessLevels', null, array('placeholder_text_multiple' => '- ' . JText::_('COM_SUPPORTGROUPS_FILTER_SELECT_ACCESS') . ' -'));

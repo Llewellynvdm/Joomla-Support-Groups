@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		facility_type.php
@@ -337,7 +337,7 @@ class SupportgroupsTableFacility_type extends JTable
 			$this->alias = $this->name;
 		}
 
-		$this->alias = JApplication::stringURLSafe($this->alias);
+		$this->alias = JApplicationHelper::stringURLSafe($this->alias);
 
 		if (trim(str_replace('-', '', $this->alias)) == '')
 		{

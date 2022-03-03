@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		country.php
@@ -117,12 +117,6 @@ class SupportgroupsModelCountry extends JModelAdmin
 				$registry = new Registry;
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
-			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_supportgroups.country');
 			}
 		}
 		$this->countryvvvy = $item->id;
@@ -631,7 +625,7 @@ class SupportgroupsModelCountry extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_supportgroups/models/forms/country.js';
+		return 'media/com_supportgroups/js/country.js';
 	}
     
 	/**

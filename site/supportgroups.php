@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -26,7 +26,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::_('behavior.tabstate');
+
 
 // Set the component css/js
 $document = JFactory::getDocument();
@@ -35,7 +35,7 @@ $document->addScript('components/com_supportgroups/assets/js/site.js');
 
 // Require helper files
 JLoader::register('SupportgroupsHelper', __DIR__ . '/helpers/supportgroups.php');
-JLoader::register('SupportgroupsHelperRoute', __DIR__ . '/helpers/route.php'); 
+JLoader::register('SupportgroupsHelperRoute', __DIR__ . '/helpers/route.php');
 
 // Get an instance of the controller prefixed by Supportgroups
 $controller = JControllerLegacy::getInstance('Supportgroups');

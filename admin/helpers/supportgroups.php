@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -33,6 +33,8 @@ use Joomla\Utilities\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * Supportgroups component helper.
@@ -233,11 +235,10 @@ abstract class SupportgroupsHelper
 		{
 			$filePath = $default;
 		}
-		jimport('joomla.filesystem.folder');
 		// create the folder if it does not exist
-		if ($createIfNotSet && !JFolder::exists($filePath))
+		if ($createIfNotSet && !Folder::exists($filePath))
 		{
-			JFolder::create($filePath);
+			Folder::create($filePath);
 		}
 		// setup the file name
 		$fileName = '';
@@ -587,7 +588,7 @@ abstract class SupportgroupsHelper
 	/**
 	* Prepares the xml document
 	*/
-	public static function xls($rows, $fileName = null, $title = null, $subjectTab = null, $creator = 'Joomla Component Builder', $description = null, $category = null,$keywords = null, $modified = null)
+	public static function xls($rows, $fileName = null, $title = null, $subjectTab = null, $creator = 'Vast Development Method', $description = null, $category = null,$keywords = null, $modified = null)
 	{
 		// set the user
 		$user = JFactory::getUser();
@@ -621,7 +622,7 @@ abstract class SupportgroupsHelper
 		// Set document properties
 		$spreadsheet->getProperties()
 			->setCreator($creator)
-			->setCompany('Joomla Component Builder')
+			->setCompany('Vast Development Method')
 			->setLastModifiedBy($modified)
 			->setTitle($title)
 			->setSubject($subjectTab);
@@ -1238,12 +1239,12 @@ abstract class SupportgroupsHelper
 			$filePath = $path . '/' . $name . '.php';
 			$fullPathModel = $fullPathModels . '/' . $name . '.php';
 			// check if it exists
-			if (JFile::exists($filePath))
+			if (File::exists($filePath))
 			{
 				// get the file
 				require_once $filePath;
 			}
-			elseif (JFile::exists($fullPathModel))
+			elseif (File::exists($fullPathModel))
 			{
 				// get the file
 				require_once $fullPathModel;

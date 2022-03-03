@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		ajax.json.php
@@ -38,8 +38,10 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 		parent::__construct($config);
 		// make sure all json stuff are set
 		JFactory::getDocument()->setMimeEncoding( 'application/json' );
-		JResponse::setHeader('Content-Disposition','attachment;filename="getajax.json"');
-		JResponse::setHeader("Access-Control-Allow-Origin", "*");
+		// get the application
+		$app = JFactory::getApplication();
+		$app->setHeader('Content-Disposition','attachment;filename="getajax.json"');
+		$app->setHeader('Access-Control-Allow-Origin', '*');
 		// load the tasks 
 		$this->registerTask('getItemData', 'ajax');
 		$this->registerTask('getRows', 'ajax');
@@ -49,20 +51,26 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 
 	public function ajax()
 	{
+		// get the user for later use
 		$user 		= JFactory::getUser();
+		// get the input values
 		$jinput 	= JFactory::getApplication()->input;
+		// check if we should return raw
+		$returnRaw	= $jinput->get('raw', false, 'BOOLEAN');
+		// return to a callback function
+		$callback	= $jinput->get('callback', null, 'CMD');
 		// Check Token!
 		$token 		= JSession::getFormToken();
 		$call_token	= $jinput->get('token', 0, 'ALNUM');
 		if($jinput->get($token, 0, 'ALNUM') || $token === $call_token)
 		{
+			// get the task
 			$task = $this->getTask();
 			switch($task)
 			{
 				case 'getItemData':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						$requestViewValue = $jinput->get('requestView', NULL, 'WORD');
@@ -77,7 +85,7 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -92,9 +100,13 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -105,7 +117,6 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 				case 'getRows':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$keyValue = $jinput->get('key', NULL, 'ALNUM');
 						$pageValue = $jinput->get('page', NULL, 'WORD');
 						if($keyValue && $pageValue)
@@ -116,7 +127,7 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -131,9 +142,13 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -144,7 +159,6 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 				case 'getColumns':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$pageValue = $jinput->get('page', NULL, 'WORD');
 						if($pageValue)
 						{
@@ -154,7 +168,7 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -169,9 +183,13 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -182,7 +200,6 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 				case 'getTableTotals':
 					try
 					{
-						$returnRaw = $jinput->get('raw', false, 'BOOLEAN');
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue)
 						{
@@ -192,7 +209,7 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 						{
 							$result = false;
 						}
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback . "(".json_encode($result).");";
 						}
@@ -207,9 +224,13 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 					}
 					catch(Exception $e)
 					{
-						if($callback = $jinput->get('callback', null, 'CMD'))
+						if($callback)
 						{
 							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
 						}
 						else
 						{
@@ -221,9 +242,15 @@ class SupportgroupsControllerAjax extends JControllerLegacy
 		}
 		else
 		{
-			if($callback = $jinput->get('callback', null, 'CMD'))
+			// return to a callback function
+			if($callback)
 			{
 				echo $callback."(".json_encode(false).");";
+			}
+			// return raw
+			elseif($returnRaw)
+			{
+				echo json_encode(false);
 			}
 			else
   			{

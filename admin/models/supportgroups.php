@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		supportgroups.php
@@ -25,6 +25,8 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+
 
 /**
  * Supportgroups Model
@@ -302,7 +304,7 @@ class SupportgroupsModelSupportgroups extends JModelList
 			jQuery.get(noticeboard)
 			.success(function(board) { 
 				if (board.length > 5) {
-					jQuery("#noticeboard-md").html(marked(board));
+					jQuery("#noticeboard-md").html(marked.parse(board));
 					getIS(1,board).done(function(result) {
 						if (result){
 							jQuery("#cpanel_tabTabs a").each(function() {
@@ -337,7 +339,7 @@ class SupportgroupsModelSupportgroups extends JModelList
 				var getUrl = "index.php?option=com_supportgroups&task=ajax.isRead&format=json&raw=true";
 			}	
 			if(token.length > 0 && notice.length){
-				var request = "token="+token+"&notice="+notice;
+				var request = token+"=1&notice="+notice;
 			}
 			return jQuery.ajax({
 				type: "POST",

@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		router.php
@@ -65,7 +65,7 @@ class SupportgroupsRouter extends JComponentRouterBase
 		{
 			$view = $query['view'];
 
-			if (empty($query['Itemid']))
+			if (empty($query['Itemid']) && !(isset($view) && isset($query['id']) && ($view === 'map' || $view === 'supportgroups')))
 			{
 				$segments[] = $query['view'];
 			}
@@ -128,7 +128,7 @@ class SupportgroupsRouter extends JComponentRouterBase
 		$count = count($segments);
 		$vars = array();
 		
-		//Handle View and Identifier
+		// Handle View and Identifier
 		switch($segments[0])
 		{
 			case 'map':

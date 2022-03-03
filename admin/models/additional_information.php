@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		additional_information.php
@@ -123,7 +123,7 @@ class SupportgroupsModelAdditional_information extends JModelList
 	 */
 	public function getItems()
 	{
-		// check in items
+		// Check in items
 		$this->checkInNow();
 
 		// load parent items
@@ -425,17 +425,19 @@ class SupportgroupsModelAdditional_information extends JModelList
 
 			// Get a db connection.
 			$db = JFactory::getDbo();
-			// reset query
+			// Reset query.
 			$query = $db->getQuery(true);
 			$query->select('*');
 			$query->from($db->quoteName('#__supportgroups_additional_info'));
-			$db->setQuery($query);
+			// Only select items that are checked out.
+			$query->where($db->quoteName('checked_out') . '!=0');
+			$db->setQuery($query, 0, 1);
 			$db->execute();
 			if ($db->getNumRows())
 			{
-				// Get Yesterdays date
+				// Get Yesterdays date.
 				$date = JFactory::getDate()->modify($time)->toSql();
-				// reset query
+				// Reset query.
 				$query = $db->getQuery(true);
 
 				// Fields to update.
@@ -450,7 +452,7 @@ class SupportgroupsModelAdditional_information extends JModelList
 					$db->quoteName('checked_out_time') . '<\''.$date.'\''
 				);
 
-				// Check table
+				// Check table.
 				$query->update($db->quoteName('#__supportgroups_additional_info'))->set($fields)->where($conditions); 
 
 				$db->setQuery($query);

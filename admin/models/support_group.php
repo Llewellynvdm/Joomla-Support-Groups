@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		support_group.php
@@ -142,12 +142,6 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 			{
 				// JSON Decode info.
 				$item->info = json_decode($item->info);
-			}
-			
-			if (!empty($item->id))
-			{
-				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_supportgroups.support_group');
 			}
 		}
 		$this->support_groupvvvv = $item->id;
@@ -638,7 +632,7 @@ class SupportgroupsModelSupport_group extends JModelAdmin
 	 */
 	public function getScript()
 	{
-		return 'administrator/components/com_supportgroups/models/forms/support_group.js';
+		return 'media/com_supportgroups/js/support_group.js';
 	}
     
 	/**

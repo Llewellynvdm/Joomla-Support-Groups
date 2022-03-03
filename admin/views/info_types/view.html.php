@@ -11,7 +11,7 @@
 /-------------------------------------------------------------------------------------------------------------------------------/
 
 	@version		1.0.11
-	@build			8th February, 2021
+	@build			2nd March, 2022
 	@created		24th February, 2016
 	@package		Support Groups
 	@subpackage		view.html.php
@@ -160,10 +160,10 @@ class SupportgroupsViewInfo_types extends JViewLegacy
 		}
 
 		// set help url for this view if found
-		$help_url = SupportgroupsHelper::getHelpUrl('info_types');
-		if (SupportgroupsHelper::checkString($help_url))
+		$this->help_url = SupportgroupsHelper::getHelpUrl('info_types');
+		if (SupportgroupsHelper::checkString($this->help_url))
 		{
-				JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $help_url);
+				JToolbarHelper::help('COM_SUPPORTGROUPS_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
